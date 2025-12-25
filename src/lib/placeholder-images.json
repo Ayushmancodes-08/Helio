@@ -1,0 +1,58 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Hero image for the landing page showing an Indian rural healthcare scene.",
+      "imageUrl": "https://images.unsplash.com/photo-1659353887222-630895f23cc5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpbmRpYW4lMjBydXJhbCUyMGhlYWx0aGNhcmV8ZW58MHx8fHwxNzY2MDgwODAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian rural healthcare"
+    },
+    {
+      "id": "avatar-patient",
+      "description": "Avatar for a patient user.",
+      "imageUrl": "https://images.unsplash.com/photo-1628264047320-49bab8dc07d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aW5kaWFuJTIwbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzY1NjI4MDU3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian man portrait"
+    },
+    {
+      "id": "avatar-doctor",
+      "description": "Avatar for a doctor user.",
+      "imageUrl": "https://images.unsplash.com/photo-1659353886973-ced1dfeab3ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxpbmRpYW4lMjBkb2N0b3IlMjB3b21hbnxlbnwwfHx8fDE3NjU2MjgwNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian doctor woman"
+    },
+    {
+      "id": "doctor-1",
+      "description": "Profile picture for Dr. Anjali Sharma",
+      "imageUrl": "https://images.unsplash.com/photo-1618294454352-eb84462415b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmZW1hbGUlMjBkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU2MjgwNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female doctor portrait"
+    },
+    {
+      "id": "doctor-2",
+      "description": "Profile picture for Dr. Priya Singh",
+      "imageUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmZW1hbGUlMjBkb2N0b3IlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU2MjgwNTd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "female doctor portrait"
+    },
+    {
+      "id": "healthy-habit-1",
+      "description": "Eat a balanced diet of fresh fruits and vegetables.",
+      "imageUrl": "https://images.unsplash.com/photo-1606756790138-261d2b21cd75?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoZWFsdGh5JTIwZm9vZHxlbnwwfHx8fDE3NjU1NDE3MjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy food"
+    },
+    {
+      "id": "healthy-habit-2",
+      "description": "Stay active with regular physical exercise.",
+      "imageUrl": "https://images.unsplash.com/photo-1760862557682-8d1ea29bceea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxydXJhbCUyMGV4ZXJjaXNlfGVufDB8fHx8MTc2NTYyODY3MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rural exercise"
+    },
+    {
+      "id": "healthy-habit-3",
+      "description": "Practice good hygiene, like washing your hands.",
+      "imageUrl": "https://images.unsplash.com/photo-1556229167-7ed11195e641?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxoYW5kJTIwd2FzaGluZ3xlbnwwfHx8fDE3NjU2Mjg2NzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hand washing"
+    },
+    {
+      "id": "healthy-habit-4",
+      "description": "Get regular health check-ups with your doctor.",
+      "imageUrl": "https://images.unsplash.com/photo-1666886573559-6ad307474d01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8aGVhbHRoJTIwY2hlY2t1cHxlbnwwfHx8fDE3NjU2MDg5NTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "health checkup"
+    }
+  ]
+}

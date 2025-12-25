@@ -1,0 +1,170 @@
+================================================================================
+                    DEO RLS FIX - VISUAL GUIDE
+================================================================================
+
+YOUR PROBLEM:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Error 42501: "new row violates row-level security policy for table         │
+│ \"districts\""                                                              │
+│                                                                             │
+│ This happens when you try to add a district as a Data Entry Operator       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+ROOT CAUSE:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. Your user role is NOT set to 'data-entry-operator'                      │
+│ 2. RLS policies are NOT set up correctly                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+THE FIX (5 MINUTES):
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  1. Open Supabase Dashboard                                                │
+│     └─ https://supabase.com                                               │
+│                                                                             │
+│  2. Click SQL Editor                                                       │
+│     └─ Left sidebar → SQL Editor                                          │
+│                                                                             │
+│  3. Copy QUICK_FIX_DEO_RLS.sql                                            │
+│     └─ Open file → Copy all content (Ctrl + A, Ctrl + C)                 │
+│                                                                             │
+│  4. Paste into SQL Editor                                                  │
+│     └─ Paste (Ctrl + V)                                                   │
+│                                                                             │
+│  5. Click Run                                                              │
+│     └─ Wait for completion                                                │
+│                                                                             │
+│  6. Check Results                                                          │
+│     └─ Should see:                                                        │
+│        ✅ Your Role: data-entry-operator                                  │
+│        ✅ Districts RLS Enabled: true                                     │
+│        ✅ Hospitals RLS Enabled: true                                     │
+│        ✅ Districts Policies: 4                                           │
+│        ✅ Hospitals Policies: 4                                           │
+│                                                                             │
+│  7. Hard Refresh App                                                       │
+│     └─ Ctrl + Shift + R (Windows) or Cmd + Shift + R (Mac)               │
+│                                                                             │
+│  8. Test Adding a District                                                │
+│     └─ Go to Districts & Hospitals page                                   │
+│     └─ Try adding a district                                              │
+│     └─ Should work! ✅                                                    │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+WHAT GETS FIXED:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  BEFORE:                                                                   │
+│  ├─ Your Role: NULL or 'patient' or 'doctor'  ❌                          │
+│  ├─ Districts RLS: No policies or wrong       ❌                          │
+│  ├─ Hospitals RLS: No policies or wrong       ❌                          │
+│  └─ Result: Error 42501 when adding district  ❌                          │
+│                                                                             │
+│  AFTER:                                                                    │
+│  ├─ Your Role: 'data-entry-operator'         ✅                          │
+│  ├─ Districts RLS: 4 correct policies        ✅                          │
+│  ├─ Hospitals RLS: 4 correct policies        ✅                          │
+│  └─ Result: Can add/edit/delete districts    ✅                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+WORKFLOW AFTER FIX:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  Data Entry Operator                                                       │
+│         ↓                                                                  │
+│    Logs in                                                                 │
+│         ↓                                                                  │
+│    Profile checked: role = 'data-entry-operator' ✅                       │
+│         ↓                                                                  │
+│    Can add districts ✅                                                   │
+│         ↓                                                                  │
+│    Can add hospitals ✅                                                   │
+│         ↓                                                                  │
+│    Can delete districts ✅                                                │
+│         ↓                                                                  │
+│    Can delete hospitals ✅                                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+FILES PROVIDED:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  🚀 QUICK FIX (USE THIS!)                                                 │
+│  └─ QUICK_FIX_DEO_RLS.sql                                                 │
+│     └─ One-click solution                                                 │
+│                                                                             │
+│  📋 REFERENCE                                                              │
+│  ├─ PROPER_DEO_RLS_POLICIES.sql                                           │
+│  │  └─ Detailed policies with comments                                    │
+│  └─ VERIFY_DEO_SETUP.sql                                                  │
+│     └─ Diagnostic script                                                  │
+│                                                                             │
+│  📖 DOCUMENTATION                                                          │
+│  ├─ START_HERE.md                                                         │
+│  │  └─ Quick start guide                                                  │
+│  ├─ README_DEO_RLS_FIX.md                                                 │
+│  │  └─ Complete documentation                                             │
+│  ├─ DEO_RLS_SETUP_GUIDE.md                                                │
+│  │  └─ Step-by-step guide                                                 │
+│  ├─ WORKFLOW_EXPLANATION.md                                               │
+│  │  └─ How the workflow works                                             │
+│  ├─ SOLUTION_CHECKLIST.md                                                 │
+│  │  └─ Checklist to track progress                                        │
+│  └─ VISUAL_GUIDE.txt                                                      │
+│     └─ This file                                                          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+TROUBLESHOOTING:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  Still getting error?                                                      │
+│                                                                             │
+│  1. Check your role:                                                       │
+│     SELECT role FROM profiles WHERE auth_user_id = auth.uid();            │
+│     Should return: data-entry-operator                                    │
+│                                                                             │
+│  2. Check policies:                                                        │
+│     SELECT COUNT(*) FROM pg_policies WHERE tablename = 'districts';       │
+│     Should return: 4                                                      │
+│                                                                             │
+│  3. Check RLS enabled:                                                     │
+│     SELECT rowsecurity FROM pg_tables WHERE tablename = 'districts';      │
+│     Should return: true                                                   │
+│                                                                             │
+│  4. Clear cache:                                                           │
+│     npm run dev                                                            │
+│     Ctrl + Shift + R                                                      │
+│                                                                             │
+│  5. Run diagnostic:                                                        │
+│     Copy VERIFY_DEO_SETUP.sql                                             │
+│     Paste into Supabase SQL Editor                                        │
+│     Click Run                                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+SUMMARY:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  Problem:  Error 42501 when adding districts                              │
+│  Cause:    User role not set + RLS policies missing                       │
+│  Solution: Run QUICK_FIX_DEO_RLS.sql                                      │
+│  Time:     5 minutes                                                      │
+│  Result:   DEO can add/edit/delete districts & hospitals ✅               │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+NEXT STEPS:
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  1. ✅ Run QUICK_FIX_DEO_RLS.sql                                          │
+│  2. ✅ Verify with VERIFY_DEO_SETUP.sql                                   │
+│  3. ✅ Hard refresh your app                                              │
+│  4. ✅ Test adding a district                                             │
+│  5. ✅ Done! 🎉                                                           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Good luck! 🚀
