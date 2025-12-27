@@ -1,5 +1,9 @@
 'use client';
 
+// Force dynamic rendering to prevent build-time static generation
+// This page needs runtime environment variables for Supabase
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
