@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAppointments } from '@/hooks/useAppointments';
 import { useAgoraCall } from '@/hooks/useAgoraCall';
 import { VideoCallInterface } from '@/components/video-call-interface';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export function VideoConsultationContent() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export function VideoConsultationContent() {
 
   const { profile } = useAuth();
   const { appointments, updateAppointment } = useAppointments();
+  const { t } = useLanguage();
   const [appointment, setAppointment] = useState<any>(null);
   const [isEndingCall, setIsEndingCall] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -27,16 +29,25 @@ export function VideoConsultationContent() {
   const channelName = appointmentId ? `consultation-${appointmentId}` : '';
   const uid = profile?.id ? parseInt(profile.id.replace(/\D/g, '').slice(0, 10)) || Math.random() * 1000000 : 0;
 
-  const { 
-    isCallActive,
+  const {
     error: callError,
-    startCall,
-    endCall,
+    remoteUsers,
+    leaveCall,
   } = useAgoraCall({
     appId,
     channelName,
     uid,
   });
+
+  // Waiting room state - show until patient joins
+  const [isWaitingForPatient, setIsWaitingForPatient] = useState(true);
+
+  // Detect when patient joins
+  useEffect(() => {
+    if (remoteUsers && remoteUsers.length > 0) {
+      setIsWaitingForPatient(false);
+    }
+  }, [remoteUsers]);
 
   useEffect(() => {
     if (!appointmentId) {
@@ -53,11 +64,13 @@ export function VideoConsultationContent() {
   const handleEndCall = async () => {
     setIsEndingCall(true);
     try {
-      await endCall();
-      
-      if (appointment) {
+      await leaveCall();
+
+      // Only update appointment to completed if patient actually joined
+      // If still in waiting room (no remote users), don't update status
+      if (appointment && !isWaitingForPatient) {
         await updateAppointment(appointment.id, {
-          status: 'completed',
+          status: 'Completed',
           ended_at: new Date().toISOString(),
         });
       }
@@ -77,12 +90,12 @@ export function VideoConsultationContent() {
       <div className="flex items-center justify-center min-h-screen">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>No Appointment Selected</CardTitle>
-            <CardDescription>Please select an appointment to start a video consultation.</CardDescription>
+            <CardTitle>{t('doctor.videoConsultation.noAppointmentSelected')}</CardTitle>
+            <CardDescription>{t('doctor.videoConsultation.pleaseSelectAppointment')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => router.push('/dashboard/doctor/appointments')} className="w-full">
-              Back to Appointments
+              {t('doctor.videoConsultation.backToAppointments')}
             </Button>
           </CardContent>
         </Card>
@@ -103,7 +116,7 @@ export function VideoConsultationContent() {
       {callError && (
         <Alert variant="destructive" className="m-4">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Call Error</AlertTitle>
+          <AlertTitle>{t('doctor.videoConsultation.callError')}</AlertTitle>
           <AlertDescription>{callError}</AlertDescription>
         </Alert>
       )}
@@ -111,29 +124,57 @@ export function VideoConsultationContent() {
       {showRetry && retryCount > 0 && (
         <Alert variant="destructive" className="m-4">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Failed to End Call</AlertTitle>
+          <AlertTitle>{t('doctor.videoConsultation.failedToEndCall')}</AlertTitle>
           <AlertDescription>
-            Retry attempt {retryCount}. 
-            <Button 
-              variant="link" 
-              size="sm" 
+            {t('doctor.videoConsultation.retryAttempt', { count: retryCount })}
+            <Button
+              variant="link"
+              size="sm"
               onClick={handleEndCall}
               className="ml-2"
             >
               <RefreshCw className="h-4 w-4 mr-1" />
-              Retry
+              {t('doctor.videoConsultation.retry')}
             </Button>
           </AlertDescription>
         </Alert>
       )}
 
       <div className="flex-1 flex flex-col">
-        <VideoCallInterface
-          appointmentId={appointmentId}
-          patientName={appointment.patient_name}
-          onEndCall={handleEndCall}
-          isEndingCall={isEndingCall}
-        />
+        {isWaitingForPatient ? (
+          <div className="flex items-center justify-center h-full">
+            <Card className="w-full max-w-md mx-4">
+              <CardHeader className="text-center">
+                <div className="flex justify-center mb-4">
+                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                </div>
+                <CardTitle className="text-2xl">
+                  {t('doctor.videoConsultation.waitingForPatient', { patientName: appointment.patient_name })}
+                </CardTitle>
+                <CardDescription className="mt-2">
+                  {t('doctor.videoConsultation.callWillStart')}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Button
+                  variant="outline"
+                  onClick={handleEndCall}
+                  disabled={isEndingCall}
+                >
+                  {isEndingCall ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  {t('common.cancel')}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <VideoCallInterface
+            appointmentId={appointmentId}
+            patientName={appointment.patient_name}
+            onEndCall={handleEndCall}
+            isEndingCall={isEndingCall}
+          />
+        )}
       </div>
     </div>
   );

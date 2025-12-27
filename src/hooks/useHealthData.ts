@@ -55,20 +55,26 @@ export function useDistricts() {
         try {
             const { data: authData } = await supabase.auth.getUser()
             const userId = authData.user?.id
-            console.log('DEBUG: Current Auth User ID:', userId)
 
-            // DEBUG: Check if we can read the profile
-            const { data: profileCheck, error: profileError } = await supabase
-                .from('profiles')
-                .select('role, id, auth_user_id')
-                .eq('auth_user_id', userId)
-                .single()
+            let profileId = null;
 
-            console.log('DEBUG: Profile Fetch Result:', { profileCheck, profileError })
+            // Try to get profile if user is authenticated
+            if (userId) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('auth_user_id', userId)
+                    .single()
 
+                if (profile) {
+                    profileId = profile.id;
+                }
+            }
+
+            // Use profile.id if available, otherwise NULL (for testing)
             const { data, error } = await supabase
                 .from('districts')
-                .insert([{ name, created_by: userId }])
+                .insert([{ name, created_by: profileId }])
                 .select()
                 .single()
 
@@ -76,7 +82,7 @@ export function useDistricts() {
             await fetchDistricts()
             return { success: true, data }
         } catch (err: any) {
-            console.error('Error adding district:', JSON.stringify(err, null, 2))
+            console.error('Error adding district:', err.message)
             return { success: false, error: err.message }
         }
     }
@@ -168,10 +174,28 @@ export function useHospitals(districtId?: string) {
 
     const addHospital = async (hospitalData: Partial<Hospital>) => {
         try {
-            const { data: profile } = await supabase.auth.getUser()
+            const { data: authData } = await supabase.auth.getUser()
+            const userId = authData.user?.id
+
+            let profileId = null;
+
+            // Try to get profile if user is authenticated
+            if (userId) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('auth_user_id', userId)
+                    .single()
+
+                if (profile) {
+                    profileId = profile.id;
+                }
+            }
+
+            // Use profile.id if available, otherwise NULL (for testing)
             const { data, error } = await supabase
                 .from('hospitals')
-                .insert([{ ...hospitalData, created_by: profile.user?.id }])
+                .insert([{ ...hospitalData, created_by: profileId }])
                 .select()
                 .single()
 
@@ -179,7 +203,7 @@ export function useHospitals(districtId?: string) {
             await fetchHospitals()
             return { success: true, data }
         } catch (err: any) {
-            console.error('Error adding hospital:', err)
+            console.error('Error adding hospital:', err.message)
             return { success: false, error: err.message }
         }
     }

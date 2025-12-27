@@ -96,14 +96,14 @@ export function PatientSidebar() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="truncate font-semibold text-sm">{profile?.full_name || 'Patient'}</p>
-                  <p className="truncate text-xs text-muted-foreground">Patient</p>
+                  <p className="truncate font-semibold text-sm">{profile?.full_name || tCommon('common.roles.patient')}</p>
+                  <p className="truncate text-xs text-muted-foreground">{tCommon('common.roles.patient')}</p>
                 </div>
               </>
             ) : (
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
-                <p className="text-[10px] text-muted-foreground truncate">Please log in as Patient</p>
+                <p className="text-xs font-bold text-destructive truncate">{tCommon('common.sessionMismatch')}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{tCommon('common.pleaseLoginAs', { role: tCommon('common.roles.patient') })}</p>
               </div>
             )}
             <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>

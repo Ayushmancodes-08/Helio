@@ -183,19 +183,19 @@ export default function PrescriptionsPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="font-headline text-3xl font-bold">
-            {t('dashboard.doctor.managePrescriptions')}
+            {t('doctor.managePrescriptions')}
           </h1>
           <p className="text-muted-foreground">
-            {t('dashboard.doctor.createNewPrescriptions')}
+            {t('doctor.createNewPrescriptions')}
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.doctor.createNewPrescription')}</CardTitle>
+          <CardTitle>{t('doctor.createNewPrescription')}</CardTitle>
           <CardDescription>
-            {t('dashboard.doctor.selectPatientFillMedication')}
+            {t('doctor.selectPatientFillMedication')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -237,9 +237,9 @@ export default function PrescriptionsPage() {
                   name="medication"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('dashboard.doctor.medicationName')}</FormLabel>
+                      <FormLabel>{t('doctor.medicationName')}</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('dashboard.doctor.medicationNamePlaceholder')} {...field} />
+                        <Input placeholder={t('doctor.medicationNamePlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -250,9 +250,9 @@ export default function PrescriptionsPage() {
                   name="dosage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('dashboard.doctor.dosage')}</FormLabel>
+                      <FormLabel>{t('doctor.dosage')}</FormLabel>
                       <FormControl>
-                        <Input placeholder={t('dashboard.doctor.dosagePlaceholder')} {...field} />
+                        <Input placeholder={t('doctor.dosagePlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -263,10 +263,10 @@ export default function PrescriptionsPage() {
                   name="instructions"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('dashboard.doctor.instructions')}</FormLabel>
+                      <FormLabel>{t('doctor.instructions')}</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={t('dashboard.doctor.instructionsPlaceholder')}
+                          placeholder={t('doctor.instructionsPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -278,7 +278,7 @@ export default function PrescriptionsPage() {
               <Button type="submit" disabled={prescriptionsLoading}>
                 {prescriptionsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <PlusCircle className="mr-2 h-4 w-4" />
-                {t('dashboard.doctor.issuePrescription')}
+                {t('doctor.issuePrescription')}
               </Button>
             </form>
           </Form>
@@ -289,15 +289,15 @@ export default function PrescriptionsPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <CardTitle>{t('dashboard.doctor.recentPrescriptions')}</CardTitle>
+              <CardTitle>{t('doctor.recentPrescriptions')}</CardTitle>
               <CardDescription>
-                {t('dashboard.doctor.mostRecentlyIssued')}
+                {t('doctor.mostRecentlyIssued')}
               </CardDescription>
             </div>
             <div className="relative">
               <FileSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder={t('dashboard.doctor.searchByPatientMedication')}
+                placeholder={t('doctor.searchByPatientMedication')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 md:w-64 lg:w-80"
@@ -315,10 +315,10 @@ export default function PrescriptionsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('common.patient')}</TableHead>
-                  <TableHead>{t('dashboard.doctor.medication')}</TableHead>
-                  <TableHead>{t('dashboard.doctor.date')}</TableHead>
-                  <TableHead>{t('dashboard.doctor.status')}</TableHead>
-                  <TableHead className="text-right">{t('dashboard.doctor.viewDetails')}</TableHead>
+                  <TableHead>{t('doctor.medication')}</TableHead>
+                  <TableHead>{t('doctor.date')}</TableHead>
+                  <TableHead>{t('doctor.status')}</TableHead>
+                  <TableHead className="text-right">{t('doctor.viewDetails')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -330,7 +330,7 @@ export default function PrescriptionsPage() {
                     <TableCell>{presc.medication} {presc.dosage}</TableCell>
                     <TableCell>{format(new Date(presc.issued_date), 'PPP')}</TableCell>
                     <TableCell>
-                      <Badge>{t('dashboard.doctor.issued')}</Badge>
+                      <Badge>{t('doctor.issued')}</Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleViewDetails(presc)}>
@@ -341,7 +341,7 @@ export default function PrescriptionsPage() {
                 )) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                      {t('dashboard.doctor.noPrescriptionsFound')}
+                      {t('doctor.noPrescriptionsFound')}
                     </TableCell>
                   </TableRow>
                 )}
@@ -355,9 +355,9 @@ export default function PrescriptionsPage() {
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('dashboard.doctor.prescriptionDetails')}</DialogTitle>
+            <DialogTitle>{t('doctor.prescriptionDetails')}</DialogTitle>
             <DialogDescription>
-              {t('dashboard.doctor.viewingPrescriptionFor', { patient: selectedPrescription?.patient?.full_name, date: selectedPrescription?.issued_date ? format(new Date(selectedPrescription.issued_date), 'PPP') : '' })}
+              {t('doctor.viewingPrescriptionFor', { patient: selectedPrescription?.patient?.full_name, date: selectedPrescription?.issued_date ? format(new Date(selectedPrescription.issued_date), 'PPP') : '' })}
             </DialogDescription>
           </DialogHeader>
           {selectedPrescription && (
@@ -367,23 +367,23 @@ export default function PrescriptionsPage() {
                 <p>{selectedPrescription.patient?.full_name}</p>
               </div>
               <div>
-                <h4 className="font-semibold">{t('dashboard.doctor.medication')}</h4>
+                <h4 className="font-semibold">{t('doctor.medication')}</h4>
                 <p>{selectedPrescription.medication_name}</p>
               </div>
               <div>
-                <h4 className="font-semibold">{t('dashboard.doctor.dosage')}</h4>
+                <h4 className="font-semibold">{t('doctor.dosage')}</h4>
                 <p>{selectedPrescription.dosage}</p>
               </div>
               <div>
-                <h4 className="font-semibold">{t('dashboard.doctor.frequency')}</h4>
+                <h4 className="font-semibold">{t('doctor.frequency')}</h4>
                 <p>{selectedPrescription.frequency}</p>
               </div>
               <div>
-                <h4 className="font-semibold">{t('dashboard.doctor.notes')}</h4>
+                <h4 className="font-semibold">{t('doctor.notes')}</h4>
                 <p>{selectedPrescription.notes}</p>
               </div>
               <div>
-                <h4 className="font-semibold">{t('dashboard.doctor.status')}</h4>
+                <h4 className="font-semibold">{t('doctor.status')}</h4>
                 <Badge variant={getStatusVariant(selectedPrescription.status)}>
                   {selectedPrescription.status}
                 </Badge>

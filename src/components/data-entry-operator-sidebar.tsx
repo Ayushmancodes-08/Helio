@@ -101,8 +101,8 @@ export function DataEntryOperatorSidebar() {
               <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'DEO'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="truncate font-semibold text-sm">{profile?.full_name || 'Data Entry Operator'}</p>
-              <p className="truncate text-xs text-muted-foreground">Data Entry Operator</p>
+              <p className="truncate font-semibold text-sm">{profile?.full_name || tCommon('common.roles.dataEntryOperator')}</p>
+              <p className="truncate text-xs text-muted-foreground">{tCommon('common.roles.dataEntryOperator')}</p>
             </div>
             <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />

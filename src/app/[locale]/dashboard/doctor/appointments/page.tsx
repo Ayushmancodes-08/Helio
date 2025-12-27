@@ -114,9 +114,9 @@ export default function DoctorAppointmentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="font-headline text-3xl font-bold">{t('dashboard.doctor.todaysAppointmentsPage')}</h1>
+          <h1 className="font-headline text-3xl font-bold">{t('doctor.todaysAppointmentsPage')}</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.doctor.scheduleFor', { date: formatDate(selectedDate, 'long'), name: profile?.full_name || 'Doctor' })}
+            {t('doctor.scheduleFor', { date: formatDate(selectedDate, 'long'), name: profile?.full_name || 'Doctor' })}
           </p>
         </div>
         <div className="relative">
@@ -140,18 +140,18 @@ export default function DoctorAppointmentsPage() {
         <>
           <Card>
             <CardHeader>
-              <CardTitle>{t('dashboard.doctor.onlineConsultations')}</CardTitle>
+              <CardTitle>{t('doctor.onlineConsultations')}</CardTitle>
               <CardDescription>
-                {t('dashboard.doctor.videoCallsScheduled')}
+                {t('doctor.videoCallsScheduled')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('dashboard.doctor.patientName')}</TableHead>
-                    <TableHead>{t('dashboard.doctor.time')}</TableHead>
-                    <TableHead>{t('dashboard.doctor.status')}</TableHead>
+                    <TableHead>{t('doctor.patientName')}</TableHead>
+                    <TableHead>{t('doctor.time')}</TableHead>
+                    <TableHead>{t('doctor.status')}</TableHead>
                     <TableHead className="text-right">{t('common.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -180,12 +180,12 @@ export default function DoctorAppointmentsPage() {
                         </TableCell>
                         <TableCell className="text-right space-x-2">
                           <Button variant="ghost" size="sm" onClick={() => openNotesDialog(consult.id, consult.notes)}>
-                            <FileText className="mr-2 h-4 w-4" /> {t('dashboard.doctor.notes')}
+                            <FileText className="mr-2 h-4 w-4" /> {t('doctor.notes')}
                           </Button>
                           <Link href={`/${locale}/dashboard/doctor/video-consultation?appointmentId=${consult.id}`} passHref>
                             <Button variant="outline" size="sm" disabled={normalizeStatus(consult.status) !== 'Upcoming'}>
                               <Video className="mr-2 h-4 w-4" />
-                              {t('dashboard.doctor.startCall')}
+                              {t('doctor.startCall')}
                             </Button>
                           </Link>
                         </TableCell>
@@ -194,7 +194,7 @@ export default function DoctorAppointmentsPage() {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                        {t('dashboard.doctor.noOnlineConsultations')}
+                        {t('doctor.noOnlineConsultations')}
                       </TableCell>
                     </TableRow>
                   )}
@@ -205,18 +205,18 @@ export default function DoctorAppointmentsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>{t('dashboard.doctor.inPersonAppointments')}</CardTitle>
+              <CardTitle>{t('doctor.inPersonAppointments')}</CardTitle>
               <CardDescription>
-                {t('dashboard.doctor.physicalAppointments')}
+                {t('doctor.physicalAppointments')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('dashboard.doctor.patientName')}</TableHead>
-                    <TableHead>{t('dashboard.doctor.time')}</TableHead>
-                    <TableHead>{t('dashboard.doctor.status')}</TableHead>
+                    <TableHead>{t('doctor.patientName')}</TableHead>
+                    <TableHead>{t('doctor.time')}</TableHead>
+                    <TableHead>{t('doctor.status')}</TableHead>
                     <TableHead className="text-right">{t('common.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -237,15 +237,15 @@ export default function DoctorAppointmentsPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Upcoming">{t('dashboard.doctor.upcomingConsultations')}</SelectItem>
-                              <SelectItem value="Completed">{t('common.done')}</SelectItem>
-                              <SelectItem value="Cancelled">{t('common.cancel')}</SelectItem>
+                              <SelectItem value="Upcoming">{t('common.upcoming')}</SelectItem>
+                              <SelectItem value="Completed">{t('common.completed')}</SelectItem>
+                              <SelectItem value="Cancelled">{t('common.cancelled')}</SelectItem>
                             </SelectContent>
                           </Select>
                         </TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" onClick={() => openNotesDialog(consult.id, consult.notes)}>
-                            <FileText className="mr-2 h-4 w-4" /> {t('dashboard.doctor.notes')}
+                            <FileText className="mr-2 h-4 w-4" /> {t('doctor.notes')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -253,7 +253,7 @@ export default function DoctorAppointmentsPage() {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                        {t('dashboard.doctor.noInPersonAppointments')}
+                        {t('doctor.noInPersonAppointments')}
                       </TableCell>
                     </TableRow>
                   )}
@@ -268,16 +268,16 @@ export default function DoctorAppointmentsPage() {
       <Dialog open={isNotesDialogOpen} onOpenChange={setIsNotesDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('dashboard.doctor.appointmentNotes')}</DialogTitle>
+            <DialogTitle>{t('doctor.appointmentNotes')}</DialogTitle>
             <DialogDescription>
-              {t('dashboard.doctor.addEditNotes')}
+              {t('doctor.addEditNotes')}
             </DialogDescription>
           </DialogHeader>
           <Textarea
             value={noteText}
             onChange={(e) => setNoteText(e.target.value)}
             rows={6}
-            placeholder={t('dashboard.doctor.typeNotesHere')}
+            placeholder={t('doctor.typeNotesHere')}
           />
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsNotesDialogOpen(false)}>

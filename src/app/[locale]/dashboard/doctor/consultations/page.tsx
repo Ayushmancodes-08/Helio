@@ -64,28 +64,28 @@ export default function DoctorConsultationsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-headline text-3xl font-bold">
-          {t('dashboard.doctor.manageConsultations')}
+          {t('doctor.manageConsultations')}
         </h1>
         <p className="text-muted-foreground">
-          {t('dashboard.doctor.joinUpcomingCalls')}
+          {t('doctor.joinUpcomingCalls')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.doctor.upcomingConsultations')}</CardTitle>
+          <CardTitle>{t('doctor.upcomingConsultations')}</CardTitle>
           <CardDescription>
-            {t('dashboard.doctor.videoCallsScheduledToday')}
+            {t('doctor.videoCallsScheduledToday')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('dashboard.doctor.patientName')}</TableHead>
-                <TableHead>{t('dashboard.doctor.time')}</TableHead>
-                <TableHead>{t('dashboard.doctor.status')}</TableHead>
-                <TableHead className="text-right">{t('dashboard.doctor.action')}</TableHead>
+                <TableHead>{t('doctor.patientName')}</TableHead>
+                <TableHead>{t('doctor.time')}</TableHead>
+                <TableHead>{t('doctor.status')}</TableHead>
+                <TableHead className="text-right">{t('doctor.action')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -99,13 +99,13 @@ export default function DoctorConsultationsPage() {
                       {consult.appointment_time || formatDate(new Date(consult.appointment_date), 'short')}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="default">{t('dashboard.doctor.upcomingConsultations')}</Badge>
+                      <Badge variant="default">{t('common.upcoming')}</Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <Link href={`/dashboard/doctor/video-consultation?appointmentId=${consult.id}`} passHref>
                         <Button variant="outline" size="sm">
                           <Video className="mr-2 h-4 w-4" />
-                          {t('dashboard.doctor.startCall')}
+                          {t('doctor.startCall')}
                         </Button>
                       </Link>
                     </TableCell>
@@ -114,7 +114,7 @@ export default function DoctorConsultationsPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                    {t('dashboard.doctor.noUpcomingConsultations')}
+                    {t('doctor.noUpcomingConsultations')}
                   </TableCell>
                 </TableRow>
               )}
@@ -125,19 +125,19 @@ export default function DoctorConsultationsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.doctor.pastConsultations')}</CardTitle>
+          <CardTitle>{t('doctor.pastConsultations')}</CardTitle>
           <CardDescription>
-            {t('dashboard.doctor.completedCancelledConsultations')}
+            {t('doctor.completedCancelledConsultations')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t('dashboard.doctor.patientName')}</TableHead>
-                <TableHead>{t('dashboard.doctor.date')}</TableHead>
-                <TableHead>{t('dashboard.doctor.status')}</TableHead>
-                <TableHead className="text-right">{t('dashboard.doctor.action')}</TableHead>
+                <TableHead>{t('doctor.patientName')}</TableHead>
+                <TableHead>{t('doctor.date')}</TableHead>
+                <TableHead>{t('doctor.status')}</TableHead>
+                <TableHead className="text-right">{t('doctor.action')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -157,7 +157,7 @@ export default function DoctorConsultationsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="sm">
-                        {t('dashboard.doctor.viewDetails')}
+                        {t('doctor.viewDetails')}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -165,7 +165,7 @@ export default function DoctorConsultationsPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                    {t('dashboard.doctor.noPastConsultations')}
+                    {t('doctor.noPastConsultations')}
                   </TableCell>
                 </TableRow>
               )}

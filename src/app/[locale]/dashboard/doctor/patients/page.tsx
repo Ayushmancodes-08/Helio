@@ -91,10 +91,10 @@ function PatientsPageComponent() {
 
   const filteredPatients = useMemo(() => {
     if (!searchTerm) return myPatients;
-    
+
     // Use language-aware search that works across language variants
     const normalizedSearch = searchTerm.toLowerCase().trim();
-    return myPatients.filter(p => 
+    return myPatients.filter(p =>
       p.name.toLowerCase().includes(normalizedSearch)
     );
   }, [myPatients, searchTerm]);
@@ -111,9 +111,9 @@ function PatientsPageComponent() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="font-headline text-3xl font-bold">{t('dashboard.doctor.myPatients')}</h1>
+          <h1 className="font-headline text-3xl font-bold">{t('doctor.myPatients')}</h1>
           <p className="text-muted-foreground">
-            {t('dashboard.doctor.viewManageRecords', { count: myPatients.length })}
+            {t('doctor.viewManageRecords', { count: myPatients.length })}
           </p>
         </div>
         <div className="relative">
@@ -129,9 +129,9 @@ function PatientsPageComponent() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.doctor.recentPatients')}</CardTitle>
+          <CardTitle>{t('doctor.recentPatients')}</CardTitle>
           <CardDescription>
-            {t('dashboard.doctor.listOfPatients')}
+            {t('doctor.listOfPatients')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -139,9 +139,9 @@ function PatientsPageComponent() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t('common.patient')}</TableHead>
-                <TableHead>{t('dashboard.doctor.lastVisit')}</TableHead>
-                <TableHead>{t('dashboard.doctor.totalVisits')}</TableHead>
-                <TableHead>{t('dashboard.doctor.latestConsultation')}</TableHead>
+                <TableHead>{t('doctor.lastVisit')}</TableHead>
+                <TableHead>{t('doctor.totalVisits')}</TableHead>
+                <TableHead>{t('doctor.latestConsultation')}</TableHead>
                 {/* <TableHead className="text-right">Actions</TableHead> */}
               </TableRow>
             </TableHeader>
@@ -181,7 +181,7 @@ function PatientsPageComponent() {
                     <TableCell className="text-right">
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/dashboard/doctor/patients/${patient.id}`}>
-                          <FileText className="mr-2 h-4 w-4" /> {t('dashboard.doctor.viewRecords')}
+                          <FileText className="mr-2 h-4 w-4" /> {t('doctor.viewRecords')}
                         </Link>
                       </Button>
                     </TableCell>
@@ -191,8 +191,8 @@ function PatientsPageComponent() {
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
                     {appointments.length === 0
-                      ? t('dashboard.doctor.noPatients')
-                      : t('dashboard.doctor.noPatientMatch')}
+                      ? t('doctor.noPatients')
+                      : t('doctor.noPatientMatch')}
                   </TableCell>
                 </TableRow>
               )}

@@ -124,8 +124,8 @@ export function DoctorSidebar() {
               </>
             ) : (
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
-                <p className="text-[10px] text-muted-foreground truncate">Please log in as Doctor</p>
+                <p className="text-xs font-bold text-destructive truncate">{tCommon('common.sessionMismatch')}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{tCommon('common.pleaseLoginAs', { role: tCommon('common.roles.doctor') })}</p>
               </div>
             )}
             <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>

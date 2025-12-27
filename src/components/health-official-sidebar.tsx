@@ -106,8 +106,8 @@ export function HealthOfficialSidebar() {
               <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'HO'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="truncate font-semibold text-sm">{profile?.full_name || 'Health Official'}</p>
-              <p className="truncate text-xs text-muted-foreground">Health Official</p>
+              <p className="truncate font-semibold text-sm">{profile?.full_name || tCommon('common.roles.healthOfficial')}</p>
+              <p className="truncate text-xs text-muted-foreground">{tCommon('common.roles.healthOfficial')}</p>
             </div>
             <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />

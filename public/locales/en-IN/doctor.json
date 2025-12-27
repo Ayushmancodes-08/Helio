@@ -76,5 +76,19 @@
     "prescriptionDetails": "Prescription Details",
     "viewingPrescriptionFor": "Viewing prescription for {patient} issued on {date}.",
     "frequency": "Frequency/Instructions",
-    "noPrescriptionsFound": "No prescriptions found."
+    "noPrescriptionsFound": "No prescriptions found.",
+    "videoConsultation": {
+        "loadingConsultation": "Loading video consultation...",
+        "noAppointmentSelected": "No Appointment Selected",
+        "pleaseSelectAppointment": "Please select an appointment to start a video consultation.",
+        "backToAppointments": "Back to Appointments",
+        "callError": "Call Error",
+        "failedToEndCall": "Failed to End Call",
+        "retryAttempt": "Retry attempt {count}.",
+        "retry": "Retry",
+        "waitingForPatient": "Waiting for {patientName}...",
+        "callWillStart": "The call will start automatically when the patient joins",
+        "endCall": "End Call",
+        "patientJoined": "{patientName} has joined the call"
+    }
 }
