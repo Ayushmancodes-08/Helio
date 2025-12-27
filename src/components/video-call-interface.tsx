@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Mic, MicOff, Video, VideoOff, PhoneOff } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, PhoneOff, Maximize2, Minimize2, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface VideoCallInterfaceProps {
   client: any | null;
@@ -40,13 +40,40 @@ export function VideoCallInterface({
 }: VideoCallInterfaceProps) {
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [connectionQuality, setConnectionQuality] = useState<'excellent' | 'good' | 'poor'>('good');
 
-  // Play local video
+  // Auto-hide controls after 3 seconds of no mouse movement
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    const handleMouseMove = () => {
+      setShowControls(true);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setShowControls(false), 3000);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // Play local video with optimization
   useEffect(() => {
     if (localVideoTrack && localVideoRef.current && isCameraOn) {
       try {
+        // Optimize video settings for better performance
+        localVideoTrack.setEncoderConfiguration({
+          width: 1280,
+          height: 720,
+          frameRate: 30,
+          bitrateMin: 600,
+          bitrateMax: 1000,
+        });
         localVideoTrack.play(localVideoRef.current);
-        console.log('Local video playing');
+        console.log('Local video playing with optimizations');
       } catch (err) {
         console.error('Error playing local video:', err);
       }
@@ -60,18 +87,19 @@ export function VideoCallInterface({
     }
   }, [localVideoTrack, isCameraOn]);
 
-  // Play remote video
+  // Play remote video with optimization
   useEffect(() => {
     if (remoteUsers.length > 0 && remoteVideoRef.current) {
       const remoteUser = remoteUsers[0];
-      console.log('Attempting to play remote video for user:', remoteUser.uid, 'Has video track:', !!remoteUser.videoTrack);
-      
+
       if (remoteUser.videoTrack) {
         try {
           remoteUser.videoTrack.play(remoteVideoRef.current);
-          console.log('✓ Remote video playing for user:', remoteUser.uid);
+          console.log('✓ Remote video playing');
+          setConnectionQuality('excellent');
         } catch (err) {
           console.error('Error playing remote video:', err);
+          setConnectionQuality('poor');
         }
         return () => {
           try {
@@ -80,94 +108,191 @@ export function VideoCallInterface({
             console.error('Error stopping remote video:', err);
           }
         };
-      } else {
-        console.warn('⚠ Remote user has no video track yet');
       }
     }
   }, [remoteUsers]);
 
-  // Determine local and remote names based on role
+  // Monitor connection quality
+  useEffect(() => {
+    if (client && remoteUsers.length > 0) {
+      const interval = setInterval(() => {
+        const stats = client.getRTCStats();
+        if (stats) {
+          // Simple quality estimation based on packet loss
+          const quality = stats.RecvPacketLossRate < 1 ? 'excellent' :
+            stats.RecvPacketLossRate < 5 ? 'good' : 'poor';
+          setConnectionQuality(quality);
+        }
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [client, remoteUsers]);
+
   const localName = isDoctor ? doctorName : patientName;
   const remoteName = isDoctor ? patientName : doctorName;
 
+  const getQualityColor = () => {
+    switch (connectionQuality) {
+      case 'excellent': return 'bg-green-500';
+      case 'good': return 'bg-yellow-500';
+      case 'poor': return 'bg-red-500';
+    }
+  };
+
   return (
-    <Card className="w-full">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {/* Local Video (You) */}
-          <div className="relative bg-slate-900 rounded-lg overflow-hidden aspect-video flex items-center justify-center border-2 border-slate-700">
+    <div className={cn(
+      "relative w-full h-screen bg-gradient-to-b from-slate-950 to-slate-900 overflow-hidden",
+      isFullscreen && "fixed inset-0 z-50"
+    )}>
+      {/* Remote Video (Main/Large) */}
+      <div className="relative w-full h-full">
+        {remoteUsers.length > 0 ? (
+          <>
             <div
-              ref={localVideoRef}
-              className="w-full h-full"
-              style={{ transform: 'scaleX(-1)' }}
+              ref={remoteVideoRef}
+              className="w-full h-full object-cover"
+              style={{ filter: 'brightness(1.1)' }}
             />
-            {!isCameraOn && (
-              <div className="absolute inset-0 bg-slate-800 flex items-center justify-center">
-                <p className="text-white text-sm">Camera is off</p>
+
+            {/* Remote user name tag */}
+            <div className="absolute top-6 left-6">
+              <div className="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-lg">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+                      {remoteName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className={cn("absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-slate-900", getQualityColor())} />
+                  </div>
+                  <div className="text-white">
+                    <p className="font-semibold text-sm">{remoteName}</p>
+                    <div className="flex items-center gap-2 text-xs text-white/70">
+                      {remoteUsers[0] && remoteUserStates[remoteUsers[0].uid] && (
+                        <>
+                          {!remoteUserStates[remoteUsers[0].uid].audioOn && <MicOff className="h-3 w-3" />}
+                          {!remoteUserStates[remoteUsers[0].uid].videoOn && <VideoOff className="h-3 w-3" />}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
-            <div className="absolute bottom-3 left-3 bg-black/70 px-3 py-1 rounded text-white text-sm font-medium">
-              You
-              {!isMicOn && <span className="ml-2">🔇</span>}
-              {!isCameraOn && <span className="ml-2">📹</span>}
+            </div>
+
+            {/* Connection quality indicator */}
+            <div className="absolute top-6 right-6">
+              <div className="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <div className={cn("w-2 h-2 rounded-full", getQualityColor())} />
+                  <span className="text-white text-xs font-medium capitalize">{connectionQuality}</span>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            <div className="text-center space-y-4">
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center mx-auto animate-pulse">
+                  <Users className="h-12 w-12 text-blue-400" />
+                </div>
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-28 h-28 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                  </div>
+                )}
+              </div>
+              <div>
+                <p className="text-white text-xl font-semibold mb-1">Waiting for {remoteName}</p>
+                <p className="text-white/60 text-sm">{isLoading ? 'Connecting...' : 'They will join soon'}</p>
+              </div>
             </div>
           </div>
+        )}
+      </div>
 
-          {/* Remote Video (Doctor/Patient) */}
-          <div className="relative bg-slate-900 rounded-lg overflow-hidden aspect-video flex items-center justify-center border-2 border-slate-700">
-            {remoteUsers.length > 0 ? (
-              <>
-                <div ref={remoteVideoRef} className="w-full h-full" />
-                <div className="absolute bottom-3 left-3 bg-black/70 px-3 py-1 rounded text-white text-sm font-medium">
-                  {remoteName}
-                  {remoteUsers[0] && remoteUserStates[remoteUsers[0].uid] && (
-                    <>
-                      {!remoteUserStates[remoteUsers[0].uid].audioOn && <span className="ml-2">🔇</span>}
-                      {!remoteUserStates[remoteUsers[0].uid].videoOn && <span className="ml-2">📹</span>}
-                    </>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="text-center text-slate-400">
-                <p className="mb-2 text-sm">Waiting for {remoteName}...</p>
-                {isLoading && <p className="text-xs">Connecting...</p>}
-              </div>
-            )}
+      {/* Local Video (Picture-in-Picture) */}
+      <div className="absolute bottom-24 right-6 w-64 h-48 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20 bg-slate-800">
+        <div
+          ref={localVideoRef}
+          className="w-full h-full"
+          style={{ transform: 'scaleX(-1)', filter: 'brightness(1.05)' }}
+        />
+        {!isCameraOn && (
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex flex-col items-center justify-center">
+            <VideoOff className="h-10 w-10 text-white/40 mb-2" />
+            <p className="text-white/60 text-sm">Camera Off</p>
+          </div>
+        )}
+        <div className="absolute bottom-3 left-3 right-3">
+          <div className="bg-black/70 backdrop-blur-sm px-3 py-1.5 rounded-lg flex items-center justify-between">
+            <span className="text-white text-xs font-medium">You ({localName.split(' ')[0]})</span>
+            <div className="flex items-center gap-1">
+              {!isMicOn && <MicOff className="h-3 w-3 text-red-400" />}
+              {!isCameraOn && <VideoOff className="h-3 w-3 text-red-400" />}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Controls */}
-        <div className="flex justify-center gap-4">
-          <Button
-            size="icon"
-            variant={isMicOn ? 'secondary' : 'destructive'}
-            onClick={onToggleMic}
-            className="rounded-full h-12 w-12"
-            title={isMicOn ? 'Mute' : 'Unmute'}
-          >
-            {isMicOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
-          </Button>
-          <Button
-            size="icon"
-            variant={isCameraOn ? 'secondary' : 'destructive'}
-            onClick={onToggleCamera}
-            className="rounded-full h-12 w-12"
-            title={isCameraOn ? 'Turn off camera' : 'Turn on camera'}
-          >
-            {isCameraOn ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
-          </Button>
-          <Button
-            size="icon"
-            variant="destructive"
-            onClick={onEndCall}
-            className="rounded-full h-12 w-12"
-            title="End call"
-          >
-            <PhoneOff className="h-5 w-5" />
-          </Button>
+      {/* Modern Control Bar */}
+      <div className={cn(
+        "absolute bottom-0 left-0 right-0 transition-all duration-300 ease-in-out",
+        showControls ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+      )}>
+        <div className="bg-gradient-to-t from-black/80 via-black/60 to-transparent backdrop-blur-xl pt-8 pb-6 px-6">
+          <div className="max-w-2xl mx-auto flex items-center justify-center gap-4">
+            {/* Microphone Control */}
+            <Button
+              size="lg"
+              variant={isMicOn ? 'secondary' : 'destructive'}
+              onClick={onToggleMic}
+              className={cn(
+                "rounded-full h-14 w-14 shadow-lg transition-all hover:scale-110",
+                isMicOn ? "bg-white/20 hover:bg-white/30" : "bg-red-500 hover:bg-red-600"
+              )}
+              title={isMicOn ? 'Mute' : 'Unmute'}
+            >
+              {isMicOn ? <Mic className="h-6 w-6 text-white" /> : <MicOff className="h-6 w-6" />}
+            </Button>
+
+            {/* Camera Control */}
+            <Button
+              size="lg"
+              variant={isCameraOn ? 'secondary' : 'destructive'}
+              onClick={onToggleCamera}
+              className={cn(
+                "rounded-full h-14 w-14 shadow-lg transition-all hover:scale-110",
+                isCameraOn ? "bg-white/20 hover:bg-white/30" : "bg-red-500 hover:bg-red-600"
+              )}
+              title={isCameraOn ? 'Turn off camera' : 'Turn on camera'}
+            >
+              {isCameraOn ? <Video className="h-6 w-6 text-white" /> : <VideoOff className="h-6 w-6" />}
+            </Button>
+
+            {/* End Call */}
+            <Button
+              size="lg"
+              onClick={onEndCall}
+              className="rounded-full h-16 w-16 bg-red-600 hover:bg-red-700 shadow-xl transition-all hover:scale-110"
+              title="End call"
+            >
+              <PhoneOff className="h-7 w-7" />
+            </Button>
+
+            {/* Fullscreen Toggle */}
+            <Button
+              size="lg"
+              variant="secondary"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 shadow-lg transition-all hover:scale-110"
+              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+            >
+              {isFullscreen ? <Minimize2 className="h-6 w-6 text-white" /> : <Maximize2 className="h-6 w-6 text-white" />}
+            </Button>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
