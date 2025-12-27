@@ -27,16 +27,16 @@ export default function PatientVideoConsultationPage() {
   const channelName = appointmentId ? `consultation-${appointmentId}` : '';
   const uid = profile?.id ? parseInt(profile.id.replace(/\D/g, '').slice(0, 10)) || Math.random() * 1000000 : 0;
 
-  const { 
-    remoteUsers, 
+  const {
+    remoteUsers,
     remoteUserStates,
-    isJoined, 
-    isMicOn, 
-    isCameraOn, 
-    error, 
+    isJoined,
+    isMicOn,
+    isCameraOn,
+    error,
     loading,
-    toggleMic, 
-    toggleCamera, 
+    toggleMic,
+    toggleCamera,
     leaveCall,
     client,
     localVideoTrack,
@@ -125,7 +125,7 @@ export default function PatientVideoConsultationPage() {
               </ul>
             </div>
             {showRetry && (
-              <Button 
+              <Button
                 onClick={handleRetry}
                 variant="outline"
                 size="sm"
