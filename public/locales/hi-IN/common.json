@@ -10,6 +10,7 @@
   "search": "खोजें",
   "filter": "फ़िल्टर",
   "action": "कार्रवाई",
+  "continue": "जारी रखें",
   "noResultsFound": "\"{query}\" के लिए कोई परिणाम नहीं मिला",
   "searchResultsFor": "\"{query}\" के लिए खोज परिणाम",
   "navigation": {

@@ -10,6 +10,7 @@
     "search": "Search",
     "filter": "Filter",
     "action": "Action",
+    "continue": "Continue",
     "noResultsFound": "No results found for \"{query}\"",
     "searchResultsFor": "Search Results for \"{query}\"",
     "navigation": {

@@ -51,15 +51,15 @@ export default function PharmacyStockPage() {
 
   useEffect(() => {
     try {
-      // Only load pharmacy location from localStorage
+      // Set predefined pharmacy location: Maa Mangala Medical Store near PMEC
       const storedLocation = localStorage.getItem(PHARMACY_LOCATION_KEY);
       if (storedLocation) {
         setPharmacyLocation(JSON.parse(storedLocation));
       } else {
-        // Set a default pharmacy location if none exists
+        // Default pharmacy location
         setPharmacyLocation({
-          name: 'Government Health Center',
-          address: 'Main Road, District Healthcare Centre, India'
+          name: 'Maa Mangala Medical Store',
+          address: 'Maa Mangala Medical Store, In front of PMEC, Berhampur, Odisha, India'
         });
       }
     } catch (error) {
@@ -220,9 +220,9 @@ export default function PharmacyStockPage() {
                           className="mt-3"
                           size="sm"
                           onClick={() => {
-                            // Open Google Maps with directions from current location
+                            // Open Google Maps with directions from PMEC to pharmacy (blue route line)
                             window.open(
-                              `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(searchResults[0].address)}&travelmode=driving`,
+                              `https://www.google.com/maps/dir/PMEC+Berhampur,+Odisha/${encodeURIComponent(searchResults[0].address)}`,
                               '_blank'
                             );
                           }}
