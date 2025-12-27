@@ -14,6 +14,7 @@ import { Logo } from '@/components/icons';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useLanguage } from '@/hooks/useLanguage';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 export default function PatientLoginPage() {
   const [phone, setPhone] = useState('');
@@ -107,6 +108,9 @@ export default function PatientLoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-secondary">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher variant="homepage" />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <Link href={`/${locale}`} className="flex items-center justify-center gap-2 mb-4">

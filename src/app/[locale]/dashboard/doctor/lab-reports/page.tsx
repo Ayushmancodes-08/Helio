@@ -44,6 +44,7 @@ import { Upload, Download, FileSearch, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppointments } from '@/hooks/useAppointments';
 import { useLabReports } from '@/hooks/useLabReports';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const labReportSchema = z.object({
   patientId: z.string().min(1, 'Please select a patient.'),
@@ -62,6 +63,7 @@ export default function LabReportsPage() {
   const { profile } = useAuth();
   const { appointments } = useAppointments(); // To get patient list
   const { labReports, createLabReport, loading: reportsLoading } = useLabReports();
+  const { t } = useLanguage();
 
   // Derive unique patients from appointments
   const myPatients = useMemo(() => {
@@ -192,14 +194,14 @@ export default function LabReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Manage Lab Reports</h1>
-        <p className="text-muted-foreground">Upload new reports and view patient history.</p>
+        <h1 className="font-headline text-3xl font-bold">{t('doctor.manageLabReports')}</h1>
+        <p className="text-muted-foreground">{t('doctor.uploadNewReportsViewHistory')}</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Upload New Lab Report</CardTitle>
-          <CardDescription>Select a patient and the report file to upload.</CardDescription>
+          <CardTitle>{t('doctor.uploadNewLabReport')}</CardTitle>
+          <CardDescription>{t('doctor.selectPatientAndReportFile')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -210,11 +212,11 @@ export default function LabReportsPage() {
                   name="patientId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Patient</FormLabel>
+                      <FormLabel>{t('common.patient')}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a patient" />
+                            <SelectValue placeholder={t('common.select') + ' a patient'} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -226,7 +228,7 @@ export default function LabReportsPage() {
                             ))
                           ) : (
                             <div className="p-2 text-sm text-muted-foreground">
-                              No patients found.
+                              {t('common.noPatients')}
                             </div>
                           )}
                         </SelectContent>
@@ -240,9 +242,9 @@ export default function LabReportsPage() {
                   name="reportName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Report Name</FormLabel>
+                      <FormLabel>{t('doctor.reportName')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Complete Blood Count" {...field} />
+                        <Input placeholder={t('doctor.reportNamePlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -253,7 +255,7 @@ export default function LabReportsPage() {
                   name="reportFile"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Report File</FormLabel>
+                      <FormLabel>{t('doctor.reportFile')}</FormLabel>
                       <FormControl>
                         <Input
                           id="reportFile"
@@ -269,7 +271,7 @@ export default function LabReportsPage() {
               <Button type="submit" disabled={reportsLoading}>
                 {reportsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <Upload className="mr-2 h-4 w-4" />
-                Upload Report
+                {t('doctor.uploadReport')}
               </Button>
             </form>
           </Form>
@@ -280,8 +282,8 @@ export default function LabReportsPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <CardTitle>Recent Lab Reports</CardTitle>
-              <CardDescription>A list of the most recently uploaded reports.</CardDescription>
+              <CardTitle>{t('doctor.recentLabReports')}</CardTitle>
+              <CardDescription>{t('doctor.listOfRecentlyUploadedReports')}</CardDescription>
             </div>
             <div className="relative">
               <FileSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -303,11 +305,11 @@ export default function LabReportsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Patient</TableHead>
-                  <TableHead>Report Name</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
+                  <TableHead>{t('common.patient')}</TableHead>
+                  <TableHead>{t('doctor.reportName')}</TableHead>
+                  <TableHead>{t('doctor.date')}</TableHead>
+                  <TableHead>{t('doctor.status')}</TableHead>
+                  <TableHead className="text-right">{t('common.action')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -317,11 +319,11 @@ export default function LabReportsPage() {
                     <TableCell>{report.report_name}</TableCell>
                     <TableCell>{format(new Date(report.report_date), 'PPP')}</TableCell>
                     <TableCell>
-                      <Badge>Completed</Badge>
+                      <Badge>{t('common.completed')}</Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleDownload(report)}>
-                        <Download className="mr-2 h-4 w-4" /> Download
+                        <Download className="mr-2 h-4 w-4" /> {t('common.download')}
                       </Button>
                     </TableCell>
                   </TableRow>

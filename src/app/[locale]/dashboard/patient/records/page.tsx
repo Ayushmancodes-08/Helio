@@ -30,6 +30,7 @@ import { useAppointments } from '@/hooks/useAppointments';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useLabReports } from '@/hooks/useLabReports';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslations } from 'next-intl';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -40,6 +41,8 @@ export default function HealthRecordsPage() {
   const { prescriptions, loading: prescriptionsLoading } = usePrescriptions();
   const { labReports, loading: reportsLoading } = useLabReports();
   const { formatDate, formatCurrency } = useLanguage();
+  const t = useTranslations('patient');
+  const tCommon = useTranslations('common');
 
   // Filter completed or cancelled appointments (consultations)
   const consultations = appointments.filter(
@@ -100,9 +103,9 @@ export default function HealthRecordsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Health Records</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('healthRecords')}</h1>
         <p className="text-muted-foreground">
-          View your medical history, lab reports, and prescriptions
+          {t('healthRecordsDesc')}
         </p>
       </div>
 
@@ -110,15 +113,15 @@ export default function HealthRecordsPage() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="consultations">
             <Calendar className="mr-2 h-4 w-4" />
-            Consultations
+            {t('consultations')}
           </TabsTrigger>
           <TabsTrigger value="prescriptions">
             <Pill className="mr-2 h-4 w-4" />
-            Prescriptions
+            {t('prescriptions')}
           </TabsTrigger>
           <TabsTrigger value="lab-reports">
             <FileText className="mr-2 h-4 w-4" />
-            Lab Reports
+            {t('labReports')}
           </TabsTrigger>
         </TabsList>
 
@@ -126,35 +129,35 @@ export default function HealthRecordsPage() {
         <TabsContent value="consultations">
           <Card>
             <CardHeader>
-              <CardTitle>Past Consultations</CardTitle>
-              <CardDescription>History of your appointments with doctors</CardDescription>
+              <CardTitle>{t('pastConsultations')}</CardTitle>
+              <CardDescription>{t('pastConsultationsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               {appointmentsLoading ? (
                 <div className="text-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Loading consultations...</p>
+                  <p className="text-muted-foreground">{t('loadingConsultations')}</p>
                 </div>
               ) : consultations.length === 0 ? (
                 <div className="text-center py-12">
                   <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No past consultations found</p>
+                  <p className="text-muted-foreground">{t('noPastConsultations')}</p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Doctor</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Notes</TableHead>
+                      <TableHead>{tCommon('date')}</TableHead>
+                      <TableHead>{tCommon('doctor')}</TableHead>
+                      <TableHead>{t('type')}</TableHead>
+                      <TableHead>{tCommon('status')}</TableHead>
+                      <TableHead>{t('notes')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {consultations.map((consultation) => (
                       <TableRow key={consultation.id}>
-                        <TableCell>{consultation.appointment_date ? formatDate(new Date(consultation.appointment_date), 'long') : 'Date not set'}</TableCell>
+                        <TableCell>{consultation.appointment_date ? formatDate(new Date(consultation.appointment_date), 'long') : t('dateNotSet')}</TableCell>
                         <TableCell>Dr. {consultation.doctor_name}</TableCell>
                         <TableCell>{consultation.consultation_type}</TableCell>
                         <TableCell>
@@ -176,30 +179,30 @@ export default function HealthRecordsPage() {
         <TabsContent value="prescriptions">
           <Card>
             <CardHeader>
-              <CardTitle>Your Prescriptions</CardTitle>
-              <CardDescription>Medications prescribed by your doctors</CardDescription>
+              <CardTitle>{t('yourPrescriptions')}</CardTitle>
+              <CardDescription>{t('yourPrescriptionsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               {prescriptionsLoading ? (
                 <div className="text-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Loading prescriptions...</p>
+                  <p className="text-muted-foreground">{t('loadingPrescriptions')}</p>
                 </div>
               ) : prescriptions.length === 0 ? (
                 <div className="text-center py-12">
                   <Pill className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No prescriptions found</p>
+                  <p className="text-muted-foreground">{t('noPrescriptionsFound')}</p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Medication</TableHead>
-                      <TableHead>Dosage</TableHead>
-                      <TableHead>Doctor</TableHead>
-                      <TableHead>Instructions</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead>{tCommon('date')}</TableHead>
+                      <TableHead>{t('medication')}</TableHead>
+                      <TableHead>{t('dosage')}</TableHead>
+                      <TableHead>{tCommon('doctor')}</TableHead>
+                      <TableHead>{t('instructions')}</TableHead>
+                      <TableHead className="text-right">{tCommon('actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -214,7 +217,7 @@ export default function HealthRecordsPage() {
                         </TableCell>
                         <TableCell className="text-right">
                           <Button variant="outline" size="sm" onClick={() => handleDownloadPDF(prescription)}>
-                            <Download className="mr-2 h-4 w-4" /> Download
+                            <Download className="mr-2 h-4 w-4" /> {tCommon('download')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -230,29 +233,29 @@ export default function HealthRecordsPage() {
         <TabsContent value="lab-reports">
           <Card>
             <CardHeader>
-              <CardTitle>Lab Reports</CardTitle>
-              <CardDescription>Your diagnostic test results</CardDescription>
+              <CardTitle>{t('labReports')}</CardTitle>
+              <CardDescription>{t('labReportsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               {reportsLoading ? (
                 <div className="text-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Loading reports...</p>
+                  <p className="text-muted-foreground">{t('loadingReports')}</p>
                 </div>
               ) : labReports.length === 0 ? (
                 <div className="text-center py-12">
                   <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">No lab reports found</p>
+                  <p className="text-muted-foreground">{t('noLabReportsFound')}</p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Report Name</TableHead>
-                      <TableHead>Doctor</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead>{tCommon('date')}</TableHead>
+                      <TableHead>{t('reportName')}</TableHead>
+                      <TableHead>{tCommon('doctor')}</TableHead>
+                      <TableHead>{tCommon('status')}</TableHead>
+                      <TableHead className="text-right">{tCommon('actions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -273,11 +276,11 @@ export default function HealthRecordsPage() {
                             <Button variant="ghost" size="sm" asChild>
                               <a href={report.file_url} target="_blank" rel="noopener noreferrer">
                                 <Download className="mr-2 h-4 w-4" />
-                                Download
+                                {tCommon('download')}
                               </a>
                             </Button>
                           ) : (
-                            <span className="text-sm text-muted-foreground">Pending</span>
+                            <span className="text-sm text-muted-foreground">{t('pending')}</span>
                           )}
                         </TableCell>
                       </TableRow>

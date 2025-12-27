@@ -3,15 +3,25 @@
     "error": "त्रुटि",
     "success": "सफलता",
     "save": "सहेजें",
+    "saving": "सहेजा जा रहा है...",
     "cancel": "रद्द करें",
     "delete": "हटाएं",
     "edit": "संपादित करें",
     "view": "देखें",
     "search": "खोजें",
     "filter": "फ़िल्टर",
+    "patient": "रोगी",
+    "close": "बंद करें",
+    "select": "चुनें",
+    "noPatients": "कोई रोगी नहीं मिला",
+    "upcoming": "आगामी",
+    "completed": "पूर्ण",
+    "cancelled": "रद्द",
     "action": "कार्रवाई",
     "continue": "जारी रखें",
     "loggingIn": "लॉगिन हो रहा है...",
+    "sessionMismatch": "सत्र बेमेल",
+    "pleaseLoginAs": "इस पृष्ठ तक पहुंचने के लिए कृपया {role} के रूप में लॉगिन करें।",
     "professional": "पेशेवर",
     "tryAgain": "पुनः प्रयास करें",
     "ok": "ठीक है",
@@ -47,11 +57,29 @@
         "hospitalInfrastructure": "अस्पताल बुनियादी ढांचा",
         "hospitalDataEntry": "अस्पताल डेटा प्रविष्टि"
     },
+    "buttons": {
+        "login": "लॉगिन",
+        "signup": "साइन अप",
+        "submit": "जमा करें",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "delete": "हटाएं",
+        "edit": "संपादित करें",
+        "back": "वापस जाएं",
+        "next": "अगला",
+        "previous": "पिछला"
+    },
     "roles": {
         "patient": "मरीज़",
         "doctor": "डॉक्टर",
         "pharmacist": "फार्मासिस्ट",
         "healthOfficial": "स्वास्थ्य अधिकारी",
-        "dataEntryOperator": "डेटा एंट्री ऑपरेटर"
-    }
+        "dataEntryOperator": "डेटा एंट्री ऑपरेटर",
+        "professional": "पेशेवर"
+    },
+    "date": "तारीख",
+    "doctor": "डॉक्टर",
+    "status": "स्थिति",
+    "actions": "कार्रवाई",
+    "download": "डाउनलोड"
 }

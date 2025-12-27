@@ -84,8 +84,10 @@ export function LanguageSwitcher({
   )
 
   const dropdownClasses = cn(
-    'absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50',
+    'absolute right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-[100]',
     'min-w-max max-w-[90vw]',
+    // Position dropdown upward for dashboard (in footer) and downward for homepage
+    variant === 'dashboard' ? 'bottom-full mb-2' : 'top-full mt-2',
     // Better mobile sizing
     variant === 'homepage' ? 'w-56' : 'w-full sm:w-48'
   )
@@ -100,7 +102,7 @@ export function LanguageSwitcher({
     )
 
   return (
-    <div ref={dropdownRef} className="relative inline-block">
+    <div ref={dropdownRef} className="relative inline-block z-50">
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}

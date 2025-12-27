@@ -136,9 +136,9 @@ export default function PharmacistPrescriptionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="font-headline text-3xl font-bold">Manage Prescriptions</h1>
+          <h1 className="font-headline text-3xl font-bold">{t('pharmacist.managePrescriptions')}</h1>
           <p className="text-muted-foreground">
-            View incoming prescriptions from doctors and mark them as filled.
+            {t('pharmacist.viewIncomingPrescriptionsFromDoctors')}
           </p>
         </div>
       </div>
@@ -147,13 +147,13 @@ export default function PharmacistPrescriptionsPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <CardTitle>Prescription Queue</CardTitle>
-              <CardDescription>Live list of patient prescriptions.</CardDescription>
+              <CardTitle>{t('pharmacist.prescriptionQueue')}</CardTitle>
+              <CardDescription>{t('pharmacist.liveListOfPatientPrescriptions')}</CardDescription>
             </div>
             <div className="relative">
               <FileSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search by patient or medication..."
+                placeholder={t('pharmacist.searchByPatientOrMedication')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 md:w-64 lg:w-80"
@@ -170,12 +170,12 @@ export default function PharmacistPrescriptionsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Patient</TableHead>
-                  <TableHead>Doctor</TableHead>
-                  <TableHead>Medication</TableHead>
-                  <TableHead className="hidden sm:table-cell">Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Details</TableHead>
+                  <TableHead>{t('pharmacist.patient')}</TableHead>
+                  <TableHead>{t('pharmacist.doctor')}</TableHead>
+                  <TableHead>{t('pharmacist.medication')}</TableHead>
+                  <TableHead className="hidden sm:table-cell">{t('pharmacist.date')}</TableHead>
+                  <TableHead>{t('pharmacist.status')}</TableHead>
+                  <TableHead className="text-right">{t('pharmacist.details')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -191,12 +191,12 @@ export default function PharmacistPrescriptionsPage() {
                     <TableCell className="hidden sm:table-cell">{format(new Date(presc.issued_date), 'PPP')}</TableCell>
                     <TableCell>
                       <Badge variant={presc.status === 'Filled' ? 'secondary' : 'default'}>
-                        {presc.status || 'Issued'}
+                        {presc.status === 'Filled' ? t('pharmacist.filled') : t('pharmacist.issued')}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => handleViewDetails(presc)}>
-                        View
+                        {t('pharmacist.view')}
                       </Button>
                     </TableCell>
                   </TableRow>

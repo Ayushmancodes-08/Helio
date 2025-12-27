@@ -4,12 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Bell, Loader2 } from 'lucide-react';
 import { useHealthAlerts } from '@/hooks/useHealthAlerts';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
 
 export default function PatientAlertsPage() {
   const { alerts, loading } = useHealthAlerts();
-  const { t } = useLanguage();
+  const t = useTranslations('patient');
+  const tCommon = useTranslations('common');
 
   const getPriorityVariant = (priority: string) => {
     switch (priority) {
@@ -42,10 +43,10 @@ export default function PatientAlertsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-headline text-3xl font-bold">
-          {t('common.healthAlerts') || 'Health Alerts'}
+          {tCommon('navigation.healthAlerts')}
         </h1>
         <p className="text-muted-foreground">
-          View important health alerts and advisories from health officials
+          {t('healthAlertsDesc')}
         </p>
       </div>
 
@@ -54,10 +55,10 @@ export default function PatientAlertsPage() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Bell className="h-5 w-5 text-primary" />
-              <CardTitle>Active Health Alerts</CardTitle>
+              <CardTitle>{t('activeHealthAlerts')}</CardTitle>
             </div>
             <CardDescription>
-              {activeAlerts.length} active alert{activeAlerts.length !== 1 ? 's' : ''} in your region
+              {activeAlerts.length} {t('activeAlertsInRegion', { count: activeAlerts.length })}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -75,7 +76,7 @@ export default function PatientAlertsPage() {
                         </div>
                         <div className="flex flex-col gap-2 items-end">
                           <Badge variant={getPriorityVariant(alert.priority)}>
-                            {alert.priority} Priority
+                            {alert.priority} {t('priority')}
                           </Badge>
                           <Badge variant={getStatusVariant(alert.status)}>
                             {alert.status}
@@ -94,9 +95,9 @@ export default function PatientAlertsPage() {
             ) : (
               <div className="text-center py-12">
                 <Bell className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
-                <h3 className="mt-4 text-lg font-semibold">No Active Alerts</h3>
+                <h3 className="mt-4 text-lg font-semibold">{t('noActiveAlerts')}</h3>
                 <p className="text-muted-foreground mt-2">
-                  There are no active health alerts in your region at this time.
+                  {t('noActiveAlertsDesc')}
                 </p>
               </div>
             )}
@@ -106,8 +107,8 @@ export default function PatientAlertsPage() {
         {alerts.filter((a) => a.status === 'Resolved').length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Resolved Alerts</CardTitle>
-              <CardDescription>Previously active alerts that have been resolved</CardDescription>
+              <CardTitle>{t('resolvedAlerts')}</CardTitle>
+              <CardDescription>{t('resolvedAlertsDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

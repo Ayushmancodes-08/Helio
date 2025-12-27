@@ -1,6 +1,6 @@
 {
     "deoTitle": "Data Entry Operator Dashboard",
-    "welcome": "Welcome, {{name}}",
+    "welcome": "Welcome",
     "dataManagement": "Manage and update regional health data",
     "totalPopulationCovered": "Total Population Covered",
     "acrossAllMonitoredDistricts": "Across all monitored districts",

@@ -36,7 +36,7 @@ const chartConfig = {
 
 export default function PharmacistReportsPage() {
   const { sales, loading } = useSales();
-  const { formatCurrency } = useLanguage();
+  const { formatCurrency, t } = useLanguage();
 
   const totalRevenue = useMemo(() => sales.reduce((sum, t) => sum + t.total_amount, 0), [sales]);
   const totalPrescriptions = sales.length;
@@ -71,42 +71,42 @@ export default function PharmacistReportsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-headline text-3xl font-bold">Sales Reports</h1>
+      <h1 className="font-headline text-3xl font-bold">{t('pharmacist.salesReports')}</h1>
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pharmacist.totalRevenue')}</CardTitle>
             <IndianRupee className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalRevenue)}</div>
             <p className="text-xs text-muted-foreground">
-              From all recorded transactions
+              {t('pharmacist.fromAllRecordedTransactions')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Prescriptions Filled</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pharmacist.prescriptionsFilled')}</CardTitle>
             <Pill className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+{totalPrescriptions}</div>
             <p className="text-xs text-muted-foreground">
-              Total prescriptions recorded
+              {t('pharmacist.totalPrescriptionsRecorded')}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Busiest Day</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('pharmacist.busiestDay')}</CardTitle>
             <CalendarDays className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{busiestDayData.date}</div>
             <p className="text-xs text-muted-foreground">
-              Based on sales volume this week
+              {t('pharmacist.basedOnSalesVolumeThisWeek')}
             </p>
           </CardContent>
         </Card>
@@ -114,9 +114,9 @@ export default function PharmacistReportsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>This Week's Sales</CardTitle>
+          <CardTitle>{t('pharmacist.thisWeeksSales')}</CardTitle>
           <CardDescription>
-            A visual summary of sales activity over the last 7 days.
+            {t('pharmacist.visualSummaryOfSalesActivity')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -149,18 +149,18 @@ export default function PharmacistReportsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+          <CardTitle>{t('pharmacist.recentTransactions')}</CardTitle>
           <CardDescription>
-            A list of the latest sales recorded.
+            {t('pharmacist.listOfLatestSalesRecorded')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Medicine</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>{t('pharmacist.medicine')}</TableHead>
+                <TableHead>{t('pharmacist.date')}</TableHead>
+                <TableHead className="text-right">{t('pharmacist.amount')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

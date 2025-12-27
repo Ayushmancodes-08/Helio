@@ -1,18 +1,80 @@
 'use client';
 
-import { useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { defaultLocale } from '@/config/i18n';
+import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowRight } from 'lucide-react';
+import { Logo } from '@/components/icons';
+import Link from 'next/link';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function SignupPage() {
   const router = useRouter();
   const params = useParams();
-  const locale = params.locale || defaultLocale;
+  const locale = params.locale || 'en-IN';
+  const { t: tCommon } = useLanguage();
+  const t = useTranslations('auth');
+  const [selectedRole, setSelectedRole] = useState('');
 
-  useEffect(() => {
-    // Redirect to patient signup by default
-    router.replace(`/${locale}/signup/patient`);
-  }, [router, locale]);
+  const handleRoleSelection = () => {
+    if (!selectedRole) return;
+    if (selectedRole === 'patient') {
+      router.push(`/${locale}/signup/patient`);
+    } else {
+      router.push(`/${locale}/signup/professional?role=${selectedRole}`);
+    }
+  };
 
-  return null;
+  const roles = [
+    { value: 'patient', label: tCommon('common.roles.patient') || 'Patient' },
+    { value: 'doctor', label: tCommon('common.roles.doctor') || 'Doctor' },
+    { value: 'pharmacist', label: tCommon('common.roles.pharmacist') || 'Pharmacist' },
+  ];
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-secondary">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher variant="homepage" />
+      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <Link href={`/${locale}`} className="flex items-center justify-center gap-2 mb-4">
+            <Logo className="h-8 w-8 text-primary" />
+            <span className="font-bold text-xl">{tCommon('common.app.name') || 'Grameen Swasthya Setu'}</span>
+          </Link>
+          <CardTitle>{t('signup.welcome')}</CardTitle>
+          <CardDescription>{t('signup.chooseRole')}</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <Select onValueChange={setSelectedRole} value={selectedRole}>
+            <SelectTrigger>
+              <SelectValue placeholder={t('signup.chooseRole')} />
+            </SelectTrigger>
+            <SelectContent>
+              {roles.map((role) => (
+                <SelectItem key={role.value} value={role.value} className="capitalize">
+                  {role.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button onClick={handleRoleSelection} disabled={!selectedRole} className="w-full">
+            {tCommon('common.continue')} <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+          <div className="text-center text-sm text-muted-foreground pt-4">
+            {t('haveAccount')}{' '}
+            <Link href={`/${locale}/login`} className="text-primary underline">
+              {t('login.title')}
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }

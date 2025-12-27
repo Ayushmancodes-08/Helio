@@ -97,7 +97,7 @@ export default function PharmacistProfilePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="font-headline text-3xl font-bold">My Profile</h1>
+          <h1 className="font-headline text-3xl font-bold">{t('pharmacist.myProfile')}</h1>
           <p className="text-muted-foreground">Loading your profile...</p>
         </div>
       </div>
@@ -107,15 +107,15 @@ export default function PharmacistProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">My Profile</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('pharmacist.myProfile')}</h1>
         <p className="text-muted-foreground">
-          View and update your professional information.
+          {t('pharmacist.viewAndUpdateProfessionalInfo')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Your Details</CardTitle>
+          <CardTitle>{t('pharmacist.editYourDetails')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -126,7 +126,7 @@ export default function PharmacistProfilePage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>{t('pharmacist.fullName')}</FormLabel>
                       <FormControl><Input placeholder="e.g., Ramesh Kumar" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -137,7 +137,7 @@ export default function PharmacistProfilePage() {
                   name="userId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>User ID</FormLabel>
+                      <FormLabel>{t('pharmacist.userId')}</FormLabel>
                       <FormControl><Input {...field} readOnly className="text-muted-foreground" /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -148,7 +148,7 @@ export default function PharmacistProfilePage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>{t('pharmacist.emailAddress')}</FormLabel>
                       <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -159,7 +159,7 @@ export default function PharmacistProfilePage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>{t('pharmacist.phoneNumber')}</FormLabel>
                       <FormControl><Input type="tel" placeholder="10-digit mobile number" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -170,7 +170,7 @@ export default function PharmacistProfilePage() {
                   name="licenseNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>License/Registration Number</FormLabel>
+                      <FormLabel>{t('pharmacist.licenseRegistrationNumber')}</FormLabel>
                       <FormControl><Input placeholder="Your official license number" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -179,7 +179,7 @@ export default function PharmacistProfilePage() {
               </div>
 
               <Button type="submit" className="w-full md:w-auto" disabled={saving}>
-                <Save className="mr-2 h-4 w-4" /> {saving ? 'Saving...' : 'Save Changes'}
+                <Save className="mr-2 h-4 w-4" /> {saving ? t('common.saving') : t('pharmacist.saveChanges')}
               </Button>
             </form>
           </Form>

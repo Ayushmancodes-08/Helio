@@ -14,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { useTranslations } from 'next-intl';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useInventory } from '@/hooks/useInventory';
 import { filterBySearchQuery, sortByRelevance } from '@/lib/search-utils';
@@ -39,7 +40,8 @@ type PharmacyResult = {
 
 
 export default function PharmacyStockPage() {
-  const { t } = useLanguage();
+  const t = useTranslations('patient');
+  const { t: tCommon } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<PharmacyResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -138,11 +140,11 @@ export default function PharmacyStockPage() {
   const getStockText = (stock: PharmacyResult['stockStatus']) => {
     switch (stock) {
       case 'available':
-        return t('patient.inStock');
+        return t('inStock');
       case 'low':
-        return t('patient.lowStock');
+        return t('lowStock');
       case 'not-available':
-        return t('patient.outOfStock');
+        return t('outOfStock');
       default:
         return 'N/A';
     }
@@ -152,48 +154,48 @@ export default function PharmacyStockPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">{t('patient.pharmacyStock')}</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('pharmacyStock')}</h1>
         <p className="text-muted-foreground">
-          {t('patient.findPharmaciesWithMedicine')}
+          {t('findPharmaciesWithMedicine')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('patient.searchForMedicine')}</CardTitle>
-          <CardDescription>{t('patient.enterMedicineName')}</CardDescription>
+          <CardTitle>{t('searchForMedicine')}</CardTitle>
+          <CardDescription>{t('enterMedicineName')}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSearch} className="flex w-full max-w-lg items-center space-x-2">
             <Input
               type="text"
-              placeholder={t('patient.medicineNamePlaceholder')}
+              placeholder={t('medicineNamePlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-grow"
             />
             <Button type="submit" disabled={isLoading || !pharmacyLocation}>
-              {isLoading ? t('common.loading') : <><Search className="mr-2 h-4 w-4" /> {t('common.search')}</>}
+              {isLoading ? tCommon('common.loading') : <><Search className="mr-2 h-4 w-4" /> {tCommon('common.search')}</>}
             </Button>
           </form>
-          {!pharmacyLocation?.address && <p className="mt-4 text-sm text-destructive">{t('patient.noPharmacyData')}</p>}
+          {!pharmacyLocation?.address && <p className="mt-4 text-sm text-destructive">{t('noPharmacyData')}</p>}
         </CardContent>
       </Card>
 
       {hasSearched && (
         <Card>
           <CardHeader>
-            <CardTitle>{t('common.searchResultsFor', { query: searchQuery })}</CardTitle>
+            <CardTitle>{tCommon('common.searchResultsFor', { query: searchQuery })}</CardTitle>
             <CardDescription>
               {searchResults.length > 0
-                ? t('patient.pharmaciesWithStock')
-                : t('common.noResultsFound', { query: searchQuery })}
+                ? t('pharmaciesWithStock')
+                : tCommon('common.noResultsFound', { query: searchQuery })}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {isLoading ? (
               <div className="flex justify-center items-center h-40">
-                <p>{t('common.loading')}</p>
+                <p>{tCommon('common.loading')}</p>
               </div>
             ) : searchResults.length > 0 ? (
               <>
@@ -239,10 +241,10 @@ export default function PharmacyStockPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{t('patient.pharmacyName')}</TableHead>
-                      <TableHead>{t('patient.stockStatus')}</TableHead>
-                      <TableHead>{t('patient.address')}</TableHead>
-                      <TableHead className="text-right">{t('common.action')}</TableHead>
+                      <TableHead>{t('pharmacyName')}</TableHead>
+                      <TableHead>{t('stockStatus')}</TableHead>
+                      <TableHead>{t('address')}</TableHead>
+                      <TableHead className="text-right">{tCommon('common.action')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -263,7 +265,7 @@ export default function PharmacyStockPage() {
                             onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(result.address)}`, '_blank')}
                           >
                             <Navigation className="mr-2 h-4 w-4" />
-                            {t('common.view')}
+                            {tCommon('common.view')}
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -273,7 +275,7 @@ export default function PharmacyStockPage() {
               </>
             ) : (
               <div className="text-center py-10">
-                <p className="text-muted-foreground">{t('common.noResultsFound', { query: searchQuery })}</p>
+                <p className="text-muted-foreground">{tCommon('common.noResultsFound', { query: searchQuery })}</p>
               </div>
             )}
           </CardContent>

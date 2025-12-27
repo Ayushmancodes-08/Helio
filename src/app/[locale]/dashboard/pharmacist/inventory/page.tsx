@@ -184,13 +184,13 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-headline text-3xl font-bold">Inventory Management</h1>
+      <h1 className="font-headline text-3xl font-bold">{t('pharmacist.inventoryManagement')}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>Add or Update Stock</CardTitle>
+          <CardTitle>{t('pharmacist.addOrUpdateStock')}</CardTitle>
           <CardDescription>
-            Enter a medicine name to add a new entry or update an existing one.
+            {t('pharmacist.enterMedicineNameToAddOrUpdate')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -202,9 +202,9 @@ export default function InventoryPage() {
                   name="medicineName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Medicine Name</FormLabel>
+                      <FormLabel>{t('pharmacist.medicineName')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Paracetamol" {...field} />
+                        <Input placeholder={t('pharmacist.medicineNamePlaceholder')} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -215,7 +215,7 @@ export default function InventoryPage() {
                   name="quantity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Quantity to Add</FormLabel>
+                      <FormLabel>{t('pharmacist.quantityToAdd')}</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="0" {...field} />
                       </FormControl>
@@ -228,20 +228,20 @@ export default function InventoryPage() {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price (₹)</FormLabel>
+                      <FormLabel>{t('pharmacist.price')}</FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" placeholder="0.00" {...field} />
                       </FormControl>
-                      <FormDescription className="text-xs">{existingMedicine ? 'Update current price' : 'Required for new medicine'}</FormDescription>
+                      <FormDescription className="text-xs">{existingMedicine ? t('pharmacist.updateCurrentPrice') : t('pharmacist.priceRequired')}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 {/* Supplier field removed as it's not in DB schema yet, could be added later */}
-                <div className="flex items-end">
+                <div className="flex items-start pt-8">
                   <Button type="submit" disabled={inventoryLoading} className="w-full">
                     {inventoryLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <PlusCircle className="mr-2 h-4 w-4" />}
-                    {existingMedicine ? 'Update Stock' : 'Add New Medicine'}
+                    {existingMedicine ? t('pharmacist.updateStock') : t('pharmacist.addNewMedicine')}
                   </Button>
                 </div>
               </div>
@@ -254,13 +254,13 @@ export default function InventoryPage() {
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <CardTitle>Current Inventory</CardTitle>
-              <CardDescription>A list of all medicines in stock.</CardDescription>
+              <CardTitle>{t('pharmacist.currentInventory')}</CardTitle>
+              <CardDescription>{t('pharmacist.listOfAllMedicinesInStock')}</CardDescription>
             </div>
             <div className="relative">
               <PackageSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search for a medicine..."
+                placeholder={t('pharmacist.searchForMedicine')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 md:w-64 lg:w-80"
@@ -277,12 +277,12 @@ export default function InventoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Medicine</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Price (₹)</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t('pharmacist.medicine')}</TableHead>
+                  <TableHead>{t('pharmacist.quantity')}</TableHead>
+                  <TableHead>{t('pharmacist.price')}</TableHead>
+                  <TableHead>{t('pharmacist.status')}</TableHead>
                   {/* <TableHead className="hidden sm:table-cell">Expiry</TableHead> */}
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-right">{t('pharmacist.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

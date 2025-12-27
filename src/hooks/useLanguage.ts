@@ -52,7 +52,7 @@ export function useLanguage(): LanguageContextType {
   // Date formatting function
   const formatDate = useCallback((date: Date, format: 'short' | 'long' | 'full' = 'short'): string => {
     const config = localeConfig[locale]
-    
+
     try {
       if (format === 'short') {
         return new Intl.DateTimeFormat(locale, config.dateFormat).format(date)
@@ -79,7 +79,7 @@ export function useLanguage(): LanguageContextType {
   // Number formatting function
   const formatNumber = useCallback((num: number): string => {
     const config = localeConfig[locale]
-    
+
     try {
       return new Intl.NumberFormat(locale, config.numberFormat).format(num)
     } catch (error) {
@@ -91,7 +91,7 @@ export function useLanguage(): LanguageContextType {
   // Currency formatting function
   const formatCurrency = useCallback((amount: number): string => {
     const config = localeConfig[locale]
-    
+
     try {
       return new Intl.NumberFormat(locale, config.currencyFormat).format(amount)
     } catch (error) {
@@ -137,9 +137,13 @@ export function useLanguage(): LanguageContextType {
     // Get current pathname without locale
     const pathname = window.location.pathname
     const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/'
-    
-    // Navigate to new locale route
-    router.push(`/${newLocale}${pathWithoutLocale}`)
+
+    // Preserve query parameters and hash
+    const search = window.location.search
+    const hash = window.location.hash
+
+    // Navigate to new locale route with query params and hash
+    router.push(`/${newLocale}${pathWithoutLocale}${search}${hash}`)
   }, [locale, router])
 
   return {
