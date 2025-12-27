@@ -121,3 +121,26 @@ html[lang='en-IN'] body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile-specific utilities */
+@layer utilities {
+  /* Ensure minimum touch target sizes for mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Smooth scrolling for mobile */
+  @media (max-width: 768px) {
+    html {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  
+  /* Prevent horizontal overflow on mobile */
+  .no-overflow-mobile {
+    @media (max-width: 768px) {
+      overflow-x: hidden;
+    }
+  }
+}

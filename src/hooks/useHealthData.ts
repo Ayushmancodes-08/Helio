@@ -101,6 +101,30 @@ export function useDistricts() {
         fetchDistricts()
     }, [])
 
+    // Real-time subscription for districts
+    useEffect(() => {
+        const channel = supabase
+            .channel('districts_realtime')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'districts' },
+                (payload) => {
+                    console.log('[Districts] Real-time change:', payload);
+                    // Refetch to maintain proper ordering
+                    fetchDistricts();
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[Districts] Real-time subscription active');
+                }
+            });
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
+
     return {
         districts,
         loading,
@@ -197,6 +221,30 @@ export function useHospitals(districtId?: string) {
     useEffect(() => {
         fetchHospitals()
     }, [districtId])
+
+    // Real-time subscription for hospitals
+    useEffect(() => {
+        const channel = supabase
+            .channel('hospitals_realtime')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'hospitals' },
+                (payload) => {
+                    console.log('[Hospitals] Real-time change:', payload);
+                    // Refetch to maintain proper filtering and ordering
+                    fetchHospitals();
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[Hospitals] Real-time subscription active');
+                }
+            });
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [districtId]); // Re-subscribe if districtId filter changes
 
     return {
         hospitals,

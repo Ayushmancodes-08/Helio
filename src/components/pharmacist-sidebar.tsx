@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { Home, LogOut, Package, User, ReceiptText, LineChart } from 'lucide-react';
+import { Home, LogOut, Package, User, ReceiptText, LineChart, FileText, BarChart } from 'lucide-react';
 import { Logo } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -32,25 +32,25 @@ export function PharmacistSidebar() {
   );
 
   const menuItems = [
-    { href: `/${locale}/dashboard/pharmacist`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    { href: `/${locale}/dashboard/pharmacist`, label: tCommon('common.navigation.dashboard'), icon: Home, exact: true },
     {
       href: `/${locale}/dashboard/pharmacist/inventory`,
-      label: tCommon('navigation.inventory'),
+      label: tCommon('common.navigation.inventory'),
       icon: Package,
     },
     {
       href: `/${locale}/dashboard/pharmacist/prescriptions`,
-      label: tCommon('navigation.prescriptions'),
+      label: tCommon('common.navigation.prescriptions'),
       icon: FileText,
     },
     {
       href: `/${locale}/dashboard/pharmacist/reports`,
-      label: tCommon('navigation.reports'),
+      label: tCommon('common.navigation.reports'),
       icon: BarChart,
     },
     {
       href: `/${locale}/dashboard/pharmacist/profile`,
-      label: tCommon('navigation.profile'),
+      label: tCommon('common.navigation.profile'),
       icon: User,
     },
   ];
@@ -86,12 +86,12 @@ export function PharmacistSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex flex-col gap-3 p-2">
+        <div className="flex flex-col gap-2 p-2">
           <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 min-h-[52px]">
             {profile?.role === 'pharmacist' ? (
               <>
-                <Avatar className="h-10 w-10">
+                <Avatar className="h-10 w-10 shrink-0">
                   {pharmacistAvatar && (
                     <AvatarImage
                       src={profile?.photo || pharmacistAvatar.imageUrl}
@@ -101,19 +101,19 @@ export function PharmacistSidebar() {
                   )}
                   <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'P'}</AvatarFallback>
                 </Avatar>
-                <div className="overflow-hidden">
-                  <p className="truncate font-semibold">{profile?.full_name || 'Pharmacist'}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="truncate font-semibold text-sm">{profile?.full_name || 'Pharmacist'}</p>
                   <p className="truncate text-xs text-muted-foreground">Pharmacist</p>
                 </div>
               </>
             ) : (
-              <div className="overflow-hidden w-full">
+              <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
                 <p className="text-[10px] text-muted-foreground truncate">Please log in as Pharmacist</p>
               </div>
             )}
-            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-              <LogOut />
+            <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>

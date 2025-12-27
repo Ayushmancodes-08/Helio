@@ -42,31 +42,31 @@ export function DoctorSidebar() {
   const locale = pathname?.split('/')[1] || 'en-IN';
 
   const menuItems = [
-    { href: `/${locale}/dashboard/doctor`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    { href: `/${locale}/dashboard/doctor`, label: tCommon('common.navigation.dashboard'), icon: Home, exact: true },
     {
       href: `/${locale}/dashboard/doctor/appointments`,
-      label: tCommon('navigation.appointments'),
+      label: tCommon('common.navigation.appointments'),
       icon: Calendar,
     },
-    { href: `/${locale}/dashboard/doctor/patients`, label: tCommon('navigation.patients'), icon: Users },
+    { href: `/${locale}/dashboard/doctor/patients`, label: tCommon('common.navigation.patients'), icon: Users },
     {
       href: `/${locale}/dashboard/doctor/consultations`,
-      label: tCommon('navigation.consultations'),
+      label: tCommon('common.navigation.consultations'),
       icon: Video,
     },
     {
       href: `/${locale}/dashboard/doctor/prescriptions`,
-      label: tCommon('navigation.prescriptions'),
+      label: tCommon('common.navigation.prescriptions'),
       icon: FileText,
     },
     {
       href: `/${locale}/dashboard/doctor/lab-reports`,
-      label: tCommon('navigation.labReports'),
+      label: tCommon('common.navigation.labReports'),
       icon: BeakerIcon,
     },
     {
       href: `/${locale}/dashboard/doctor/profile`,
-      label: tCommon('navigation.profile'),
+      label: tCommon('common.navigation.profile'),
       icon: User,
     },
   ];
@@ -102,12 +102,12 @@ export function DoctorSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex flex-col gap-3 p-2">
+        <div className="flex flex-col gap-2 p-2">
           <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 min-h-[52px]">
             {profile?.role === 'doctor' ? (
               <>
-                <Avatar className="h-10 w-10">
+                <Avatar className="h-10 w-10 shrink-0">
                   {doctorAvatar && (
                     <AvatarImage
                       src={profile?.photo || doctorAvatar.imageUrl}
@@ -117,19 +117,19 @@ export function DoctorSidebar() {
                   )}
                   <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'D'}</AvatarFallback>
                 </Avatar>
-                <div className="overflow-hidden">
-                  <p className="truncate font-semibold">{profile?.full_name || 'Doctor'}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="truncate font-semibold text-sm">{profile?.full_name || 'Doctor'}</p>
                   <p className="truncate text-xs text-muted-foreground capitalize">{profile?.specialization || 'Doctor'}</p>
                 </div>
               </>
             ) : (
-              <div className="overflow-hidden w-full">
+              <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
                 <p className="text-[10px] text-muted-foreground truncate">Please log in as Doctor</p>
               </div>
             )}
-            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-              <LogOut />
+            <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -144,13 +144,13 @@ export default function PatientDashboardPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Welcome Section */}
       <div>
-        <h1 className="font-headline text-3xl font-bold">
+        <h1 className="font-headline text-2xl sm:text-3xl font-bold">
           {t('patient.welcomeBack', { name: profile?.full_name || 'Patient' })}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm sm:text-base">
           {t('patient.manageHealth')}
         </p>
       </div>
@@ -234,15 +234,15 @@ export default function PatientDashboardPage() {
             </div>
 
             {countdown && (
-              <div className="p-4 rounded-lg bg-muted">
+              <div className="p-3 sm:p-4 rounded-lg bg-muted">
                 <p className="text-sm font-medium text-center">{countdown}</p>
               </div>
             )}
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               {canJoin && upcomingAppointment.consultation_type === 'Video' && (
                 <Link href={`/${locale}/dashboard/patient/video-consultation?appointmentId=${upcomingAppointment.id}`} className="flex-1">
-                  <Button className="w-full">
+                  <Button className="w-full h-11 sm:h-10">
                     <Video className="mr-2 h-4 w-4" />
                     {t('patient.joinNow')}
                   </Button>
@@ -250,7 +250,7 @@ export default function PatientDashboardPage() {
               )}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className={canJoin ? '' : 'flex-1'}>
+                  <Button variant="outline" className={`h-11 sm:h-10 ${canJoin ? '' : 'flex-1'}`}>
                     {t('patient.cancelAppointment')}
                   </Button>
                 </AlertDialogTrigger>
@@ -277,25 +277,25 @@ export default function PatientDashboardPage() {
           <CardContent className="p-12 text-center">
             <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="font-semibold mb-2">{t('patient.noUpcomingAppointments')}</h3>
-            <p className="text-muted-foreground mb-4">{t('patient.bookAppointment')}</p>
+            <p className="text-muted-foreground mb-4 text-sm sm:text-base">{t('patient.bookAppointment')}</p>
             <Link href={`/${locale}/dashboard/patient/appointments`}>
-              <Button>{t('patient.bookNow')}</Button>
+              <Button className="h-11 sm:h-10">{t('patient.bookNow')}</Button>
             </Link>
           </CardContent>
         </Card>
       )}
 
       {/* Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
             <Calendar className="h-8 w-8 text-primary mb-2" />
-            <CardTitle>{t('patient.bookAppointment')}</CardTitle>
-            <CardDescription>{t('patient.scheduleConsultation')}</CardDescription>
+            <CardTitle className="text-lg">{t('patient.bookAppointment')}</CardTitle>
+            <CardDescription className="text-sm">{t('patient.scheduleConsultation')}</CardDescription>
           </CardHeader>
           <CardFooter>
             <Link href={`/${locale}/dashboard/patient/appointments`} className="w-full">
-              <Button variant="outline" className="w-full">{t('patient.bookNow')}</Button>
+              <Button variant="outline" className="w-full h-11 sm:h-10">{t('patient.bookNow')}</Button>
             </Link>
           </CardFooter>
         </Card>
@@ -303,12 +303,12 @@ export default function PatientDashboardPage() {
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
             <FileText className="h-8 w-8 text-primary mb-2" />
-            <CardTitle>{t('patient.viewRecords')}</CardTitle>
-            <CardDescription>{t('patient.accessRecords')}</CardDescription>
+            <CardTitle className="text-lg">{t('patient.viewRecords')}</CardTitle>
+            <CardDescription className="text-sm">{t('patient.accessRecords')}</CardDescription>
           </CardHeader>
           <CardFooter>
             <Link href={`/${locale}/dashboard/patient/records`} className="w-full">
-              <Button variant="outline" className="w-full">{t('patient.viewRecords')}</Button>
+              <Button variant="outline" className="w-full h-11 sm:h-10">{t('patient.viewRecords')}</Button>
             </Link>
           </CardFooter>
         </Card>
@@ -316,23 +316,23 @@ export default function PatientDashboardPage() {
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
             <Pill className="h-8 w-8 text-primary mb-2" />
-            <CardTitle>{t('patient.pharmacyStock')}</CardTitle>
-            <CardDescription>{t('patient.checkMedicines')}</CardDescription>
+            <CardTitle className="text-lg">{t('patient.pharmacyStock')}</CardTitle>
+            <CardDescription className="text-sm">{t('patient.checkMedicines')}</CardDescription>
           </CardHeader>
           <CardFooter>
             <Link href={`/${locale}/dashboard/patient/pharmacy-stock`} className="w-full">
-              <Button variant="outline" className="w-full">{t('patient.checkStock')}</Button>
+              <Button variant="outline" className="w-full h-11 sm:h-10">{t('patient.checkStock')}</Button>
             </Link>
           </CardFooter>
         </Card>
       </div>
 
       {/* Recent Prescriptions & Reports */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
         {/* Prescriptions */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <Pill className="h-5 w-5" />
               {t('patient.recentPrescriptions')}
             </CardTitle>
@@ -365,7 +365,7 @@ export default function PatientDashboardPage() {
         {/* Lab Reports */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <FileText className="h-5 w-5" />
               {t('patient.recentLabReports')}
             </CardTitle>

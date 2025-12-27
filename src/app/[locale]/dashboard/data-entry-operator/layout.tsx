@@ -11,11 +11,11 @@ export default function DataEntryOperatorDashboardLayout({
     <>
       <DataEntryOperatorSidebar />
       <SidebarInset>
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4">
-          <SidebarTrigger />
-          <h1 className="text-xl font-semibold">Data Entry Dashboard</h1>
+        <header className="sticky top-0 z-10 flex h-14 sm:h-16 items-center gap-3 sm:gap-4 border-b bg-background px-3 sm:px-4">
+          <SidebarTrigger className="shrink-0" />
+          <h1 className="text-lg sm:text-xl font-semibold truncate">Data Entry Dashboard</h1>
         </header>
-        <main className="flex-1 p-4 pt-8 md:p-8">{children}</main>
+        <main className="flex-1 p-3 pt-6 sm:p-4 sm:pt-8 md:p-8">{children}</main>
       </SidebarInset>
     </>
   );

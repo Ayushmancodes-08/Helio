@@ -273,6 +273,32 @@ export function useHealthMetrics() {
         fetchDiseaseReports();
     }, [fetchAggregatedMetrics, fetchDiseaseReports]);
 
+    // Real-time subscription for disease reports
+    useEffect(() => {
+        const channel = supabase
+            .channel('disease_reports_realtime')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'disease_reports' },
+                (payload) => {
+                    console.log('[Disease Reports] Real-time change:', payload);
+                    // Refetch disease reports to update analytics
+                    fetchDiseaseReports();
+                    // Also refetch metrics if hospitals table changed (though this hook doesn't subscribe to hospitals directly)
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[Disease Reports] Real-time subscription active');
+                }
+            });
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
+
+
     return {
         metrics,
         diseaseReports,

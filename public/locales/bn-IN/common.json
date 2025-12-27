@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "গ্রামীণ স্বাস্থ্য সেতু",
-    "description": "আপনার স্বাস্থ্যসেবা সঙ্গী"
+    "description": "আপনার স্বাস্থ্যসেবা সঙ্গী",
+    "search": "অনুসন্ধান"
   },
   "navigation": {
     "dashboard": "Dashboard",

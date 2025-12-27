@@ -1,7 +1,8 @@
 {
   "app": {
     "name": "Grameen Swasthya Setu",
-    "description": "Your healthcare companion"
+    "description": "Your healthcare companion",
+    "search": "శోధించు"
   },
   "navigation": {
     "dashboard": "Dashboard",

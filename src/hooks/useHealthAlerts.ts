@@ -92,6 +92,59 @@ export function useHealthAlerts() {
         fetchAlerts();
     }, [fetchAlerts]);
 
+    // Real-time subscription for live updates
+    useEffect(() => {
+        const channel = supabase
+            .channel('health_alerts_realtime')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'health_alerts' },
+                (payload) => {
+                    console.log('[Health Alerts] New alert received:', payload.new);
+                    setAlerts((prev) => [payload.new as HealthAlert, ...prev]);
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: 'UPDATE', schema: 'public', table: 'health_alerts' },
+                (payload) => {
+                    console.log('[Health Alerts] Alert updated:', payload.new);
+                    setAlerts((prev) =>
+                        prev.map((alert) =>
+                            alert.id === (payload.new as HealthAlert).id
+                                ? (payload.new as HealthAlert)
+                                : alert
+                        )
+                    );
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: 'DELETE', schema: 'public', table: 'health_alerts' },
+                (payload) => {
+                    console.log('[Health Alerts] Alert deleted:', payload.old);
+                    setAlerts((prev) =>
+                        prev.filter((alert) => alert.id !== (payload.old as HealthAlert).id)
+                    );
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[Health Alerts] Real-time subscription active');
+                } else if (status === 'CHANNEL_ERROR') {
+                    console.error('[Health Alerts] Subscription error');
+                } else if (status === 'TIMED_OUT') {
+                    console.warn('[Health Alerts] Subscription timed out');
+                }
+            });
+
+        return () => {
+            console.log('[Health Alerts] Cleaning up real-time subscription');
+            supabase.removeChannel(channel);
+        };
+    }, []);
+
+
     return {
         alerts,
         loading,

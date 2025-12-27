@@ -33,25 +33,25 @@ export function DataEntryOperatorSidebar() {
   const locale = pathname?.split('/')[1] || 'en-IN';
 
   const menuItems = [
-    { href: `/${locale}/dashboard/data-entry-operator`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    { href: `/${locale}/dashboard/data-entry-operator`, label: tCommon('common.navigation.dashboard'), icon: Home, exact: true },
     {
       href: `/${locale}/dashboard/data-entry-operator/districts-hospitals`,
-      label: tCommon('navigation.districtsHospitals'),
+      label: tCommon('common.navigation.districtsHospitals'),
       icon: Building2,
     },
     {
       href: `/${locale}/dashboard/data-entry-operator/hospital-infrastructure`,
-      label: tCommon('navigation.hospitalInfrastructure'),
+      label: tCommon('common.navigation.hospitalInfrastructure'),
       icon: Stethoscope,
     },
     {
       href: `/${locale}/dashboard/data-entry-operator/hospital-data`,
-      label: tCommon('navigation.hospitalDataEntry'),
+      label: tCommon('common.navigation.hospitalDataEntry'),
       icon: FileEdit,
     },
     {
       href: `/${locale}/dashboard/data-entry-operator/profile`,
-      label: tCommon('navigation.profile'),
+      label: tCommon('common.navigation.profile'),
       icon: User,
     },
   ];
@@ -87,10 +87,10 @@ export function DataEntryOperatorSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex flex-col gap-3 p-2">
+        <div className="flex flex-col gap-2 p-2">
           <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
+          <div className="flex items-center gap-2 min-h-[52px]">
+            <Avatar className="h-10 w-10 shrink-0">
               {operatorAvatar && (
                 <AvatarImage
                   src={profile?.photo || operatorAvatar.imageUrl}
@@ -100,12 +100,12 @@ export function DataEntryOperatorSidebar() {
               )}
               <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'DEO'}</AvatarFallback>
             </Avatar>
-            <div className="overflow-hidden">
-              <p className="truncate font-semibold">{profile?.full_name || 'Data Entry Operator'}</p>
+            <div className="flex-1 min-w-0">
+              <p className="truncate font-semibold text-sm">{profile?.full_name || 'Data Entry Operator'}</p>
               <p className="truncate text-xs text-muted-foreground">Data Entry Operator</p>
             </div>
-            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-              <LogOut />
+            <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>

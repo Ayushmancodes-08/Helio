@@ -33,30 +33,30 @@ export function HealthOfficialSidebar() {
   const locale = pathname?.split('/')[1] || 'en-IN';
 
   const menuItems = [
-    { href: `/${locale}/dashboard/health-official`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    { href: `/${locale}/dashboard/health-official`, label: tCommon('common.navigation.dashboard'), icon: Home, exact: true },
     {
       href: `/${locale}/dashboard/health-official/analytics`,
-      label: tCommon('navigation.analytics'),
+      label: tCommon('common.navigation.analytics'),
       icon: BarChart3,
     },
     {
       href: `/${locale}/dashboard/health-official/resources`,
-      label: tCommon('navigation.resources'),
+      label: tCommon('common.navigation.resources'),
       icon: Package,
     },
     {
       href: `/${locale}/dashboard/health-official/reports`,
-      label: tCommon('navigation.reports'),
+      label: tCommon('common.navigation.reports'),
       icon: FileText,
     },
     {
       href: `/${locale}/dashboard/health-official/alerts`,
-      label: tCommon('navigation.healthAlerts'),
+      label: tCommon('common.navigation.healthAlerts'),
       icon: Bell,
     },
     {
       href: `/${locale}/dashboard/health-official/profile`,
-      label: tCommon('navigation.profile'),
+      label: tCommon('common.navigation.profile'),
       icon: User,
     },
   ];
@@ -92,10 +92,10 @@ export function HealthOfficialSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex flex-col gap-3 p-2">
+        <div className="flex flex-col gap-2 p-2">
           <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
+          <div className="flex items-center gap-2 min-h-[52px]">
+            <Avatar className="h-10 w-10 shrink-0">
               {healthOfficialAvatar && (
                 <AvatarImage
                   src={profile?.photo || healthOfficialAvatar.imageUrl}
@@ -105,12 +105,12 @@ export function HealthOfficialSidebar() {
               )}
               <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'HO'}</AvatarFallback>
             </Avatar>
-            <div className="overflow-hidden">
-              <p className="truncate font-semibold">{profile?.full_name || 'Health Official'}</p>
+            <div className="flex-1 min-w-0">
+              <p className="truncate font-semibold text-sm">{profile?.full_name || 'Health Official'}</p>
               <p className="truncate text-xs text-muted-foreground">Health Official</p>
             </div>
-            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-              <LogOut />
+            <Button variant="ghost" size="icon" className="shrink-0" aria-label="Log out" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
             </Button>
           </div>
         </div>

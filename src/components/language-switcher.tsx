@@ -74,6 +74,8 @@ export function LanguageSwitcher({
   const buttonClasses = cn(
     'inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md font-medium transition-all duration-200',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+    // Ensure minimum touch target size on mobile (44px)
+    'min-h-[44px]',
     variant === 'homepage'
       ? 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 focus-visible:ring-blue-500'
       : 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-blue-500',
@@ -83,13 +85,16 @@ export function LanguageSwitcher({
 
   const dropdownClasses = cn(
     'absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50',
-    'min-w-max',
-    variant === 'homepage' ? 'w-56' : 'w-48'
+    'min-w-max max-w-[90vw]',
+    // Better mobile sizing
+    variant === 'homepage' ? 'w-56' : 'w-full sm:w-48'
   )
 
   const optionClasses = (isSelected: boolean) =>
     cn(
       'w-full text-left px-4 py-3 flex items-center gap-3 transition-colors duration-150',
+      // Ensure minimum touch target size on mobile
+      'min-h-[44px]',
       'hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500',
       isSelected ? 'bg-blue-50 text-blue-900 font-semibold' : 'text-gray-700'
     )
