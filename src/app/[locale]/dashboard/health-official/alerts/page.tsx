@@ -148,8 +148,8 @@ export default function AlertsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Public Health Alerts</h1>
-        <p className="text-muted-foreground">Issue new alerts and monitor active advisories.</p>
+        <h1 className="font-headline text-3xl font-bold">{t('healthOfficial.publicHealthAlerts')}</h1>
+        <p className="text-muted-foreground">{t('healthOfficial.issueNewAlertsMonitor')}</p>
       </div>
 
       {loading ? (
@@ -163,8 +163,8 @@ export default function AlertsPage() {
         <>
           <Card>
             <CardHeader>
-              <CardTitle>Issue New Alert</CardTitle>
-              <CardDescription>Create and dispatch a new health advisory to the public and relevant authorities.</CardDescription>
+              <CardTitle>{t('healthOfficial.issueNewAlert')}</CardTitle>
+              <CardDescription>{t('healthOfficial.createAndDispatchNewHealthAdvisory')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -175,9 +175,9 @@ export default function AlertsPage() {
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Alert Title</FormLabel>
+                          <FormLabel>{t('healthOfficial.alertTitle')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., Dengue Outbreak Warning" {...field} />
+                            <Input placeholder={t('healthOfficial.alertTitlePlaceholder')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -189,17 +189,17 @@ export default function AlertsPage() {
                         name="region"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Target Region</FormLabel>
+                            <FormLabel>{t('healthOfficial.targetRegion')}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select a region" />
+                                  <SelectValue placeholder={t('healthOfficial.selectRegion')} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
                                 {regions.map(region => (
                                   <SelectItem key={region} value={region} className="capitalize">
-                                    {region === 'all' ? 'All Regions' : region}
+                                    {region === 'all' ? t('healthOfficial.allRegions') : region}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -213,7 +213,7 @@ export default function AlertsPage() {
                         name="priority"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Priority</FormLabel>
+                            <FormLabel>{t('healthOfficial.priority')}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger>
@@ -236,10 +236,10 @@ export default function AlertsPage() {
                       name="description"
                       render={({ field }) => (
                         <FormItem className="md:col-span-2">
-                          <FormLabel>Description</FormLabel>
+                          <FormLabel>{t('healthOfficial.description')}</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Provide a detailed description of the alert, including recommendations and necessary actions."
+                              placeholder={t('healthOfficial.provideDetailedDescription')}
                               {...field}
                               rows={4}
                             />
@@ -251,7 +251,7 @@ export default function AlertsPage() {
                   </div>
                   <Button type="submit">
                     <Megaphone className="mr-2 h-4 w-4" />
-                    Issue Alert
+                    {t('healthOfficial.issueAlert')}
                   </Button>
                 </form>
               </Form>
@@ -262,13 +262,13 @@ export default function AlertsPage() {
             <CardHeader>
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <CardTitle>Active & Recent Alerts</CardTitle>
-                  <CardDescription>A log of recently issued public health advisories.</CardDescription>
+                  <CardTitle>{t('healthOfficial.activeAndRecentAlerts')}</CardTitle>
+                  <CardDescription>{t('healthOfficial.logOfRecentlyIssuedPublicHealthAdvisories')}</CardDescription>
                 </div>
                 <div className="relative">
                   <FileSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
-                    placeholder="Search by title..."
+                    placeholder={t('healthOfficial.searchByTitle')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-9 md:w-64 lg:w-80"
@@ -280,12 +280,12 @@ export default function AlertsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead className="hidden sm:table-cell">Priority</TableHead>
-                    <TableHead className="hidden md:table-cell">Region</TableHead>
-                    <TableHead className="hidden md:table-cell">Date Issued</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('healthOfficial.alertTitle')}</TableHead>
+                    <TableHead className="hidden sm:table-cell">{t('healthOfficial.priority')}</TableHead>
+                    <TableHead className="hidden md:table-cell">{t('healthOfficial.region')}</TableHead>
+                    <TableHead className="hidden md:table-cell">{t('healthOfficial.dateIssued')}</TableHead>
+                    <TableHead>{t('healthOfficial.status')}</TableHead>
+                    <TableHead className="text-right">{t('healthOfficial.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

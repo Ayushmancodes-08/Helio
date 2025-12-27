@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Save } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 
 const profileSchema = z.object({
@@ -25,6 +26,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 export default function HealthOfficialProfilePage() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -93,8 +95,8 @@ export default function HealthOfficialProfilePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="font-headline text-3xl font-bold">My Profile</h1>
-          <p className="text-muted-foreground">Loading your profile...</p>
+          <h1 className="font-headline text-3xl font-bold">{t('doctor.myProfile')}</h1>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -103,15 +105,15 @@ export default function HealthOfficialProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">My Profile</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('doctor.myProfile')}</h1>
         <p className="text-muted-foreground">
-          View and update your professional information.
+          {t('doctor.viewAndUpdateProfessionalInfo')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Your Details</CardTitle>
+          <CardTitle>{t('doctor.editYourDetails')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -122,7 +124,7 @@ export default function HealthOfficialProfilePage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>{t('doctor.fullName')}</FormLabel>
                       <FormControl><Input placeholder="e.g., Aditi Singh" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -144,7 +146,7 @@ export default function HealthOfficialProfilePage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>{t('doctor.emailAddress')}</FormLabel>
                       <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,7 +157,7 @@ export default function HealthOfficialProfilePage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>{t('doctor.phoneNumber')}</FormLabel>
                       <FormControl><Input type="tel" placeholder="10-digit mobile number" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,7 +166,7 @@ export default function HealthOfficialProfilePage() {
               </div>
 
               <Button type="submit" className="w-full md:w-auto">
-                <Save className="mr-2 h-4 w-4" /> Save Changes
+                <Save className="mr-2 h-4 w-4" /> {t('doctor.saveChanges')}
               </Button>
             </form>
           </Form>

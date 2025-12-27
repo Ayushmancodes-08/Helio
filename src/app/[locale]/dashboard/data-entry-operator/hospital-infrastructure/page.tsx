@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useDistricts, useHospitals } from '@/hooks/useHealthData';
 import { Loader2, Save, Hospital, Ambulance, Users, Activity, Bed, ChevronDown, ChevronUp } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 
 
@@ -125,6 +126,7 @@ export default function HospitalInfrastructurePage() {
     const [hasChanges, setHasChanges] = useState(false);
 
     const { toast } = useToast();
+    const { t } = useLanguage();
     const { districts, loading: districtsLoading } = useDistricts();
     const { hospitals, loading: hospitalsLoading, updateHospital } = useHospitals();
 
@@ -202,7 +204,7 @@ export default function HospitalInfrastructurePage() {
 
         setIsSaving(false);
         if (errorCount === 0) {
-            toast({ title: 'Success', description: `Successfully updated ${successCount} hospitals.` });
+            toast({ title: t('common.success'), description: t('dataEntryOperator.updateInfrastructureSuccess', { name: `${successCount} hospitals` }) });
             setHasChanges(false);
             // Re-sync happens automatically via hook usually, but let's trust useHospitals to update
         } else {
@@ -237,9 +239,9 @@ export default function HospitalInfrastructurePage() {
     return (
         <div className="space-y-6 pb-20">
             <div>
-                <h1 className="font-headline text-3xl font-bold">Manage Hospital Infrastructure</h1>
+                <h1 className="font-headline text-3xl font-bold">{t('dataEntryOperator.manageHospitalInfrastructure')}</h1>
                 <p className="text-muted-foreground">
-                    Update the core health and resource metrics for each hospital. The district totals will be calculated automatically.
+                    {t('dataEntryOperator.updateInfrastructure')}
                 </p>
             </div>
 
@@ -260,12 +262,12 @@ export default function HospitalInfrastructurePage() {
                         {/* Totals Cards Row */}
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                             {[
-                                { label: 'Population', value: totals.population, icon: Users },
-                                { label: 'Occupied Beds', value: totals.occupied_beds, icon: Bed },
-                                { label: 'Total Beds', value: totals.total_beds, icon: Bed },
-                                { label: 'Ambulances', value: totals.ambulances, icon: Ambulance },
-                                { label: 'Doctors', value: totals.doctors, icon: Activity },
-                                { label: 'Nurses', value: totals.nurses, icon: Users },
+                                { label: t('dataEntryOperator.population'), value: totals.population, icon: Users },
+                                { label: t('dataEntryOperator.occupiedBeds'), value: totals.occupied_beds, icon: Bed },
+                                { label: t('dataEntryOperator.totalBeds'), value: totals.total_beds, icon: Bed },
+                                { label: t('dataEntryOperator.ambulances'), value: totals.ambulances, icon: Ambulance },
+                                { label: t('dataEntryOperator.doctors'), value: totals.doctors, icon: Activity },
+                                { label: t('dataEntryOperator.nurses'), value: totals.nurses, icon: Users },
                             ].map((stat, i) => (
                                 <Card key={i} className="bg-white border shadow-sm hover:shadow-md transition-all">
                                     <CardContent className="p-4 flex flex-col items-center justify-center text-center">
@@ -302,9 +304,9 @@ export default function HospitalInfrastructurePage() {
                             className="shadow-xl"
                         >
                             {isSaving ? (
-                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving Changes...</>
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('common.saving')}...</>
                             ) : (
-                                <><Save className="mr-2 h-4 w-4" /> Save All Changes</>
+                                <><Save className="mr-2 h-4 w-4" /> {t('dataEntryOperator.saveAllChanges')}</>
                             )}
                         </Button>
                     </div>

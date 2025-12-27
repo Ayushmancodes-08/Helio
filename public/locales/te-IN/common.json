@@ -17,6 +17,9 @@
   "upcoming": "రాబోయే",
   "completed": "పూర్తయింది",
   "cancelled": "రద్దు చేయబడింది",
+  "high": "అధిక",
+  "medium": "మధ్యస్థ",
+  "low": "తక్కువ",
   "navigation": {
     "dashboard": "డ్యాష్‌బోర్డ్",
     "appointments": "అపాయింట్‌మెంట్‌లు",

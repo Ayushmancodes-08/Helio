@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Plus, Building2, Trash2, Loader2, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useDistricts, useHospitals } from '@/hooks/useHealthData';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function DistrictsHospitalsPage() {
     const [districtName, setDistrictName] = useState('');
@@ -15,12 +16,13 @@ export default function DistrictsHospitalsPage() {
     const [addingHospitalTo, setAddingHospitalTo] = useState<string | null>(null);
 
     const { toast } = useToast();
+    const { t } = useLanguage();
     const { districts, loading: districtsLoading, addDistrict, deleteDistrict } = useDistricts();
     const { hospitals, loading: hospitalsLoading, addHospital, deleteHospital } = useHospitals();
 
     const handleAddDistrict = async () => {
         if (!districtName.trim()) {
-            toast({ variant: 'destructive', title: 'Error', description: 'Please enter a district name' });
+            toast({ variant: 'destructive', title: t('common.error'), description: t('dataEntryOperator.pleaseEnterDistrictName') });
             return;
         }
 
@@ -29,17 +31,17 @@ export default function DistrictsHospitalsPage() {
         setIsAddingDistrict(false);
 
         if (result.success) {
-            toast({ title: 'Success', description: `District "${districtName}" added successfully` });
+            toast({ title: t('common.success'), description: t('dataEntryOperator.districtAddedSuccessfully', { name: districtName }) });
             setDistrictName('');
         } else {
-            toast({ variant: 'destructive', title: 'Error', description: result.error });
+            toast({ variant: 'destructive', title: t('common.error'), description: result.error });
         }
     };
 
     const handleAddHospital = async (districtId: string) => {
         const name = newHospitalNames[districtId]?.trim();
         if (!name) {
-            toast({ variant: 'destructive', title: 'Error', description: 'Please enter a hospital name' });
+            toast({ variant: 'destructive', title: t('common.error'), description: t('dataEntryOperator.pleaseEnterHospitalName') });
             return;
         }
 
@@ -57,36 +59,36 @@ export default function DistrictsHospitalsPage() {
         setAddingHospitalTo(null);
 
         if (result.success) {
-            toast({ title: 'Success', description: `Hospital "${name}" added successfully` });
+            toast({ title: t('common.success'), description: t('dataEntryOperator.hospitalAddedSuccessfully', { name }) });
             setNewHospitalNames(prev => ({ ...prev, [districtId]: '' }));
         } else {
-            toast({ variant: 'destructive', title: 'Error', description: result.error });
+            toast({ variant: 'destructive', title: t('common.error'), description: result.error });
         }
     };
 
     const handleDeleteDistrict = async (id: string, name: string) => {
-        if (!confirm(`Delete district "${name}"? This will also delete all hospitals in this district.`)) {
+        if (!confirm(t('dataEntryOperator.deleteDistrictConfirm', { name }))) {
             return;
         }
 
         const result = await deleteDistrict(id);
         if (result.success) {
-            toast({ title: 'Success', description: `District "${name}" deleted` });
+            toast({ title: t('common.success'), description: t('dataEntryOperator.districtDeleted', { name }) });
         } else {
-            toast({ variant: 'destructive', title: 'Error', description: result.error });
+            toast({ variant: 'destructive', title: t('common.error'), description: result.error });
         }
     };
 
     const handleDeleteHospital = async (id: string, name: string) => {
-        if (!confirm(`Delete hospital "${name}"?`)) {
+        if (!confirm(t('dataEntryOperator.deleteHospitalConfirm', { name }))) {
             return;
         }
 
         const result = await deleteHospital(id);
         if (result.success) {
-            toast({ title: 'Success', description: `Hospital "${name}" deleted` });
+            toast({ title: t('common.success'), description: t('dataEntryOperator.hospitalDeleted', { name }) });
         } else {
-            toast({ variant: 'destructive', title: 'Error', description: result.error });
+            toast({ variant: 'destructive', title: t('common.error'), description: result.error });
         }
     };
 
@@ -97,25 +99,25 @@ export default function DistrictsHospitalsPage() {
     return (
         <div className="space-y-6 pb-20">
             <div>
-                <h1 className="font-headline text-3xl font-bold">Manage Districts & Hospitals</h1>
+                <h1 className="font-headline text-3xl font-bold">{t('dataEntryOperator.manageDistrictsHospitals')}</h1>
                 <p className="text-muted-foreground">
-                    Step 1: Add districts. Step 2: Add hospitals to those districts. Step 3: Go to the{' '}
-                    <span className="text-primary cursor-pointer hover:underline">Hospital Data Entry</span> page to add cases.
+                    {t('dataEntryOperator.step1AddDistricts')}{' '}
+                    <span className="text-primary cursor-pointer hover:underline">{t('dataEntryOperator.hospitalDataEntry')}</span> {t('dataEntryOperator.pageToAddCases')}
                 </p>
             </div>
 
             {/* Add District Section */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Add New District</CardTitle>
+                    <CardTitle>{t('dataEntryOperator.addNewDistrict')}</CardTitle>
                     <CardDescription>
-                        Enter the name of a new district to start adding hospitals to it.
+                        {t('dataEntryOperator.enterDistrictName')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex gap-4">
                         <Input
-                            placeholder="e.g., Lucknow"
+                            placeholder={t('dataEntryOperator.districtNamePlaceholder')}
                             value={districtName}
                             onChange={(e) => setDistrictName(e.target.value)}
                             className="max-w-sm bg-muted/30"
@@ -127,9 +129,9 @@ export default function DistrictsHospitalsPage() {
                             className="bg-primary hover:bg-primary/90"
                         >
                             {isAddingDistrict ? (
-                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...</>
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('dataEntryOperator.adding')}</>
                             ) : (
-                                <><Plus className="mr-2 h-4 w-4" /> Add District</>
+                                <><Plus className="mr-2 h-4 w-4" /> {t('dataEntryOperator.addDistrict')}</>
                             )}
                         </Button>
                     </div>
@@ -138,10 +140,10 @@ export default function DistrictsHospitalsPage() {
 
             {/* District Cards */}
             {districtsLoading ? (
-                <div className="text-center py-8 text-muted-foreground">Loading districts...</div>
+                <div className="text-center py-8 text-muted-foreground">{t('dataEntryOperator.loadingDistricts')}</div>
             ) : districts.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                    No districts added yet. Add your first district above.
+                    {t('dataEntryOperator.noDistrictsYet')}
                 </div>
             ) : (
                 <div className="space-y-4">
@@ -153,7 +155,7 @@ export default function DistrictsHospitalsPage() {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <CardTitle>{district.name}</CardTitle>
-                                            <CardDescription>Manage hospitals for this district.</CardDescription>
+                                            <CardDescription>{t('dataEntryOperator.manageHospitalsForDistrict')}</CardDescription>
                                         </div>
                                         <Button
                                             variant="ghost"
@@ -191,14 +193,14 @@ export default function DistrictsHospitalsPage() {
                                         </div>
                                     ) : (
                                         <div className="text-sm text-muted-foreground italic py-2">
-                                            No hospitals added for this district yet.
+                                            {t('dataEntryOperator.noHospitalsForDistrict')}
                                         </div>
                                     )}
 
                                     {/* Add Hospital Input */}
                                     <div className="flex gap-4 pt-2">
                                         <Input
-                                            placeholder="New Hospital Name"
+                                            placeholder={t('dataEntryOperator.newHospitalName')}
                                             value={newHospitalNames[district.id] || ''}
                                             onChange={(e) => setNewHospitalNames(prev => ({ ...prev, [district.id]: e.target.value }))}
                                             className="bg-muted/30"
@@ -213,9 +215,9 @@ export default function DistrictsHospitalsPage() {
                                             className="shrink-0"
                                         >
                                             {addingHospitalTo === district.id ? (
-                                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...</>
+                                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('dataEntryOperator.adding')}</>
                                             ) : (
-                                                <><Plus className="mr-2 h-4 w-4" /> Add Hospital</>
+                                                <><Plus className="mr-2 h-4 w-4" /> {t('dataEntryOperator.addHospital')}</>
                                             )}
                                         </Button>
                                     </div>
@@ -229,7 +231,7 @@ export default function DistrictsHospitalsPage() {
             {/* Floating Save Button (Visual or Refresh) */}
             <div className="flex justify-end pt-4">
                 <Button className="bg-primary hover:bg-primary/90 min-w-[200px]">
-                    <Save className="mr-2 h-4 w-4" /> Save All Changes
+                    <Save className="mr-2 h-4 w-4" /> {t('dataEntryOperator.saveAllChanges')}
                 </Button>
             </div>
         </div>

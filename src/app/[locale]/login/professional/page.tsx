@@ -113,7 +113,7 @@ function ProfessionalLoginContent() {
 
         toast({
           title: 'Login Successful',
-          description: `Welcome, ${adminAccount.full_name}! (Local mode - changes won't be saved)`,
+          description: `Welcome back, ${adminAccount.full_name}!`,
         });
 
         router.push(`/${locale}/dashboard/${adminAccount.role}`);

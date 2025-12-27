@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Save } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 
 const profileSchema = z.object({
@@ -24,6 +25,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export default function DataEntryOperatorProfilePage() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
 
   const form = useForm<ProfileFormValues>({
@@ -73,8 +75,8 @@ export default function DataEntryOperatorProfilePage() {
       }
 
       toast({
-        title: 'Profile Updated!',
-        description: 'Your profile has been successfully updated.',
+        title: t('dataEntryOperator.profileUpdated'),
+        description: t('dataEntryOperator.profileUpdatedSuccess'),
       });
 
       // Reload to update sidebar
@@ -82,8 +84,8 @@ export default function DataEntryOperatorProfilePage() {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Update Failed',
-        description: 'Something went wrong. Please try again.',
+        title: t('dataEntryOperator.updateFailed'),
+        description: t('dataEntryOperator.somethingWentWrong'),
       });
       console.error(error);
     }
@@ -93,8 +95,8 @@ export default function DataEntryOperatorProfilePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="font-headline text-3xl font-bold">My Profile</h1>
-          <p className="text-muted-foreground">Loading your profile...</p>
+          <h1 className="font-headline text-3xl font-bold">{t('dataEntryOperator.myProfile')}</h1>
+          <p className="text-muted-foreground">{t('dataEntryOperator.loadingProfile')}</p>
         </div>
       </div>
     );
@@ -103,15 +105,15 @@ export default function DataEntryOperatorProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">My Profile</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('dataEntryOperator.myProfile')}</h1>
         <p className="text-muted-foreground">
-          View and update your professional information.
+          {t('dataEntryOperator.viewUpdateProfile')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Your Details</CardTitle>
+          <CardTitle>{t('dataEntryOperator.editYourDetails')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -122,8 +124,8 @@ export default function DataEntryOperatorProfilePage() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl><Input placeholder="e.g., Ravi Kumar" {...field} /></FormControl>
+                      <FormLabel>{t('dataEntryOperator.fullName')}</FormLabel>
+                      <FormControl><Input placeholder={t('dataEntryOperator.fullNamePlaceholder')} {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -133,7 +135,7 @@ export default function DataEntryOperatorProfilePage() {
                   name="userId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>User ID</FormLabel>
+                      <FormLabel>{t('dataEntryOperator.userId')}</FormLabel>
                       <FormControl><Input {...field} readOnly className="text-muted-foreground" /></FormControl>
                       <FormMessage />
                     </FormItem>
@@ -144,8 +146,8 @@ export default function DataEntryOperatorProfilePage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
-                      <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
+                      <FormLabel>{t('dataEntryOperator.emailAddress')}</FormLabel>
+                      <FormControl><Input type="email" placeholder={t('dataEntryOperator.emailPlaceholder')} {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -155,8 +157,8 @@ export default function DataEntryOperatorProfilePage() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl><Input type="tel" placeholder="10-digit mobile number" {...field} /></FormControl>
+                      <FormLabel>{t('dataEntryOperator.phoneNumber')}</FormLabel>
+                      <FormControl><Input type="tel" placeholder={t('dataEntryOperator.phonePlaceholder')} {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -164,7 +166,7 @@ export default function DataEntryOperatorProfilePage() {
               </div>
 
               <Button type="submit" className="w-full md:w-auto">
-                <Save className="mr-2 h-4 w-4" /> Save Changes
+                <Save className="mr-2 h-4 w-4" /> {t('dataEntryOperator.saveChanges')}
               </Button>
             </form>
           </Form>

@@ -140,16 +140,16 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Generate Health Reports</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('healthOfficial.generateHealthReportsTitle')}</h1>
         <p className="text-muted-foreground">
-          Create custom, dynamic reports on public health metrics.
+          {t('healthOfficial.createCustomReports')}
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Report Parameters</CardTitle>
-          <CardDescription>Select the criteria for your report.</CardDescription>
+          <CardTitle>{t('healthOfficial.reportParameters')}</CardTitle>
+          <CardDescription>{t('healthOfficial.selectCriteriaForReport')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -160,7 +160,7 @@ export default function ReportsPage() {
                   name="reportType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Report Type</FormLabel>
+                      <FormLabel>{t('healthOfficial.reportType')}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -182,7 +182,7 @@ export default function ReportsPage() {
                   name="region"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Region</FormLabel>
+                      <FormLabel>{t('healthOfficial.region')}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -206,7 +206,7 @@ export default function ReportsPage() {
                   name="startDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Start Date</FormLabel>
+                      <FormLabel>{t('healthOfficial.startDate')}</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -219,7 +219,7 @@ export default function ReportsPage() {
                   name="endDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>End Date</FormLabel>
+                      <FormLabel>{t('healthOfficial.endDate')}</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
                       </FormControl>
@@ -230,7 +230,7 @@ export default function ReportsPage() {
               </div>
               <Button type="submit">
                 <FileText className="mr-2 h-4 w-4" />
-                Generate Report
+                {t('healthOfficial.generateReport')}
               </Button>
             </form>
           </Form>

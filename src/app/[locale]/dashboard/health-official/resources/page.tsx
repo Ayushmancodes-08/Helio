@@ -31,7 +31,7 @@ const getOccupancyStatus = (occupancy: number) => {
 export default function ResourcesPage() {
   const { districts, loading: districtsLoading } = useDistricts();
   const { hospitals, loading: hospitalsLoading } = useHospitals();
-  const { formatCurrency } = useLanguage();
+  const { formatCurrency, t } = useLanguage();
 
   const loading = districtsLoading || hospitalsLoading;
 
@@ -68,9 +68,9 @@ export default function ResourcesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-headline text-3xl font-bold">Resource Management</h1>
+        <h1 className="font-headline text-3xl font-bold">{t('healthOfficial.resourceManagement')}</h1>
         <p className="text-muted-foreground">
-          Monitor and manage healthcare resources across all districts.
+          {t('healthOfficial.monitorManageHealthcare')}
         </p>
       </div>
 
@@ -87,40 +87,40 @@ export default function ResourcesPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Hospital Beds
+                  {t('healthOfficial.totalHospitalBeds')}
                 </CardTitle>
                 <BedDouble className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalBeds.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">
-                  {totalOccupiedBeds.toLocaleString()} occupied • Across {resourceData.length} districts
+                  {totalOccupiedBeds.toLocaleString()} {t('healthOfficial.occupied')} • {t('healthOfficial.acrossDistricts', { count: resourceData.length })}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Available Ambulances
+                  {t('healthOfficial.availableAmbulances')}
                 </CardTitle>
                 <Ambulance className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalAmbulances}</div>
                 <p className="text-xs text-muted-foreground">
-                  Ready for dispatch
+                  {t('healthOfficial.readyForDispatch')}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Medical Staff</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('healthOfficial.totalMedicalStaff')}</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalStaff.toLocaleString()}</div>
                 <p className="text-muted-foreground text-xs text-muted-foreground">
-                  Doctors and nurses on duty
+                  {t('healthOfficial.doctorsNursesOnDuty')}
                 </p>
               </CardContent>
             </Card>
@@ -128,21 +128,21 @@ export default function ResourcesPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>District Resource Overview</CardTitle>
+              <CardTitle>{t('healthOfficial.districtResourceOverview')}</CardTitle>
               <CardDescription>
-                A detailed breakdown of resources in each district.
+                {t('healthOfficial.detailedBreakdownOfResources')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>District</TableHead>
-                    <TableHead className="w-[300px]">Bed Occupancy</TableHead>
-                    <TableHead>Ambulances</TableHead>
-                    <TableHead>Doctors</TableHead>
-                    <TableHead>Nurses</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
+                    <TableHead>{t('healthOfficial.district')}</TableHead>
+                    <TableHead className="w-[300px]">{t('healthOfficial.bedOccupancy')}</TableHead>
+                    <TableHead>{t('healthOfficial.ambulances')}</TableHead>
+                    <TableHead>{t('healthOfficial.doctors')}</TableHead>
+                    <TableHead>{t('healthOfficial.nurses')}</TableHead>
+                    <TableHead className="text-right">{t('healthOfficial.status')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

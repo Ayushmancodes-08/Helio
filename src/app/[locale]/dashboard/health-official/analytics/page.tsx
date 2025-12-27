@@ -42,6 +42,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { useHealthMetrics } from '@/hooks/useHealthMetrics';
 import { useHospitals, useDistricts } from '@/hooks/useHealthData';
 import { createClient } from '@/lib/supabase/client';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const PIE_CHART_COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const LINE_CHART_COLORS = [
@@ -78,6 +79,7 @@ export default function HealthAnalyticsPage() {
   const { districts, loading: districtsLoading } = useDistricts();
 
   const supabase = createClient();
+  const { t } = useLanguage();
 
   // Fetch Patient Demographics separately as it's not in a standard context hook yet
   const fetchDemographics = useCallback(async () => {
@@ -289,9 +291,9 @@ export default function HealthAnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4">
         <div>
-          <h1 className="font-headline text-3xl font-bold">Health Analytics</h1>
+          <h1 className="font-headline text-3xl font-bold">{t('healthOfficial.healthAnalytics')}</h1>
           <p className="text-muted-foreground">
-            In-depth analysis of public health data and trends.
+            {t('healthOfficial.inDepthAnalysis')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-4">
@@ -300,7 +302,7 @@ export default function HealthAnalyticsPage() {
               <SelectValue placeholder="Select Region" />
             </SelectTrigger>
             <SelectContent>
-              {regions.map(r => <SelectItem key={r} value={r} className="capitalize">{r === 'all' ? 'All Regions' : r}</SelectItem>)}
+              {regions.map(r => <SelectItem key={r} value={r} className="capitalize">{r === 'all' ? t('healthOfficial.allRegions') : r}</SelectItem>)}
             </SelectContent>
           </Select>
 
@@ -316,11 +318,11 @@ export default function HealthAnalyticsPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full sm:w-40">
-                Diseases <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
+                {t('healthOfficial.diseases')} <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>Show Diseases</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('healthOfficial.showDiseases')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {availableDiseases.map(disease => (
                 <DropdownMenuCheckboxItem
@@ -336,12 +338,12 @@ export default function HealthAnalyticsPage() {
 
           <div className="flex w-full items-center gap-2 sm:w-auto flex-1 min-w-[280px]">
             <Input type="date" value={format(dateRange.from, 'yyyy-MM-dd')} onChange={(e) => handleDateChange(e, 'from')} className="w-full sm:w-auto" />
-            <span className="text-muted-foreground">to</span>
+            <span className="text-muted-foreground">{t('healthOfficial.to')}</span>
             <Input type="date" value={format(dateRange.to, 'yyyy-MM-dd')} onChange={(e) => handleDateChange(e, 'to')} className="w-full sm:w-auto" />
           </div>
           <Button onClick={handleDownload} variant="outline" className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
-            Report
+            {t('healthOfficial.report')}
           </Button>
         </div>
       </div>
@@ -350,10 +352,10 @@ export default function HealthAnalyticsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Daily Disease Trends
+            {t('healthOfficial.dailyDiseaseTrends')}
           </CardTitle>
           <CardDescription>
-            Reported cases for {selectedHospital === 'all' ? 'all selected hospitals' : selectedHospital} in {selectedRegion === 'all' ? 'all regions' : selectedRegion}.
+            {t('healthOfficial.reportedCasesFor', { hospital: selectedHospital === 'all' ? t('healthOfficial.allSelectedHospitals') : selectedHospital, region: selectedRegion === 'all' ? t('healthOfficial.allRegions') : selectedRegion })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -389,10 +391,10 @@ export default function HealthAnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BedDouble className="h-5 w-5" />
-              Hospital Bed Occupancy
+              {t('healthOfficial.hospitalBedOccupancy')}
             </CardTitle>
             <CardDescription>
-              Percentage of occupied beds in {selectedRegion === 'all' ? 'all regions (grouped by district)' : selectedRegion}.
+              {t('healthOfficial.percentageOccupiedBeds', { region: selectedRegion === 'all' ? t('healthOfficial.groupedByDistrict') : selectedRegion })}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -428,10 +430,10 @@ export default function HealthAnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Patient Demographics by Age
+              {t('healthOfficial.patientDemographicsByAge')}
             </CardTitle>
             <CardDescription>
-              Distribution of registered patients across different age groups.
+              {t('healthOfficial.distributionOfPatients')}
             </CardDescription>
           </CardHeader>
           <CardContent>

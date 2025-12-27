@@ -55,7 +55,7 @@ export default function DataEntryOperatorDashboardPage() {
           {t('dataEntryOperator.deoTitle')}
         </h1>
         <p className="text-muted-foreground">
-          {t('dataEntryOperator.welcome')}, {profile?.full_name || 'Operator'}. {t('dataEntryOperator.dataManagement')}
+          {t('dataEntryOperator.welcome', { name: profile?.full_name || 'Operator' })}. {t('dataEntryOperator.dataManagement')}
         </p>
       </div>
 

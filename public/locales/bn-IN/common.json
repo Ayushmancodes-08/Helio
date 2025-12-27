@@ -17,6 +17,9 @@
   "upcoming": "আসন্ন",
   "completed": "সম্পন্ন",
   "cancelled": "বাতিল",
+  "high": "উচ্চ",
+  "medium": "মাঝারি",
+  "low": "নিম্ন",
   "navigation": {
     "dashboard": "ড্যাশবোর্ড",
     "appointments": "অ্যাপয়েন্টমেন্ট",
