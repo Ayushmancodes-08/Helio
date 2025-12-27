@@ -169,10 +169,20 @@ export function VideoConsultationContent() {
           </div>
         ) : (
           <VideoCallInterface
-            appointmentId={appointmentId}
+            client={null}
+            localVideoTrack={null}
+            localAudioTrack={null}
+            remoteUsers={remoteUsers || []}
+            remoteUserStates={{}}
+            isMicOn={true}
+            isCameraOn={true}
             patientName={appointment.patient_name}
+            doctorName={"Dr. " + (profile?.full_name || "Doctor")}
+            onToggleMic={() => { }}
+            onToggleCamera={() => { }}
             onEndCall={handleEndCall}
-            isEndingCall={isEndingCall}
+            isLoading={isEndingCall}
+            isDoctor={true}
           />
         )}
       </div>
