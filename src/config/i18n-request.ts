@@ -1,7 +1,5 @@
 import { getRequestConfig } from 'next-intl/server';
 import { locales, defaultLocale, type Locale } from './i18n';
-import fs from 'fs';
-import path from 'path';
 
 export default getRequestConfig(async ({ requestLocale }) => {
   // This typically corresponds to the `[locale]` segment
@@ -21,21 +19,12 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const namespaces = ['common', 'auth', 'dashboard', 'appointments', 'medical', 'errors', 'homepage', 'notifications', 'patient', 'doctor', 'pharmacist', 'healthOfficial', 'dataEntryOperator', 'profile'];
     const messages: Record<string, any> = {};
 
+    // Use dynamic imports instead of fs for better compatibility with edge/build environments
     for (const namespace of namespaces) {
       try {
-        // Use fs to read the file directly
-
-        const filePath = path.join(process.cwd(), 'public', 'locales', validLocale, `${namespace}.json`);
-
-        if (fs.existsSync(filePath)) {
-          const fileContent = fs.readFileSync(filePath, 'utf8');
-          const data = JSON.parse(fileContent);
-          messages[namespace] = data;
-        } else {
-          console.warn(`Translation file not found: ${filePath}`);
-          messages[namespace] = {};
-        }
-
+        // Dynamic import that works in both dev and production
+        const data = await import(`../../public/locales/${validLocale}/${namespace}.json`);
+        messages[namespace] = data.default || data;
       } catch (error) {
         console.warn(`Failed to load ${namespace} for ${validLocale}:`, error);
         messages[namespace] = {};
