@@ -105,10 +105,13 @@ export default function VideoConsultationPage() {
   };
 
   // Show all appointments
-  const upcomingAppointments = appointments;
+  const upcomingAppointments = appointments.filter(
+    (appointment) => appointment.consultation_type === 'Video'
+  );
 
   // Debug: log all appointments
   console.log('All appointments:', appointments);
+  console.log('Filtered video consultations:', upcomingAppointments);
 
   // If in call, show video interface
   if (isInCall) {
