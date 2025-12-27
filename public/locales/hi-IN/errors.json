@@ -1,0 +1,70 @@
+{
+  "general": {
+    "notFound": "पृष्ठ नहीं मिला",
+    "unauthorized": "अनुमति नहीं है",
+    "forbidden": "पहुंच निषिद्ध है",
+    "serverError": "सर्वर त्रुटि हुई",
+    "badRequest": "खराब अनुरोध",
+    "conflict": "संघर्ष हुआ",
+    "tooManyRequests": "बहुत सारे अनुरोध। बाद में फिर से कोशिश करें।",
+    "serviceUnavailable": "सेवा अस्थायी रूप से अनुपलब्ध है",
+    "networkError": "नेटवर्क त्रुटि हुई",
+    "timeout": "अनुरोध समय समाप्त"
+  },
+  "validation": {
+    "required": "यह फील्ड आवश्यक है",
+    "invalidEmail": "अमान्य ईमेल पता",
+    "invalidPhone": "अमान्य फोन नंबर",
+    "passwordTooShort": "पासवर्ड कम से कम 8 वर्ण होना चाहिए",
+    "passwordMismatch": "पासवर्ड मेल नहीं खाते",
+    "invalidDate": "अमान्य तारीख प्रारूप",
+    "invalidNumber": "अमान्य संख्या",
+    "minLength": "न्यूनतम {min} वर्ण आवश्यक",
+    "maxLength": "अधिकतम {max} वर्ण की अनुमति है",
+    "pattern": "अमान्य प्रारूप"
+  },
+  "authentication": {
+    "invalidCredentials": "अमान्य ईमेल या पासवर्ड",
+    "accountLocked": "खाता लॉक है। बाद में फिर से कोशिश करें।",
+    "accountNotFound": "खाता नहीं मिला",
+    "emailAlreadyExists": "ईमेल पहले से पंजीकृत है",
+    "phoneAlreadyExists": "फोन नंबर पहले से पंजीकृत है",
+    "sessionExpired": "आपका सत्र समाप्त हो गया है। कृपया फिर से लॉगिन करें।",
+    "tokenInvalid": "अमान्य या समाप्त टोकन",
+    "tokenExpired": "टोकन समाप्त हो गया है"
+  },
+  "appointment": {
+    "appointmentNotFound": "नियुक्ति नहीं मिली",
+    "appointmentCancelled": "नियुक्ति रद्द कर दी गई है",
+    "appointmentPassed": "नियुक्ति की तारीख बीत चुकी है",
+    "doctorNotAvailable": "डॉक्टर चयनित समय पर उपलब्ध नहीं है",
+    "slotNotAvailable": "चयनित समय स्लॉट उपलब्ध नहीं है",
+    "cannotCancelAppointment": "नियुक्ति रद्द नहीं कर सकते",
+    "cannotRescheduleAppointment": "नियुक्ति को फिर से निर्धारित नहीं कर सकते"
+  },
+  "medical": {
+    "recordNotFound": "चिकित्सा रिकॉर्ड नहीं मिला",
+    "prescriptionNotFound": "प्रिस्क्रिप्शन नहीं मिली",
+    "labReportNotFound": "प्रयोगशाला रिपोर्ट नहीं मिली",
+    "invalidMedication": "अमान्य दवा",
+    "invalidDosage": "अमान्य खुराक"
+  },
+  "database": {
+    "connectionError": "डेटाबेस कनेक्शन त्रुटि",
+    "queryError": "डेटाबेस क्वेरी त्रुटि",
+    "dataNotFound": "डेटा नहीं मिला",
+    "duplicateEntry": "डुप्लिकेट प्रविष्टि"
+  },
+  "file": {
+    "fileNotFound": "फाइल नहीं मिली",
+    "invalidFileType": "अमान्य फाइल प्रकार",
+    "fileTooLarge": "फाइल आकार सीमा से अधिक है",
+    "uploadFailed": "फाइल अपलोड विफल"
+  },
+  "payment": {
+    "paymentFailed": "भुगतान विफल",
+    "invalidPaymentMethod": "अमान्य भुगतान विधि",
+    "insufficientFunds": "अपर्याप्त धन",
+    "transactionFailed": "लेनदेन विफल"
+  }
+}

@@ -6,11 +6,13 @@ export type Appointment = {
     id: string;
     patient_id: string;
     doctor_id: string;
-    appointment_date: Date;
-    appointment_time: string;
+    appointment_date?: Date;
+    appointment_time?: string;
     consultation_type: 'Video' | 'In-Person';
     status: 'Upcoming' | 'Completed' | 'Cancelled';
     notes?: string;
+    channel_name?: string;
+    consultation_fee?: number; // Fee for the consultation
     created_at?: Date;
     updated_at?: Date;
     // Joined fields
@@ -28,42 +30,94 @@ export function useAppointments() {
 
     // Fetch appointments based on user role
     const fetchAppointments = async () => {
-        if (!profile) return;
+        if (!profile) {
+            console.log('No profile available, skipping fetch');
+            return;
+        }
 
+        console.log('Fetching appointments for profile:', profile.id, 'role:', profile.role);
         setLoading(true);
         setError(null);
 
         try {
+            // First fetch appointments without joins
             let query = supabase
                 .from('appointments')
-                .select(`
-          *,
-          patient:profiles!appointments_patient_id_fkey(id, full_name),
-          doctor:profiles!appointments_doctor_id_fkey(id, full_name)
-        `)
-                .order('appointment_date', { ascending: true });
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            // Explicitly filter based on role to ensure data consistency
+            // Filter based on role
             if (profile.role === 'doctor') {
                 query = query.eq('doctor_id', profile.id);
             } else if (profile.role === 'patient') {
                 query = query.eq('patient_id', profile.id);
             }
 
-            const { data, error: fetchError } = await query;
+            const { data, error: fetchError, status, statusText } = await query;
 
-            if (fetchError) throw fetchError;
 
-            const formattedData = (data || []).map((appt: any) => ({
-                ...appt,
-                appointment_date: new Date(appt.appointment_date),
-                patient_name: appt.patient?.full_name,
-                doctor_name: appt.doctor?.full_name,
-            }));
+
+            if (fetchError) {
+                console.error('Supabase error details:', {
+                    message: fetchError.message,
+                    details: fetchError.details,
+                    hint: fetchError.hint,
+                    code: fetchError.code
+                });
+                throw new Error(fetchError.message || `Database error: ${status} ${statusText}`);
+            }
+
+            // Fetch profile names separately if we have appointments
+            let formattedData = data || [];
+
+            if (formattedData.length > 0) {
+                // Get unique patient and doctor IDs
+                const patientIds = [...new Set(formattedData.map(a => a.patient_id))];
+                const doctorIds = [...new Set(formattedData.map(a => a.doctor_id))];
+                const allIds = [...new Set([...patientIds, ...doctorIds])];
+
+                // Fetch all relevant profiles
+                const { data: profiles } = await supabase
+                    .from('profiles')
+                    .select('id, full_name')
+                    .in('id', allIds);
+
+                const profileMap = new Map(profiles?.map(p => [p.id, p.full_name]) || []);
+
+                formattedData = formattedData.map((appt: any) => {
+                    const appointmentDate = new Date(appt.appointment_date || appt.scheduled_at || appt.date || appt.created_at);
+
+                    // Use stored time slot, or extract from timestamp, or check notes
+                    let appointmentTime = appt.appointment_time;
+                    if (!appointmentTime) {
+                        // Try to extract from notes if it contains "Time: XX:XX"
+                        if (appt.notes && appt.notes.includes('Time:')) {
+                            const match = appt.notes.match(/Time:\s*(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i);
+                            if (match) appointmentTime = match[1];
+                        }
+                        // Fallback: extract from appointment_date timestamp
+                        if (!appointmentTime) {
+                            appointmentTime = appointmentDate.toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            });
+                        }
+                    }
+
+                    return {
+                        ...appt,
+                        appointment_date: appointmentDate,
+                        appointment_time: appointmentTime,
+                        patient_name: profileMap.get(appt.patient_id) || 'Unknown',
+                        doctor_name: profileMap.get(appt.doctor_id) || 'Unknown',
+                    };
+                });
+            }
 
             setAppointments(formattedData);
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message || 'Failed to fetch appointments');
             console.error('Error fetching appointments:', err);
         } finally {
             setLoading(false);
@@ -72,30 +126,91 @@ export function useAppointments() {
 
     // Create new appointment
     const createAppointment = async (appointment: Omit<Appointment, 'id' | 'created_at' | 'updated_at'>) => {
+        if (!profile) {
+            setError('You must be logged in to create an appointment');
+            return null;
+        }
+
         setLoading(true);
         setError(null);
 
         try {
-            const { data, error: insertError } = await supabase
+            // Generate a unique channel name for video consultations
+            const channelName = `appointment-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+
+            // Combine date and time into a single timestamp
+            let appointmentDateTime: string | undefined;
+            if (appointment.appointment_date) {
+                const date = appointment.appointment_date instanceof Date
+                    ? appointment.appointment_date
+                    : new Date(appointment.appointment_date);
+
+                // If we have a time string like "09:30 AM", parse and combine with date
+                if (appointment.appointment_time) {
+                    const timeStr = appointment.appointment_time;
+                    const [time, period] = timeStr.split(' ');
+                    const [hours, minutes] = time.split(':').map(Number);
+
+                    let hour24 = hours;
+                    if (period === 'PM' && hours !== 12) hour24 = hours + 12;
+                    if (period === 'AM' && hours === 12) hour24 = 0;
+
+                    date.setHours(hour24, minutes, 0, 0);
+                }
+
+                appointmentDateTime = date.toISOString();
+            }
+
+            // Build insert data - store time slot and date
+            const insertData: Record<string, any> = {
+                patient_id: profile.id,
+                doctor_id: appointment.doctor_id,
+                channel_name: channelName,
+            };
+
+            if (appointmentDateTime) {
+                insertData.appointment_date = appointmentDateTime;
+            }
+
+            // Store the selected time slot (e.g., "09:00 AM")
+            if (appointment.appointment_time) {
+                insertData.appointment_time = appointment.appointment_time;
+            }
+
+            if (appointment.consultation_type) {
+                insertData.consultation_type = appointment.consultation_type;
+            }
+
+            if (appointment.notes) {
+                insertData.notes = appointment.notes;
+            }
+
+            console.log('Creating appointment with data:', insertData);
+
+            const { data, error: insertError, status, statusText } = await supabase
                 .from('appointments')
-                .insert({
-                    patient_id: appointment.patient_id,
-                    doctor_id: appointment.doctor_id,
-                    appointment_date: appointment.appointment_date.toISOString(),
-                    appointment_time: appointment.appointment_time,
-                    consultation_type: appointment.consultation_type,
-                    status: appointment.status || 'Upcoming',
-                    notes: appointment.notes,
-                })
+                .insert(insertData)
                 .select()
                 .single();
 
-            if (insertError) throw insertError;
+            console.log('Insert response:', { data, error: insertError, status, statusText });
 
-            await fetchAppointments(); // Refresh list
+            if (insertError) {
+                console.error('Supabase insert error:', {
+                    message: insertError.message,
+                    details: insertError.details,
+                    hint: insertError.hint,
+                    code: insertError.code
+                });
+                throw new Error(insertError.message || 'Failed to create appointment');
+            }
+
+            console.log('Appointment created successfully:', data);
+            await fetchAppointments();
             return data;
         } catch (err: any) {
-            setError(err.message);
+            const errorMessage = err.message || 'Failed to create appointment';
+            setError(errorMessage);
             console.error('Error creating appointment:', err);
             return null;
         } finally {

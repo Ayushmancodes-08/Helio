@@ -13,12 +13,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* Base font for all languages */}
         <link
           href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Noto Sans for Hindi (Devanagari) */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Noto Sans for Bengali */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Noto Sans for Telugu */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>

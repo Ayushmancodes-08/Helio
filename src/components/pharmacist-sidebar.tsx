@@ -17,47 +17,51 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
-
-const menuItems = [
-  { href: '/dashboard/pharmacist', label: 'Dashboard', icon: Home, exact: true },
-  {
-    href: '/dashboard/pharmacist/inventory',
-    label: 'Inventory',
-    icon: Package,
-  },
-  {
-    href: '/dashboard/pharmacist/prescriptions',
-    label: 'Prescriptions',
-    icon: ReceiptText,
-  },
-  {
-    href: '/dashboard/pharmacist/reports',
-    label: 'Sales Reports',
-    icon: LineChart,
-  },
-  {
-    href: '/dashboard/pharmacist/profile',
-    label: 'Profile',
-    icon: User,
-  },
-];
-
+import { useLanguage } from '@/hooks/useLanguage';
+import { LanguageSwitcher } from './language-switcher';
 
 export function PharmacistSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { profile, signOut } = useAuth();
+  const { t: tCommon } = useLanguage();
+  // Extract locale from pathname
+  const locale = pathname?.split('/')[1] || 'en-IN';
   const pharmacistAvatar = PlaceHolderImages.find(
     (img) => img.id === 'avatar-doctor'
   );
 
+  const menuItems = [
+    { href: `/${locale}/dashboard/pharmacist`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    {
+      href: `/${locale}/dashboard/pharmacist/inventory`,
+      label: tCommon('navigation.inventory'),
+      icon: Package,
+    },
+    {
+      href: `/${locale}/dashboard/pharmacist/prescriptions`,
+      label: tCommon('navigation.prescriptions'),
+      icon: FileText,
+    },
+    {
+      href: `/${locale}/dashboard/pharmacist/reports`,
+      label: tCommon('navigation.reports'),
+      icon: BarChart,
+    },
+    {
+      href: `/${locale}/dashboard/pharmacist/profile`,
+      label: tCommon('navigation.profile'),
+      icon: User,
+    },
+  ];
+
   const handleLogout = async () => {
     await signOut();
-    router.push('/login');
+    router.push(`/${locale}/login`);
   };
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2">
           <Logo className="h-8 w-8 text-primary" />
@@ -67,7 +71,7 @@ export function PharmacistSidebar() {
       <SidebarContent className="p-2">
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.label}>
+            <SidebarMenuItem key={item.href}>
               <Link href={item.href} passHref>
                 <SidebarMenuButton
                   isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
@@ -82,33 +86,36 @@ export function PharmacistSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex items-center gap-3 p-2">
-          {profile?.role === 'pharmacist' ? (
-            <>
-              <Avatar className="h-10 w-10">
-                {pharmacistAvatar && (
-                  <AvatarImage
-                    src={profile?.photo || pharmacistAvatar.imageUrl}
-                    alt={profile?.full_name || 'Pharmacist'}
-                    data-ai-hint={pharmacistAvatar.imageHint}
-                  />
-                )}
-                <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'P'}</AvatarFallback>
-              </Avatar>
-              <div className="overflow-hidden">
-                <p className="truncate font-semibold">{profile?.full_name || 'Pharmacist'}</p>
-                <p className="truncate text-xs text-muted-foreground">Pharmacist</p>
+        <div className="flex flex-col gap-3 p-2">
+          <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
+          <div className="flex items-center gap-3">
+            {profile?.role === 'pharmacist' ? (
+              <>
+                <Avatar className="h-10 w-10">
+                  {pharmacistAvatar && (
+                    <AvatarImage
+                      src={profile?.photo || pharmacistAvatar.imageUrl}
+                      alt={profile?.full_name || 'Pharmacist'}
+                      data-ai-hint={pharmacistAvatar.imageHint}
+                    />
+                  )}
+                  <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'P'}</AvatarFallback>
+                </Avatar>
+                <div className="overflow-hidden">
+                  <p className="truncate font-semibold">{profile?.full_name || 'Pharmacist'}</p>
+                  <p className="truncate text-xs text-muted-foreground">Pharmacist</p>
+                </div>
+              </>
+            ) : (
+              <div className="overflow-hidden w-full">
+                <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
+                <p className="text-[10px] text-muted-foreground truncate">Please log in as Pharmacist</p>
               </div>
-            </>
-          ) : (
-            <div className="overflow-hidden w-full">
-              <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
-              <p className="text-[10px] text-muted-foreground truncate">Please log in as Pharmacist</p>
-            </div>
-          )}
-          <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-            <LogOut />
-          </Button>
+            )}
+            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
+              <LogOut />
+            </Button>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

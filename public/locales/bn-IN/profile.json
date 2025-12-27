@@ -1,0 +1,14 @@
+{
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "profileSettings": "Profile Settings",
+    "personalInfo": "Personal Information",
+    "contactInfo": "Contact Information",
+    "medicalInfo": "Medical Information",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "profileUpdated": "Profile Updated",
+    "profileUpdateFailed": "Profile Update Failed",
+    "passwordChanged": "Password Changed",
+    "passwordChangeFailed": "Password Change Failed"
+}

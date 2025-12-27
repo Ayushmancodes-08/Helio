@@ -1,0 +1,70 @@
+{
+  "general": {
+    "notFound": "పేజీ కనుగొనబడలేదు",
+    "unauthorized": "అనుమతి లేని యాక్సెస్",
+    "forbidden": "యాక్సెస్ నిషేధించబడింది",
+    "serverError": "సర్వర్ లోపం సంభవించింది",
+    "badRequest": "చెడ్డ అభ్యర్థన",
+    "conflict": "సంఘర్షణ సంభవించింది",
+    "tooManyRequests": "చాలా ఎక్కువ అభ్యర్థనలు. తరువాత మళ్లీ ప్రయత్నించండి.",
+    "serviceUnavailable": "సేవ తాత్కాలికంగా అందుబాటులో లేదు",
+    "networkError": "నెట్‌వర్క్ లోపం సంభవించింది",
+    "timeout": "అభ్యర్థన సమయం ముగిసింది"
+  },
+  "validation": {
+    "required": "ఈ ఫీల్డ్ అవసరం",
+    "invalidEmail": "చెల్లని ఇమెయిల్ చిరునామా",
+    "invalidPhone": "చెల్లని ఫోన్ నంబర్",
+    "passwordTooShort": "పాస్‌వర్డ్ కనీసం 8 అక్షరాలు ఉండాలి",
+    "passwordMismatch": "పాస్‌వర్డ్‌లు సరిపోలడం లేదు",
+    "invalidDate": "చెల్లని తేదీ ఫార్మాట్",
+    "invalidNumber": "చెల్లని సంఖ్య",
+    "minLength": "కనీసం {min} అక్షరాలు అవసరం",
+    "maxLength": "గరిష్ట {max} అక్షరాలు అనుమతించబడ్డాయి",
+    "pattern": "చెల్లని ఫార్మాట్"
+  },
+  "authentication": {
+    "invalidCredentials": "చెల్లని ఇమెయిల్ లేదా పాస్‌వర్డ్",
+    "accountLocked": "ఖాతా లాక్ చేయబడింది. తరువాత మళ్లీ ప్రయత్నించండి.",
+    "accountNotFound": "ఖాతా కనుగొనబడలేదు",
+    "emailAlreadyExists": "ఇమెయిల్ ఇప్పటికే నమోదు చేయబడింది",
+    "phoneAlreadyExists": "ఫోన్ నంబర్ ఇప్పటికే నమోదు చేయబడింది",
+    "sessionExpired": "మీ సెషన్ ముగిసిపోయింది. దయచేసి మళ్లీ లాగిన్ చేయండి.",
+    "tokenInvalid": "చెల్లని లేదా గడువు ముగిసిన టోకెన్",
+    "tokenExpired": "టోకెన్ గడువు ముగిసిపోయింది"
+  },
+  "appointment": {
+    "appointmentNotFound": "అపాయింట్‌మెంట్ కనుగొనబడలేదు",
+    "appointmentCancelled": "అపాయింట్‌మెంట్ రద్దు చేయబడింది",
+    "appointmentPassed": "అపాయింట్‌మెంట్ తేదీ గడిపోయింది",
+    "doctorNotAvailable": "ఎంచుకున్న సమయానికి డాక్టర్ అందుబాటులో లేరు",
+    "slotNotAvailable": "ఎంచుకున్న సమయ స్లాట్ అందుబాటులో లేదు",
+    "cannotCancelAppointment": "అపాయింట్‌మెంట్ రద్దు చేయలేరు",
+    "cannotRescheduleAppointment": "అపాయింట్‌మెంట్ పునర్నిర్ధారణ చేయలేరు"
+  },
+  "medical": {
+    "recordNotFound": "వైద్య రికార్డ్ కనుగొనబడలేదు",
+    "prescriptionNotFound": "ప్రిస్క్రిప్షన్ కనుగొనబడలేదు",
+    "labReportNotFound": "ల్యాబ్ రిపోర్ట్ కనుగొనబడలేదు",
+    "invalidMedication": "చెల్లని ఔషధం",
+    "invalidDosage": "చెల్లని మోతాదు"
+  },
+  "database": {
+    "connectionError": "డేటాబేస్ కనెక్షన్ లోపం",
+    "queryError": "డేటాబేస్ ప్రశ్న లోపం",
+    "dataNotFound": "డేటా కనుగొనబడలేదు",
+    "duplicateEntry": "నకిలీ ఎంట్రీ"
+  },
+  "file": {
+    "fileNotFound": "ఫైల్ కనుగొనబడలేదు",
+    "invalidFileType": "చెల్లని ఫైల్ రకం",
+    "fileTooLarge": "ఫైల్ పరిమాణం పరిమితిని అతిక్రమించింది",
+    "uploadFailed": "ఫైల్ అప్‌లోడ్ విఫలమైంది"
+  },
+  "payment": {
+    "paymentFailed": "చెల్లింపు విఫలమైంది",
+    "invalidPaymentMethod": "చెల్లని చెల్లింపు పద్ధతి",
+    "insufficientFunds": "అసంపూర్ణ నిధులు",
+    "transactionFailed": "లావాదేవీ విఫలమైంది"
+  }
+}

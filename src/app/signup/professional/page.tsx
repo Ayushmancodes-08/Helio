@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,7 +30,7 @@ const signupSchema = z.object({
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function ProfessionalSignupPage() {
+function ProfessionalSignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -251,5 +253,13 @@ export default function ProfessionalSignupPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ProfessionalSignupPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProfessionalSignupContent />
+    </Suspense>
   );
 }

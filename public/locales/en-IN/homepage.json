@@ -1,0 +1,23 @@
+{
+  "header": {
+    "appName": "Grameen Swasthya Setu",
+    "loginSignup": "Login / Signup"
+  },
+  "hero": {
+    "title": "Bridging the Gap in Rural Healthcare",
+    "subtitle": "Accessible, reliable, and intelligent healthcare for everyone, everywhere."
+  },
+  "stats": {
+    "patientsRegistered": "Patients Registered",
+    "healthcareRoles": "Healthcare Roles",
+    "accessToServices": "Access to Services"
+  },
+  "cta": {
+    "title": "Your Health Journey Starts Here",
+    "description": "Connect with doctors, manage your health records, and access essential services with a few simple clicks.",
+    "button": "Get Started Now"
+  },
+  "footer": {
+    "copyright": "© {year} Grameen Swasthya Setu. All rights reserved."
+  }
+}

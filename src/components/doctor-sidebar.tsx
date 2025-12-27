@@ -26,52 +26,58 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
-
-const menuItems = [
-  { href: '/dashboard/doctor', label: 'Dashboard', icon: Home, exact: true },
-  {
-    href: '/dashboard/doctor/appointments',
-    label: 'Appointments',
-    icon: Calendar,
-  },
-  { href: '/dashboard/doctor/patients', label: 'Patients', icon: Users },
-  {
-    href: '/dashboard/doctor/consultations',
-    label: 'Consultations',
-    icon: Video,
-  },
-  {
-    href: '/dashboard/doctor/prescriptions',
-    label: 'Prescriptions',
-    icon: FileText,
-  },
-  {
-    href: '/dashboard/doctor/lab-reports',
-    label: 'Lab Reports',
-    icon: BeakerIcon,
-  },
-  {
-    href: '/dashboard/doctor/profile',
-    label: 'Profile',
-    icon: User,
-  },
-];
+import { useLanguage } from '@/hooks/useLanguage';
+import { LanguageSwitcher } from './language-switcher';
 
 export function DoctorSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { profile, signOut } = useAuth();
+  const { t: tCommon } = useLanguage();
   const doctorAvatar = PlaceHolderImages.find(
     (img) => img.id === 'avatar-doctor'
   );
 
+  // Extract locale from pathname
+  const locale = pathname?.split('/')[1] || 'en-IN';
+
+  const menuItems = [
+    { href: `/${locale}/dashboard/doctor`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    {
+      href: `/${locale}/dashboard/doctor/appointments`,
+      label: tCommon('navigation.appointments'),
+      icon: Calendar,
+    },
+    { href: `/${locale}/dashboard/doctor/patients`, label: tCommon('navigation.patients'), icon: Users },
+    {
+      href: `/${locale}/dashboard/doctor/consultations`,
+      label: tCommon('navigation.consultations'),
+      icon: Video,
+    },
+    {
+      href: `/${locale}/dashboard/doctor/prescriptions`,
+      label: tCommon('navigation.prescriptions'),
+      icon: FileText,
+    },
+    {
+      href: `/${locale}/dashboard/doctor/lab-reports`,
+      label: tCommon('navigation.labReports'),
+      icon: BeakerIcon,
+    },
+    {
+      href: `/${locale}/dashboard/doctor/profile`,
+      label: tCommon('navigation.profile'),
+      icon: User,
+    },
+  ];
+
   const handleLogout = async () => {
     await signOut();
-    router.push('/login');
+    router.push(`/${locale}/login`);
   };
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2">
           <Logo className="h-8 w-8 text-primary" />
@@ -81,7 +87,7 @@ export function DoctorSidebar() {
       <SidebarContent className="p-2">
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.label}>
+            <SidebarMenuItem key={item.href}>
               <Link href={item.href} passHref>
                 <SidebarMenuButton
                   isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
@@ -96,33 +102,36 @@ export function DoctorSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex items-center gap-3 p-2">
-          {profile?.role === 'doctor' ? (
-            <>
-              <Avatar className="h-10 w-10">
-                {doctorAvatar && (
-                  <AvatarImage
-                    src={profile?.photo || doctorAvatar.imageUrl}
-                    alt={profile?.full_name || 'Doctor'}
-                    data-ai-hint={doctorAvatar.imageHint}
-                  />
-                )}
-                <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'D'}</AvatarFallback>
-              </Avatar>
-              <div className="overflow-hidden">
-                <p className="truncate font-semibold">{profile?.full_name || 'Doctor'}</p>
-                <p className="truncate text-xs text-muted-foreground capitalize">{profile?.specialization || 'Doctor'}</p>
+        <div className="flex flex-col gap-3 p-2">
+          <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
+          <div className="flex items-center gap-3">
+            {profile?.role === 'doctor' ? (
+              <>
+                <Avatar className="h-10 w-10">
+                  {doctorAvatar && (
+                    <AvatarImage
+                      src={profile?.photo || doctorAvatar.imageUrl}
+                      alt={profile?.full_name || 'Doctor'}
+                      data-ai-hint={doctorAvatar.imageHint}
+                    />
+                  )}
+                  <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'D'}</AvatarFallback>
+                </Avatar>
+                <div className="overflow-hidden">
+                  <p className="truncate font-semibold">{profile?.full_name || 'Doctor'}</p>
+                  <p className="truncate text-xs text-muted-foreground capitalize">{profile?.specialization || 'Doctor'}</p>
+                </div>
+              </>
+            ) : (
+              <div className="overflow-hidden w-full">
+                <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
+                <p className="text-[10px] text-muted-foreground truncate">Please log in as Doctor</p>
               </div>
-            </>
-          ) : (
-            <div className="overflow-hidden w-full">
-              <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
-              <p className="text-[10px] text-muted-foreground truncate">Please log in as Doctor</p>
-            </div>
-          )}
-          <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-            <LogOut />
-          </Button>
+            )}
+            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
+              <LogOut />
+            </Button>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

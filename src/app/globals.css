@@ -2,7 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Default font for all languages */
 body {
+  font-family: 'PT Sans', sans-serif;
+}
+
+/* Language-specific fonts */
+html[lang='hi-IN'] {
+  font-family: 'Noto Sans Devanagari', 'PT Sans', sans-serif;
+}
+
+html[lang='bn-IN'] {
+  font-family: 'Noto Sans Bengali', 'PT Sans', sans-serif;
+}
+
+html[lang='te-IN'] {
+  font-family: 'Noto Sans Telugu', 'PT Sans', sans-serif;
+}
+
+html[lang='en-IN'] {
+  font-family: 'PT Sans', sans-serif;
+}
+
+/* Apply language-specific fonts to body as well */
+html[lang='hi-IN'] body {
+  font-family: 'Noto Sans Devanagari', 'PT Sans', sans-serif;
+}
+
+html[lang='bn-IN'] body {
+  font-family: 'Noto Sans Bengali', 'PT Sans', sans-serif;
+}
+
+html[lang='te-IN'] body {
+  font-family: 'Noto Sans Telugu', 'PT Sans', sans-serif;
+}
+
+html[lang='en-IN'] body {
   font-family: 'PT Sans', sans-serif;
 }
 

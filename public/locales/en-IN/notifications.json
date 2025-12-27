@@ -1,0 +1,77 @@
+{
+  "appointmentReminders": {
+    "title": "Appointment Reminder",
+    "upcoming": "You have an appointment with {doctorName} on {date} at {time}",
+    "upcomingIn24Hours": "Your appointment with {doctorName} is tomorrow at {time}",
+    "upcomingIn1Hour": "Your appointment with {doctorName} starts in 1 hour",
+    "readyToJoin": "Ready to join your consultation with {doctorName}?",
+    "joinNow": "Join Now",
+    "confirmed": "Appointment confirmed with {doctorName} on {date} at {time}"
+  },
+  "systemNotifications": {
+    "title": "System Notification",
+    "profileUpdated": "Your profile has been updated successfully",
+    "passwordChanged": "Your password has been changed successfully",
+    "languageChanged": "Language preference updated to {language}",
+    "settingsSaved": "Your settings have been saved",
+    "dataSync": "Your data is being synchronized",
+    "syncComplete": "Data synchronization completed",
+    "offlineMode": "You are currently offline. Some features may be limited",
+    "backOnline": "You are back online"
+  },
+  "successMessages": {
+    "title": "Success",
+    "appointmentBooked": "Appointment booked successfully with {doctorName} on {date} at {time}",
+    "appointmentCancelled": "Appointment cancelled successfully",
+    "appointmentRescheduled": "Appointment rescheduled successfully to {date} at {time}",
+    "prescriptionFilled": "Prescription filled successfully",
+    "profileUpdated": "Profile updated successfully",
+    "passwordReset": "Password reset successfully",
+    "loginSuccess": "Logged in successfully",
+    "logoutSuccess": "Logged out successfully",
+    "recordsSaved": "Your records have been saved successfully",
+    "reportGenerated": "Report generated successfully",
+    "inventoryUpdated": "Inventory updated successfully",
+    "medicineAdded": "Medicine added to inventory successfully",
+    "stockUpdated": "Stock updated successfully"
+  },
+  "warningMessages": {
+    "title": "Warning",
+    "appointmentSoon": "Your appointment is coming up soon",
+    "lowStock": "Stock is running low for {medicineName}",
+    "expiredMedicine": "{medicineName} has expired",
+    "expiringMedicine": "{medicineName} will expire on {date}",
+    "invalidInput": "Please check your input and try again",
+    "unsavedChanges": "You have unsaved changes. Do you want to leave?",
+    "slowConnection": "Your connection is slow. Some features may not work properly",
+    "storageQuotaExceeded": "Storage quota exceeded. Please delete some files",
+    "sessionExpiring": "Your session is expiring soon. Please save your work",
+    "dataLoss": "This action cannot be undone"
+  },
+  "errorMessages": {
+    "title": "Error",
+    "appointmentBookingFailed": "Failed to book appointment. Please try again",
+    "appointmentCancellationFailed": "Failed to cancel appointment. Please try again",
+    "appointmentRescheduleFailed": "Failed to reschedule appointment. Please try again",
+    "profileUpdateFailed": "Failed to update profile. Please try again",
+    "passwordResetFailed": "Failed to reset password. Please try again",
+    "loginFailed": "Login failed. Please check your credentials",
+    "networkError": "Network error. Please check your connection",
+    "serverError": "Server error. Please try again later",
+    "invalidData": "Invalid data provided. Please check and try again",
+    "permissionDenied": "You do not have permission to perform this action",
+    "recordNotFound": "Record not found",
+    "operationFailed": "Operation failed. Please try again"
+  },
+  "infoMessages": {
+    "title": "Information",
+    "noAppointments": "No appointments scheduled",
+    "noPrescriptions": "No prescriptions available",
+    "noLabReports": "No lab reports available",
+    "noPatients": "No patients found",
+    "noDoctors": "No doctors available",
+    "loadingData": "Loading data...",
+    "noResults": "No results found",
+    "emptyList": "The list is empty"
+  }
+}

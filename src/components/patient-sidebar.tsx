@@ -25,25 +25,31 @@ import { Logo } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
-
-const menuItems = [
-  { href: '/dashboard/patient', label: 'Dashboard', icon: Home, exact: true },
-  { href: '/dashboard/patient/appointments', label: 'Appointments', icon: Calendar },
-  { href: '/dashboard/patient/alerts', label: 'Health Alerts', icon: Bell },
-  { href: '/dashboard/patient/records', label: 'Health Records', icon: HeartPulse },
-  { href: '/dashboard/patient/pharmacy-stock', label: 'Pharmacy Stock', icon: Pill },
-  { href: '/dashboard/patient/consultation', label: 'Video Consultation', icon: Video },
-  { href: '/dashboard/patient/profile', label: 'Profile', icon: User },
-];
+import { useLanguage } from '@/hooks/useLanguage';
+import { LanguageSwitcher } from './language-switcher';
 
 export function PatientSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { profile, signOut } = useAuth();
+  const { t: tCommon } = useLanguage();
+
+  // Extract locale from pathname (e.g., /en-IN/dashboard/patient -> en-IN)
+  const locale = pathname?.split('/')[1] || 'en-IN';
+
+  const menuItems = [
+    { href: `/${locale}/dashboard/patient`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    { href: `/${locale}/dashboard/patient/appointments`, label: tCommon('navigation.appointments'), icon: Calendar },
+    { href: `/${locale}/dashboard/patient/alerts`, label: tCommon('navigation.healthAlerts'), icon: Bell },
+    { href: `/${locale}/dashboard/patient/records`, label: tCommon('navigation.healthRecords'), icon: HeartPulse },
+    { href: `/${locale}/dashboard/patient/pharmacy-stock`, label: tCommon('navigation.pharmacyStock'), icon: Pill },
+    { href: `/${locale}/dashboard/patient/consultation`, label: tCommon('navigation.videoConsultation'), icon: Video },
+    { href: `/${locale}/dashboard/patient/profile`, label: tCommon('navigation.profile'), icon: User },
+  ];
 
   const handleLogout = async () => {
     await signOut();
-    router.push('/login');
+    router.push(`/${locale}/login`);
   };
 
   const getInitials = (name: string) => {
@@ -51,7 +57,7 @@ export function PatientSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2">
           <Logo className="h-8 w-8 text-primary" />
@@ -61,7 +67,7 @@ export function PatientSidebar() {
       <SidebarContent className="p-2">
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.label}>
+            <SidebarMenuItem key={item.href}>
               <Link href={item.href} passHref>
                 <SidebarMenuButton
                   isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
@@ -76,31 +82,34 @@ export function PatientSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex items-center gap-3 p-2">
-          {profile?.role === 'patient' ? (
-            <>
-              <Avatar className="h-10 w-10">
-                {profile?.photo && (
-                  <AvatarImage src={profile.photo} alt={profile.full_name} />
-                )}
-                <AvatarFallback>
-                  {profile ? getInitials(profile.full_name) : 'P'}
-                </AvatarFallback>
-              </Avatar>
-              <div className="overflow-hidden">
-                <p className="truncate font-semibold">{profile?.full_name || 'Patient'}</p>
-                <p className="truncate text-xs text-muted-foreground">Patient</p>
+        <div className="flex flex-col gap-3 p-2">
+          <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
+          <div className="flex items-center gap-3">
+            {profile?.role === 'patient' ? (
+              <>
+                <Avatar className="h-10 w-10">
+                  {profile?.photo && (
+                    <AvatarImage src={profile.photo} alt={profile.full_name} />
+                  )}
+                  <AvatarFallback>
+                    {profile ? getInitials(profile.full_name) : 'P'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="overflow-hidden">
+                  <p className="truncate font-semibold">{profile?.full_name || 'Patient'}</p>
+                  <p className="truncate text-xs text-muted-foreground">Patient</p>
+                </div>
+              </>
+            ) : (
+              <div className="overflow-hidden w-full">
+                <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
+                <p className="text-[10px] text-muted-foreground truncate">Please log in as Patient</p>
               </div>
-            </>
-          ) : (
-            <div className="overflow-hidden w-full">
-              <p className="text-xs font-bold text-destructive truncate">Session Mismatch</p>
-              <p className="text-[10px] text-muted-foreground truncate">Please log in as Patient</p>
-            </div>
-          )}
-          <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-            <LogOut />
-          </Button>
+            )}
+            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
+              <LogOut />
+            </Button>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>

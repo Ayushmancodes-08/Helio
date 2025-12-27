@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -12,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useErrorTranslation } from '@/hooks/useErrorTranslation';
 import { UserPlus, Camera, ArrowRight, KeyRound } from 'lucide-react';
 import { Logo } from '@/components/icons';
 import Link from 'next/link';
@@ -29,9 +32,10 @@ const signupSchema = z.object({
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function PatientSignupPage() {
+function PatientSignupContent() {
   const router = useRouter();
   const { toast } = useToast();
+  const { getErrorMessage } = useErrorTranslation();
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const form = useForm<SignupFormValues>({
@@ -73,7 +77,13 @@ export default function PatientSignupPage() {
 
       if (otpError) {
         console.error('OTP send error:', otpError)
-        throw otpError
+        const errorMessage = getErrorMessage('authentication.invalidCredentials')
+        toast({
+          variant: 'destructive',
+          title: 'Signup Failed',
+          description: errorMessage,
+        })
+        return
       }
 
       // Store patient data temporarily to use after OTP verification
@@ -94,17 +104,23 @@ export default function PatientSignupPage() {
       // Move to OTP verification step
       setStep(2)
     } catch (error: any) {
+      const errorMessage = getErrorMessage('general.serverError')
       toast({
         variant: 'destructive',
         title: 'Signup Failed',
-        description: error.message || 'Please try again.',
+        description: error.message || errorMessage,
       });
     }
   };
 
   const handleVerifyOtp = async () => {
     if (!otp || otp.length !== 6) {
-      toast({ variant: 'destructive', title: 'Invalid OTP', description: 'Please enter the 6-digit OTP.' });
+      const errorMessage = getErrorMessage('validation.invalidNumber')
+      toast({ 
+        variant: 'destructive', 
+        title: 'Invalid OTP', 
+        description: errorMessage 
+      });
       return;
     }
 
@@ -120,7 +136,12 @@ export default function PatientSignupPage() {
       })
 
       if (verifyError) {
-        toast({ variant: 'destructive', title: 'Invalid OTP', description: 'The OTP you entered is incorrect.' });
+        const errorMessage = getErrorMessage('authentication.tokenInvalid')
+        toast({ 
+          variant: 'destructive', 
+          title: 'Invalid OTP', 
+          description: errorMessage 
+        });
         return;
       }
 
@@ -163,10 +184,11 @@ export default function PatientSignupPage() {
       // Redirect to patient dashboard
       router.push('/dashboard/patient')
     } catch (error: any) {
+      const errorMessage = getErrorMessage('general.serverError')
       toast({
         variant: 'destructive',
         title: 'Signup Failed',
-        description: error.message || 'Something went wrong. Please try again.',
+        description: error.message || errorMessage,
       })
       console.error(error)
     }
@@ -319,4 +341,8 @@ export default function PatientSignupPage() {
       </Card>
     </div>
   );
+}
+
+export default function PatientSignupPage() {
+  return <PatientSignupContent />;
 }

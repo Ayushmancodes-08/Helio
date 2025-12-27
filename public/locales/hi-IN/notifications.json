@@ -1,0 +1,77 @@
+{
+  "appointmentReminders": {
+    "title": "नियुक्ति अनुस्मारक",
+    "upcoming": "आपकी {doctorName} के साथ {date} को {time} पर नियुक्ति है",
+    "upcomingIn24Hours": "आपकी {doctorName} के साथ नियुक्ति कल {time} पर है",
+    "upcomingIn1Hour": "आपकी {doctorName} के साथ नियुक्ति 1 घंटे में शुरू होगी",
+    "readyToJoin": "क्या आप {doctorName} के साथ अपने परामर्श में शामिल होने के लिए तैयार हैं?",
+    "joinNow": "अभी शामिल हों",
+    "confirmed": "{doctorName} के साथ {date} को {time} पर नियुक्ति की पुष्टि की गई"
+  },
+  "systemNotifications": {
+    "title": "सिस्टम सूचना",
+    "profileUpdated": "आपकी प्रोफाइल सफलतापूर्वक अपडेट की गई है",
+    "passwordChanged": "आपका पासवर्ड सफलतापूर्वक बदल दिया गया है",
+    "languageChanged": "भाषा की प्राथमिकता {language} में अपडेट की गई है",
+    "settingsSaved": "आपकी सेटिंग्स सहेजी गई हैं",
+    "dataSync": "आपका डेटा सिंक किया जा रहा है",
+    "syncComplete": "डेटा सिंक्रोनाइजेशन पूर्ण हुआ",
+    "offlineMode": "आप वर्तमान में ऑफलाइन हैं। कुछ सुविधाएं सीमित हो सकती हैं",
+    "backOnline": "आप फिर से ऑनलाइन हैं"
+  },
+  "successMessages": {
+    "title": "सफलता",
+    "appointmentBooked": "{doctorName} के साथ {date} को {time} पर नियुक्ति सफलतापूर्वक बुक की गई",
+    "appointmentCancelled": "नियुक्ति सफलतापूर्वक रद्द की गई",
+    "appointmentRescheduled": "नियुक्ति सफलतापूर्वक {date} को {time} पर फिर से निर्धारित की गई",
+    "prescriptionFilled": "प्रिस्क्रिप्शन सफलतापूर्वक भरी गई",
+    "profileUpdated": "प्रोफाइल सफलतापूर्वक अपडेट की गई",
+    "passwordReset": "पासवर्ड सफलतापूर्वक रीसेट किया गया",
+    "loginSuccess": "सफलतापूर्वक लॉगिन किया गया",
+    "logoutSuccess": "सफलतापूर्वक लॉगआउट किया गया",
+    "recordsSaved": "आपके रिकॉर्ड सफलतापूर्वक सहेजे गए हैं",
+    "reportGenerated": "रिपोर्ट सफलतापूर्वक जेनरेट की गई",
+    "inventoryUpdated": "इन्वेंटरी सफलतापूर्वक अपडेट की गई",
+    "medicineAdded": "दवा सफलतापूर्वक इन्वेंटरी में जोड़ी गई",
+    "stockUpdated": "स्टॉक सफलतापूर्वक अपडेट किया गया"
+  },
+  "warningMessages": {
+    "title": "चेतावनी",
+    "appointmentSoon": "आपकी नियुक्ति जल्द ही आने वाली है",
+    "lowStock": "{medicineName} का स्टॉक कम है",
+    "expiredMedicine": "{medicineName} की समय सीमा समाप्त हो गई है",
+    "expiringMedicine": "{medicineName} {date} को समाप्त हो जाएगी",
+    "invalidInput": "कृपया अपनी इनपुट जांचें और फिर से कोशिश करें",
+    "unsavedChanges": "आपके पास असहेजे गए परिवर्तन हैं। क्या आप छोड़ना चाहते हैं?",
+    "slowConnection": "आपका कनेक्शन धीमा है। कुछ सुविधाएं ठीक से काम नहीं कर सकती हैं",
+    "storageQuotaExceeded": "स्टोरेज कोटा अधिक हो गया है। कृपया कुछ फाइलें हटाएं",
+    "sessionExpiring": "आपका सेशन जल्द ही समाप्त हो जाएगा। कृपया अपना काम सहेजें",
+    "dataLoss": "यह क्रिया पूर्ववत नहीं की जा सकती"
+  },
+  "errorMessages": {
+    "title": "त्रुटि",
+    "appointmentBookingFailed": "नियुक्ति बुक करने में विफल। कृपया फिर से कोशिश करें",
+    "appointmentCancellationFailed": "नियुक्ति रद्द करने में विफल। कृपया फिर से कोशिश करें",
+    "appointmentRescheduleFailed": "नियुक्ति को फिर से निर्धारित करने में विफल। कृपया फिर से कोशिश करें",
+    "profileUpdateFailed": "प्रोफाइल अपडेट करने में विफल। कृपया फिर से कोशिश करें",
+    "passwordResetFailed": "पासवर्ड रीसेट करने में विफल। कृपया फिर से कोशिश करें",
+    "loginFailed": "लॉगिन विफल। कृपया अपनी साख जांचें",
+    "networkError": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें",
+    "serverError": "सर्वर त्रुटि। कृपया बाद में फिर से कोशिश करें",
+    "invalidData": "अमान्य डेटा प्रदान किया गया। कृपया जांचें और फिर से कोशिश करें",
+    "permissionDenied": "आपको यह क्रिया करने की अनुमति नहीं है",
+    "recordNotFound": "रिकॉर्ड नहीं मिला",
+    "operationFailed": "ऑपरेशन विफल। कृपया फिर से कोशिश करें"
+  },
+  "infoMessages": {
+    "title": "जानकारी",
+    "noAppointments": "कोई नियुक्तियां निर्धारित नहीं हैं",
+    "noPrescriptions": "कोई प्रिस्क्रिप्शन उपलब्ध नहीं है",
+    "noLabReports": "कोई लैब रिपोर्ट उपलब्ध नहीं है",
+    "noPatients": "कोई रोगी नहीं मिला",
+    "noDoctors": "कोई डॉक्टर उपलब्ध नहीं है",
+    "loadingData": "डेटा लोड हो रहा है...",
+    "noResults": "कोई परिणाम नहीं मिला",
+    "emptyList": "सूची खाली है"
+  }
+}

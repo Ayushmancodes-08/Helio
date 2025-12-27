@@ -1,0 +1,70 @@
+{
+  "general": {
+    "notFound": "পৃষ্ঠা পাওয়া যায়নি",
+    "unauthorized": "অননুমোদিত অ্যাক্সেস",
+    "forbidden": "অ্যাক্সেস নিষিদ্ধ",
+    "serverError": "সার্ভার ত্রুটি ঘটেছে",
+    "badRequest": "খারাপ অনুরোধ",
+    "conflict": "দ্বন্দ্ব ঘটেছে",
+    "tooManyRequests": "অনেক বেশি অনুরোধ। পরে আবার চেষ্টা করুন।",
+    "serviceUnavailable": "সেবা অস্থায়ীভাবে অনুপলব্ধ",
+    "networkError": "নেটওয়ার্ক ত্রুটি ঘটেছে",
+    "timeout": "অনুরোধ সময়সীমা অতিক্রম"
+  },
+  "validation": {
+    "required": "এই ক্ষেত্রটি প্রয়োজনীয়",
+    "invalidEmail": "অবৈধ ইমেল ঠিকানা",
+    "invalidPhone": "অবৈধ ফোন নম্বর",
+    "passwordTooShort": "পাসওয়ার্ড কমপক্ষে 8 অক্ষর হতে হবে",
+    "passwordMismatch": "পাসওয়ার্ড মেলে না",
+    "invalidDate": "অবৈধ তারিখ বিন্যাস",
+    "invalidNumber": "অবৈধ সংখ্যা",
+    "minLength": "ন্যূনতম {min} অক্ষর প্রয়োজন",
+    "maxLength": "সর্বোচ্চ {max} অক্ষর অনুমোদিত",
+    "pattern": "অবৈধ বিন্যাস"
+  },
+  "authentication": {
+    "invalidCredentials": "অবৈধ ইমেল বা পাসওয়ার্ড",
+    "accountLocked": "অ্যাকাউন্ট লক করা হয়েছে। পরে আবার চেষ্টা করুন।",
+    "accountNotFound": "অ্যাকাউন্ট পাওয়া যায়নি",
+    "emailAlreadyExists": "ইমেল ইতিমধ্যে নিবন্ধিত",
+    "phoneAlreadyExists": "ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
+    "sessionExpired": "আপনার সেশন শেষ হয়েছে। অনুগ্রহ করে আবার লগইন করুন।",
+    "tokenInvalid": "অবৈধ বা মেয়াদোত্তীর্ণ টোকেন",
+    "tokenExpired": "টোকেন মেয়াদোত্তীর্ণ হয়েছে"
+  },
+  "appointment": {
+    "appointmentNotFound": "অ্যাপয়েন্টমেন্ট পাওয়া যায়নি",
+    "appointmentCancelled": "অ্যাপয়েন্টমেন্ট বাতিল করা হয়েছে",
+    "appointmentPassed": "অ্যাপয়েন্টমেন্ট তারিখ অতিক্রম করেছে",
+    "doctorNotAvailable": "ডাক্তার নির্বাচিত সময়ে উপলব্ধ নন",
+    "slotNotAvailable": "নির্বাচিত সময় স্লট উপলব্ধ নয়",
+    "cannotCancelAppointment": "অ্যাপয়েন্টমেন্ট বাতিল করতে পারবেন না",
+    "cannotRescheduleAppointment": "অ্যাপয়েন্টমেন্ট পুনর্নির্ধারণ করতে পারবেন না"
+  },
+  "medical": {
+    "recordNotFound": "চিকিৎসা রেকর্ড পাওয়া যায়নি",
+    "prescriptionNotFound": "প্রেসক্রিপশন পাওয়া যায়নি",
+    "labReportNotFound": "ল্যাব রিপোর্ট পাওয়া যায়নি",
+    "invalidMedication": "অবৈধ ওষুধ",
+    "invalidDosage": "অবৈধ ডোজ"
+  },
+  "database": {
+    "connectionError": "ডাটাবেস সংযোগ ত্রুটি",
+    "queryError": "ডাটাবেস প্রশ্ন ত্রুটি",
+    "dataNotFound": "ডেটা পাওয়া যায়নি",
+    "duplicateEntry": "ডুপ্লিকেট এন্ট্রি"
+  },
+  "file": {
+    "fileNotFound": "ফাইল পাওয়া যায়নি",
+    "invalidFileType": "অবৈধ ফাইল ধরন",
+    "fileTooLarge": "ফাইল আকার সীমা অতিক্রম করেছে",
+    "uploadFailed": "ফাইল আপলোড ব্যর্থ"
+  },
+  "payment": {
+    "paymentFailed": "পেমেন্ট ব্যর্থ",
+    "invalidPaymentMethod": "অবৈধ পেমেন্ট পদ্ধতি",
+    "insufficientFunds": "অপর্যাপ্ত তহবিল",
+    "transactionFailed": "লেনদেন ব্যর্থ"
+  }
+}

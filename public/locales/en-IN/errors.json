@@ -1,0 +1,70 @@
+{
+  "general": {
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "serverError": "Server error occurred",
+    "badRequest": "Bad request",
+    "conflict": "Conflict occurred",
+    "tooManyRequests": "Too many requests. Please try again later.",
+    "serviceUnavailable": "Service temporarily unavailable",
+    "networkError": "Network error occurred",
+    "timeout": "Request timeout"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "invalidDate": "Invalid date format",
+    "invalidNumber": "Invalid number",
+    "minLength": "Minimum {min} characters required",
+    "maxLength": "Maximum {max} characters allowed",
+    "pattern": "Invalid format"
+  },
+  "authentication": {
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Account is locked. Please try again later.",
+    "accountNotFound": "Account not found",
+    "emailAlreadyExists": "Email already registered",
+    "phoneAlreadyExists": "Phone number already registered",
+    "sessionExpired": "Your session has expired. Please login again.",
+    "tokenInvalid": "Invalid or expired token",
+    "tokenExpired": "Token has expired"
+  },
+  "appointment": {
+    "appointmentNotFound": "Appointment not found",
+    "appointmentCancelled": "Appointment has been cancelled",
+    "appointmentPassed": "Appointment date has passed",
+    "doctorNotAvailable": "Doctor is not available at selected time",
+    "slotNotAvailable": "Selected time slot is not available",
+    "cannotCancelAppointment": "Cannot cancel appointment",
+    "cannotRescheduleAppointment": "Cannot reschedule appointment"
+  },
+  "medical": {
+    "recordNotFound": "Medical record not found",
+    "prescriptionNotFound": "Prescription not found",
+    "labReportNotFound": "Lab report not found",
+    "invalidMedication": "Invalid medication",
+    "invalidDosage": "Invalid dosage"
+  },
+  "database": {
+    "connectionError": "Database connection error",
+    "queryError": "Database query error",
+    "dataNotFound": "Data not found",
+    "duplicateEntry": "Duplicate entry"
+  },
+  "file": {
+    "fileNotFound": "File not found",
+    "invalidFileType": "Invalid file type",
+    "fileTooLarge": "File size exceeds limit",
+    "uploadFailed": "File upload failed"
+  },
+  "payment": {
+    "paymentFailed": "Payment failed",
+    "invalidPaymentMethod": "Invalid payment method",
+    "insufficientFunds": "Insufficient funds",
+    "transactionFailed": "Transaction failed"
+  }
+}

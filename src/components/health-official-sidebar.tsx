@@ -17,51 +17,57 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from './ui/button';
 import { useAuth } from '@/hooks/useAuth';
-
-const menuItems = [
-  { href: '/dashboard/health-official', label: 'Dashboard', icon: Home, exact: true },
-  {
-    href: '/dashboard/health-official/analytics',
-    label: 'Analytics',
-    icon: BarChart3,
-  },
-  {
-    href: '/dashboard/health-official/resources',
-    label: 'Resources',
-    icon: Package,
-  },
-  {
-    href: '/dashboard/health-official/reports',
-    label: 'Reports',
-    icon: FileText,
-  },
-  {
-    href: '/dashboard/health-official/alerts',
-    label: 'Alerts',
-    icon: Bell,
-  },
-  {
-    href: '/dashboard/health-official/profile',
-    label: 'Profile',
-    icon: User,
-  },
-];
+import { useLanguage } from '@/hooks/useLanguage';
+import { LanguageSwitcher } from './language-switcher';
 
 export function HealthOfficialSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { profile, signOut } = useAuth();
+  const { t: tCommon } = useLanguage();
   const healthOfficialAvatar = PlaceHolderImages.find(
     (img) => img.id === 'avatar-doctor'
   );
 
+  // Extract locale from pathname
+  const locale = pathname?.split('/')[1] || 'en-IN';
+
+  const menuItems = [
+    { href: `/${locale}/dashboard/health-official`, label: tCommon('navigation.dashboard'), icon: Home, exact: true },
+    {
+      href: `/${locale}/dashboard/health-official/analytics`,
+      label: tCommon('navigation.analytics'),
+      icon: BarChart3,
+    },
+    {
+      href: `/${locale}/dashboard/health-official/resources`,
+      label: tCommon('navigation.resources'),
+      icon: Package,
+    },
+    {
+      href: `/${locale}/dashboard/health-official/reports`,
+      label: tCommon('navigation.reports'),
+      icon: FileText,
+    },
+    {
+      href: `/${locale}/dashboard/health-official/alerts`,
+      label: tCommon('navigation.healthAlerts'),
+      icon: Bell,
+    },
+    {
+      href: `/${locale}/dashboard/health-official/profile`,
+      label: tCommon('navigation.profile'),
+      icon: User,
+    },
+  ];
+
   const handleLogout = async () => {
     await signOut();
-    router.push('/login');
+    router.push(`/${locale}/login`);
   };
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2">
           <Logo className="h-8 w-8 text-primary" />
@@ -71,7 +77,7 @@ export function HealthOfficialSidebar() {
       <SidebarContent className="p-2">
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.label}>
+            <SidebarMenuItem key={item.href}>
               <Link href={item.href} passHref>
                 <SidebarMenuButton
                   isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
@@ -86,24 +92,27 @@ export function HealthOfficialSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t">
-        <div className="flex items-center gap-3 p-2">
-          <Avatar className="h-10 w-10">
-            {healthOfficialAvatar && (
-              <AvatarImage
-                src={profile?.photo || healthOfficialAvatar.imageUrl}
-                alt={profile?.full_name || 'Health Official'}
-                data-ai-hint={healthOfficialAvatar.imageHint}
-              />
-            )}
-            <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'HO'}</AvatarFallback>
-          </Avatar>
-          <div className="overflow-hidden">
-            <p className="truncate font-semibold">{profile?.full_name || 'Health Official'}</p>
-            <p className="truncate text-xs text-muted-foreground">Health Official</p>
+        <div className="flex flex-col gap-3 p-2">
+          <LanguageSwitcher variant="dashboard" className="w-full justify-start" />
+          <div className="flex items-center gap-3">
+            <Avatar className="h-10 w-10">
+              {healthOfficialAvatar && (
+                <AvatarImage
+                  src={profile?.photo || healthOfficialAvatar.imageUrl}
+                  alt={profile?.full_name || 'Health Official'}
+                  data-ai-hint={healthOfficialAvatar.imageHint}
+                />
+              )}
+              <AvatarFallback>{profile?.full_name?.split(' ').map(n => n[0]).join('') || 'HO'}</AvatarFallback>
+            </Avatar>
+            <div className="overflow-hidden">
+              <p className="truncate font-semibold">{profile?.full_name || 'Health Official'}</p>
+              <p className="truncate text-xs text-muted-foreground">Health Official</p>
+            </div>
+            <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
+              <LogOut />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon" aria-label="Log out" onClick={handleLogout}>
-            <LogOut />
-          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>
