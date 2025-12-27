@@ -13,8 +13,12 @@
     "continue": "Continue",
     "loggingIn": "Logging in...",
     "professional": "Professional",
+    "tryAgain": "Try Again",
     "noResultsFound": "No results found for \"{query}\"",
     "searchResultsFor": "Search Results for \"{query}\"",
+    "app": {
+        "name": "Grameen Swasthya Setu"
+    },
     "navigation": {
         "dashboard": "Dashboard",
         "appointments": "Appointments",
@@ -29,6 +33,7 @@
         "inventory": "Inventory",
         "prescriptions": "Prescriptions",
         "reports": "Reports",
+        "labReports": "Lab Reports",
         "analytics": "Analytics",
         "resources": "Resources",
         "alerts": "Alerts",
