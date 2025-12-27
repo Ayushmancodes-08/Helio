@@ -211,46 +211,6 @@ export default function HealthOfficialDashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('healthOfficial.healthMetricsCosts')}</CardTitle>
-          <CardDescription>{t('healthOfficial.estimatedCostsForHealthMetrics')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('dataEntryOperator.district')}</TableHead>
-                <TableHead>{t('healthOfficial.maintenanceCost')}</TableHead>
-                <TableHead>{t('healthOfficial.staffingCost')}</TableHead>
-                <TableHead>{t('healthOfficial.totalCost')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {metrics.length > 0 ? metrics.map(res => {
-                // Sample cost calculations based on district metrics
-                const maintenanceCost = res.total_beds * 5000; // ₹5000 per bed per month
-                const staffingCost = (res.staff?.doctors || 0) * 50000 + (res.staff?.nurses || 0) * 25000; // Sample staff costs
-                const totalCost = maintenanceCost + staffingCost;
-
-                return (
-                  <TableRow key={`cost-${res.district_name}`}>
-                    <TableCell className="font-medium">{res.district_name}</TableCell>
-                    <TableCell>{formatCurrency(maintenanceCost)}</TableCell>
-                    <TableCell>{formatCurrency(staffingCost)}</TableCell>
-                    <TableCell className="font-semibold">{formatCurrency(totalCost)}</TableCell>
-                  </TableRow>
-                );
-              }) : (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center">{t('healthOfficial.noDataAvailable')}</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
           <CardTitle>{t('healthOfficial.publicHealthAlerts')}</CardTitle>
           <CardDescription>
             {t('healthOfficial.activeAlertsAndAdvisories')}

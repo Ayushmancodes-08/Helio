@@ -314,15 +314,6 @@ export default function AppointmentsPage() {
                   <><Calendar className="mr-2 h-4 w-4" /> {t('patient.confirmAppointment')}</>
                 )}
               </Button>
-
-              {/* Consultation Fee Display */}
-              <div className="mt-6 p-4 bg-muted rounded-lg">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">{t('patient.consultationFee')}</span>
-                  <span className="text-lg font-bold">{formatCurrency(500)}</span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">{t('patient.feeAppliesPerConsultation')}</p>
-              </div>
             </form>
           </Form>
         </CardContent>

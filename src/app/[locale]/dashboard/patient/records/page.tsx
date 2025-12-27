@@ -154,7 +154,7 @@ export default function HealthRecordsPage() {
                   <TableBody>
                     {consultations.map((consultation) => (
                       <TableRow key={consultation.id}>
-                        <TableCell>{formatDate(new Date(consultation.appointment_date), 'long')}</TableCell>
+                        <TableCell>{consultation.appointment_date ? formatDate(new Date(consultation.appointment_date), 'long') : 'Date not set'}</TableCell>
                         <TableCell>Dr. {consultation.doctor_name}</TableCell>
                         <TableCell>{consultation.consultation_type}</TableCell>
                         <TableCell>
@@ -199,7 +199,6 @@ export default function HealthRecordsPage() {
                       <TableHead>Dosage</TableHead>
                       <TableHead>Doctor</TableHead>
                       <TableHead>Instructions</TableHead>
-                      <TableHead>Cost</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -213,7 +212,6 @@ export default function HealthRecordsPage() {
                         <TableCell className="max-w-xs truncate">
                           {prescription.instructions || '-'}
                         </TableCell>
-                        <TableCell className="font-bold">{formatCurrency(200)}</TableCell>
                         <TableCell className="text-right">
                           <Button variant="outline" size="sm" onClick={() => handleDownloadPDF(prescription)}>
                             <Download className="mr-2 h-4 w-4" /> Download

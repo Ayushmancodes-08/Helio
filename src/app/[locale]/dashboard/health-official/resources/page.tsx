@@ -173,47 +173,6 @@ export default function ResourcesPage() {
               </Table>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Resource Allocation Costs</CardTitle>
-              <CardDescription>
-                Estimated costs for resource allocation and maintenance by district.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>District</TableHead>
-                    <TableHead>Bed Maintenance Cost</TableHead>
-                    <TableHead>Ambulance Operations Cost</TableHead>
-                    <TableHead>Staff Allocation Cost</TableHead>
-                    <TableHead className="text-right">Total Monthly Cost</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {resourceData.map((res) => {
-                    // Calculate costs based on resources
-                    const bedMaintenanceCost = res.beds.total * 5000; // ₹5000 per bed per month
-                    const ambulanceOperationsCost = res.ambulances * 15000; // ₹15000 per ambulance per month
-                    const staffAllocationCost = res.staff.doctors * 50000 + res.staff.nurses * 25000; // Staff salaries
-                    const totalCost = bedMaintenanceCost + ambulanceOperationsCost + staffAllocationCost;
-                    
-                    return (
-                      <TableRow key={`cost-${res.district}`}>
-                        <TableCell className="font-medium">{res.district}</TableCell>
-                        <TableCell>{formatCurrency(bedMaintenanceCost)}</TableCell>
-                        <TableCell>{formatCurrency(ambulanceOperationsCost)}</TableCell>
-                        <TableCell>{formatCurrency(staffAllocationCost)}</TableCell>
-                        <TableCell className="text-right font-semibold">{formatCurrency(totalCost)}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
         </>
       )}
     </div>

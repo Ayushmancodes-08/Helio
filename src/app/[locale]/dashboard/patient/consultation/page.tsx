@@ -34,13 +34,13 @@ export default function VideoConsultationPage() {
 
     const getCameraPermission = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { 
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
             facingMode: 'user',
             width: { ideal: 1280 },
             height: { ideal: 720 }
-          }, 
-          audio: true 
+          },
+          audio: true
         });
         setHasCameraPermission(true);
 
@@ -140,12 +140,12 @@ export default function VideoConsultationPage() {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="relative aspect-video rounded-lg bg-muted flex items-center justify-center">
                 <div className="absolute inset-0 bg-black rounded-lg">
-                  <video 
-                    ref={videoRef} 
-                    className="h-full w-full object-cover rounded-md" 
+                  <video
+                    ref={videoRef}
+                    className="h-full w-full object-cover rounded-md"
                     style={{ transform: 'scaleX(-1)' }}
-                    autoPlay 
-                    muted 
+                    autoPlay
+                    muted
                   />
                   {isCameraOff && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -158,12 +158,6 @@ export default function VideoConsultationPage() {
               <div className="relative aspect-video rounded-lg bg-secondary flex items-center justify-center text-muted-foreground">
                 <p>{t('patient.waitingForDoctor', { doctor })}</p>
                 <p className="absolute bottom-2 left-2 rounded-sm bg-black/50 px-2 py-1 text-xs text-white">{doctor}</p>
-              </div>
-            </div>
-            <div className="mt-4 p-4 bg-muted rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">{t('patient.consultationCost')}</span>
-                <span className="text-lg font-bold">{formatCurrency(500)}</span>
               </div>
             </div>
             <div className="mt-6 flex justify-center gap-4">
@@ -214,7 +208,7 @@ export default function VideoConsultationPage() {
                   <div>
                     <CardTitle>Dr. {appointment.doctor_name}</CardTitle>
                     <CardDescription>
-                      {formatDate(new Date(appointment.appointment_date), 'long')} at {appointment.appointment_time}
+                      {appointment.appointment_date ? formatDate(new Date(appointment.appointment_date), 'long') : 'Date not set'} at {appointment.appointment_time || 'Time not set'}
                     </CardDescription>
                   </div>
                   <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
@@ -226,9 +220,8 @@ export default function VideoConsultationPage() {
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-muted-foreground">
                     <p>{t('patient.consultationType')}: <span className="font-medium">{appointment.consultation_type}</span></p>
-                    <p className="mt-2">{t('patient.consultationCost')}: <span className="font-bold text-foreground">{formatCurrency(500)}</span></p>
                   </div>
-                  <Button 
+                  <Button
                     onClick={() => handleJoinCall(appointment.id)}
                     className="gap-2"
                   >

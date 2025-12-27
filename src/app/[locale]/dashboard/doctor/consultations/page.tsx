@@ -35,10 +35,14 @@ export default function DoctorConsultationsPage() {
       .filter((appt) => {
         const status = (appt.status || '').toLowerCase();
         const isUpcoming = status === 'upcoming' || status === 'scheduled' || !status;
+        if (!appt.appointment_date) return false;
         const appointmentDate = new Date(appt.appointment_date);
         return isUpcoming && appointmentDate >= new Date();
       })
-      .sort((a, b) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
+      .sort((a, b) => {
+        if (!a.appointment_date || !b.appointment_date) return 0;
+        return new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime();
+      });
   }, [appointments]);
 
   // Filter past consultations (completed or cancelled)
@@ -49,7 +53,10 @@ export default function DoctorConsultationsPage() {
         const isPast = status === 'completed' || status === 'cancelled';
         return isPast;
       })
-      .sort((a, b) => new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime());
+      .sort((a, b) => {
+        if (!a.appointment_date || !b.appointment_date) return 0;
+        return new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime();
+      });
   }, [appointments]);
 
   if (authLoading || appointmentsLoading) {
@@ -96,7 +103,7 @@ export default function DoctorConsultationsPage() {
                       {consult.patient_name}
                     </TableCell>
                     <TableCell>
-                      {consult.appointment_time || formatDate(new Date(consult.appointment_date), 'short')}
+                      {consult.appointment_time || (consult.appointment_date ? formatDate(new Date(consult.appointment_date), 'short') : 'Not set')}
                     </TableCell>
                     <TableCell>
                       <Badge variant="default">{t('common.upcoming')}</Badge>
@@ -148,7 +155,7 @@ export default function DoctorConsultationsPage() {
                       {consult.patient_name}
                     </TableCell>
                     <TableCell>
-                      {formatDate(new Date(consult.appointment_date), 'long')}
+                      {consult.appointment_date ? formatDate(new Date(consult.appointment_date), 'long') : 'Date not set'}
                     </TableCell>
                     <TableCell>
                       <Badge variant={consult.status?.toLowerCase() === 'completed' ? 'secondary' : 'destructive'}>
