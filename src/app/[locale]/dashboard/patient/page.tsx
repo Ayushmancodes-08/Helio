@@ -40,6 +40,7 @@ import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useLabReports } from '@/hooks/useLabReports';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getSuccessMessageTranslation, getErrorMessageTranslation } from '@/lib/notification-translations';
+import { ChatbotFloatingButton } from '@/components/ChatbotFloatingButton';
 
 export default function PatientDashboardPage() {
   const { profile, loading: authLoading } = useAuth();
@@ -395,6 +396,7 @@ export default function PatientDashboardPage() {
           </CardContent>
         </Card>
       </div>
+      <ChatbotFloatingButton />
     </div>
   );
 }
