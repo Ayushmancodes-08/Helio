@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useInventory } from '@/hooks/useInventory';
 import { filterBySearchQuery, sortByRelevance } from '@/lib/search-utils';
 
 const PHARMACY_LOCATION_KEY = 'pharmacistLocation';
@@ -43,18 +44,23 @@ export default function PharmacyStockPage() {
   const [searchResults, setSearchResults] = useState<PharmacyResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [inventory, setInventory] = useState<Medicine[]>([]);
+
+  // Use real inventory data from Supabase instead of localStorage
+  const { inventory, loading: inventoryLoading } = useInventory();
   const [pharmacyLocation, setPharmacyLocation] = useState<{ name: string, address: string } | null>(null);
 
   useEffect(() => {
     try {
-      const storedInventory = localStorage.getItem(INVENTORY_STORAGE_KEY);
-      if (storedInventory) {
-        setInventory(JSON.parse(storedInventory));
-      }
+      // Only load pharmacy location from localStorage
       const storedLocation = localStorage.getItem(PHARMACY_LOCATION_KEY);
       if (storedLocation) {
         setPharmacyLocation(JSON.parse(storedLocation));
+      } else {
+        // Set a default pharmacy location if none exists
+        setPharmacyLocation({
+          name: 'Government Health Center',
+          address: 'Main Road, District Healthcare Centre, India'
+        });
       }
     } catch (error) {
       console.error("Failed to load data from localStorage", error);
@@ -73,9 +79,19 @@ export default function PharmacyStockPage() {
     setTimeout(() => {
       const results: PharmacyResult[] = [];
 
+      // Map inventory items to Medicine format
+      const medicinesList = inventory.map(item => ({
+        id: item.id,
+        name: item.medicine_name,
+        quantity: item.quantity,
+        price: item.price || 0,
+        supplier: item.pharmacist_name || 'Unknown',
+        status: item.quantity > 10 ? 'In Stock' as const : item.quantity > 0 ? 'Low Stock' as const : 'Out of Stock' as const
+      }));
+
       // Use language-aware search that works across language variants
       const filteredMedicines = filterBySearchQuery(
-        inventory,
+        medicinesList,
         searchQuery,
         ['name']
       );
@@ -180,40 +196,81 @@ export default function PharmacyStockPage() {
                 <p>{t('common.loading')}</p>
               </div>
             ) : searchResults.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('patient.pharmacyName')}</TableHead>
-                    <TableHead>{t('patient.stockStatus')}</TableHead>
-                    <TableHead>{t('patient.address')}</TableHead>
-                    <TableHead className="text-right">{t('common.action')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {searchResults.map((result) => (
-                    <TableRow key={result.id}>
-                      <TableCell className="font-medium">{result.name}</TableCell>
-                      <TableCell>
-                        <Badge variant={getStockVariant(result.stockStatus)}>
-                          {result.stockStatus !== 'not-available' && <CheckCircle2 className="mr-1 h-3 w-3" />}
-                          {getStockText(result.stockStatus)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{result.address}</TableCell>
-                      <TableCell className="text-right">
+              <>
+                {/* Google Maps with Route - No API Key Required */}
+                <div className="mb-6 rounded-lg overflow-hidden border shadow-md">
+                  <iframe
+                    width="100%"
+                    height="450"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(searchResults[0].address)}&output=embed`}
+                  ></iframe>
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 border-t">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-blue-500 text-white p-2 rounded-full">
+                        <Navigation className="h-5 w-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-blue-900">📍 {searchResults[0].name}</p>
+                        <p className="text-sm text-blue-700 mt-1">{searchResults[0].address}</p>
                         <Button
-                          variant="outline"
+                          className="mt-3"
                           size="sm"
-                          onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(result.address)}`, '_blank')}
+                          onClick={() => {
+                            // Open Google Maps with directions from current location
+                            window.open(
+                              `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(searchResults[0].address)}&travelmode=driving`,
+                              '_blank'
+                            );
+                          }}
                         >
                           <Navigation className="mr-2 h-4 w-4" />
-                          {t('common.view')}
+                          Get Directions (Blue Route Line)
                         </Button>
-                      </TableCell>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pharmacy Results Table */}
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t('patient.pharmacyName')}</TableHead>
+                      <TableHead>{t('patient.stockStatus')}</TableHead>
+                      <TableHead>{t('patient.address')}</TableHead>
+                      <TableHead className="text-right">{t('common.action')}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {searchResults.map((result) => (
+                      <TableRow key={result.id}>
+                        <TableCell className="font-medium">{result.name}</TableCell>
+                        <TableCell>
+                          <Badge variant={getStockVariant(result.stockStatus)}>
+                            {result.stockStatus !== 'not-available' && <CheckCircle2 className="mr-1 h-3 w-3" />}
+                            {getStockText(result.stockStatus)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{result.address}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(result.address)}`, '_blank')}
+                          >
+                            <Navigation className="mr-2 h-4 w-4" />
+                            {t('common.view')}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
             ) : (
               <div className="text-center py-10">
                 <p className="text-muted-foreground">{t('common.noResultsFound', { query: searchQuery })}</p>
