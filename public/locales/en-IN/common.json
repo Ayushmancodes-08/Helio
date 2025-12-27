@@ -11,6 +11,8 @@
     "filter": "Filter",
     "action": "Action",
     "continue": "Continue",
+    "loggingIn": "Logging in...",
+    "professional": "Professional",
     "noResultsFound": "No results found for \"{query}\"",
     "searchResultsFor": "Search Results for \"{query}\"",
     "navigation": {
