@@ -13,6 +13,7 @@ export type InventoryItem = {
     updated_at?: Date;
     // Joined fields
     pharmacist_name?: string;
+    pharmacist_address?: string;
 };
 
 export function useInventory() {
@@ -35,7 +36,7 @@ export function useInventory() {
                 .from('inventory')
                 .select(`
           *,
-          pharmacist:profiles(id, full_name)
+          pharmacist:profiles(id, full_name, address)
         `)
                 .order('medicine_name', { ascending: true });
 
@@ -45,6 +46,7 @@ export function useInventory() {
                 ...item,
                 expiry_date: item.expiry_date ? new Date(item.expiry_date) : undefined,
                 pharmacist_name: item.pharmacist?.full_name,
+                pharmacist_address: item.pharmacist?.address,
             }));
 
             setInventory(formattedData);

@@ -40,7 +40,7 @@ export const AgoraProvider = ({
     }, [client, appId, channelName]);
 
     return (
-        <AgoraRTCProvider client={client}>
+        <AgoraRTCProvider client={client as unknown as any}>
             {children}
         </AgoraRTCProvider>
     );

@@ -83,9 +83,9 @@ export function logSystemError(error: SystemError): void {
     [ErrorSeverity.WARNING]: 'warn',
     [ErrorSeverity.ERROR]: 'error',
     [ErrorSeverity.CRITICAL]: 'error',
-  }[error.severity]
+  }[error.severity];
 
-  console[logLevel as keyof typeof console](
+  (console as any)[logLevel](
     `[${error.code}] ${error.message}`,
     error.context
   )

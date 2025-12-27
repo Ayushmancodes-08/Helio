@@ -33,7 +33,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, PackageSearch, Edit, Save, XCircle, Loader2 } from 'lucide-react';
+import { PlusCircle, PackageSearch, Edit, Save, XCircle, Loader2, MapPin } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useInventory, InventoryItem } from '@/hooks/useInventory';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -43,7 +43,8 @@ const inventorySchema = z.object({
   medicineId: z.string().optional(),
   medicineName: z.string().min(1, 'Medicine name is required.'),
   quantity: z.coerce.number().min(0, 'Quantity cannot be negative.'),
-  price: z.coerce.number().min(0.01, 'Price must be greater than 0.'),
+  // price: z.coerce.number().min(0.01, 'Price must be greater than 0.'), // Removed price requirement
+  price: z.number().optional(),
   expiryDate: z.string().optional(), // Adding expiry date support
   supplier: z.string().optional(), // Kept for UI, though DB might not have it yet (will check schema)
 });
@@ -94,7 +95,7 @@ export default function InventoryPage() {
         const newQuantity = existingMedicine.quantity + data.quantity;
         await updateInventoryItem(existingMedicine.id, {
           quantity: newQuantity,
-          price: data.price // Allow updating price too if supplied
+          // price: data.price // Price update removed
         });
 
         toast({
@@ -103,15 +104,12 @@ export default function InventoryPage() {
         });
       } else {
         // Create new medicine
-        if (data.price <= 0) {
-          form.setError("price", { type: "manual", message: "Price is required for new medicines." });
-          return;
-        }
+        // if (data.price <= 0) { ... } // Validation removed
 
         await createInventoryItem({
           medicine_name: data.medicineName,
           quantity: data.quantity,
-          price: data.price,
+          price: 0, // Defaulting price to 0 as it's removed from UI
           expiry_date: data.expiryDate ? new Date(data.expiryDate) : undefined,
           pharmacist_id: profile.id
         });
@@ -144,7 +142,7 @@ export default function InventoryPage() {
     try {
       await updateInventoryItem(medicineId, {
         quantity: editingValues.quantity,
-        price: editingValues.price
+        // price: editingValues.price // Keeping price as is or 0
       });
       setEditingMedicineId(null);
       toast({
@@ -186,6 +184,8 @@ export default function InventoryPage() {
     <div className="space-y-6">
       <h1 className="font-headline text-3xl font-bold">{t('pharmacist.inventoryManagement')}</h1>
 
+
+
       <Card>
         <CardHeader>
           <CardTitle>{t('pharmacist.addOrUpdateStock')}</CardTitle>
@@ -223,20 +223,8 @@ export default function InventoryPage() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('pharmacist.price')}</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.01" placeholder="0.00" {...field} />
-                      </FormControl>
-                      <FormDescription className="text-xs">{existingMedicine ? t('pharmacist.updateCurrentPrice') : t('pharmacist.priceRequired')}</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Price field removed per user request */}
+                {/* <FormField ... /> */}
                 {/* Supplier field removed as it's not in DB schema yet, could be added later */}
                 <div className="flex items-start pt-8">
                   <Button type="submit" disabled={inventoryLoading} className="w-full">
@@ -279,7 +267,7 @@ export default function InventoryPage() {
                 <TableRow>
                   <TableHead>{t('pharmacist.medicine')}</TableHead>
                   <TableHead>{t('pharmacist.quantity')}</TableHead>
-                  <TableHead>{t('pharmacist.price')}</TableHead>
+                  {/* <TableHead>{t('pharmacist.price')}</TableHead> */}
                   <TableHead>{t('pharmacist.status')}</TableHead>
                   {/* <TableHead className="hidden sm:table-cell">Expiry</TableHead> */}
                   <TableHead className="text-right">{t('pharmacist.actions')}</TableHead>
@@ -301,7 +289,7 @@ export default function InventoryPage() {
                         med.quantity
                       )}
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {editingMedicineId === med.id ? (
                         <Input
                           type="number"
@@ -313,7 +301,7 @@ export default function InventoryPage() {
                       ) : (
                         formatCurrency(med.price || 0)
                       )}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Badge variant={getStatusVariant(med.quantity)}>{getStatusLabel(med.quantity)}</Badge>
                     </TableCell>

@@ -40,11 +40,11 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-secondary">
-      <div className="absolute top-4 right-4">
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-secondary p-4">
+      <div className="absolute top-4 right-4 z-10">
         <LanguageSwitcher variant="homepage" />
       </div>
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <Link href={`/${locale}`} className="flex items-center justify-center gap-2 mb-4">
             <Logo className="h-8 w-8 text-primary" />

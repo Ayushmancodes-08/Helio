@@ -19,14 +19,12 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useInventory } from '@/hooks/useInventory';
 import { filterBySearchQuery, sortByRelevance } from '@/lib/search-utils';
 
-const PHARMACY_LOCATION_KEY = 'pharmacistLocation';
 const INVENTORY_STORAGE_KEY = 'pharmacistInventory';
 
 type Medicine = {
   id: string;
   name: string;
   quantity: number;
-  price: number;
   supplier: string;
   status: 'In Stock' | 'Low Stock' | 'Out of Stock';
 };
@@ -49,30 +47,12 @@ export default function PharmacyStockPage() {
 
   // Use real inventory data from Supabase instead of localStorage
   const { inventory, loading: inventoryLoading } = useInventory();
-  const [pharmacyLocation, setPharmacyLocation] = useState<{ name: string, address: string } | null>(null);
 
-  useEffect(() => {
-    try {
-      // Set predefined pharmacy location: Maa Mangala Medical Store near PMEC
-      const storedLocation = localStorage.getItem(PHARMACY_LOCATION_KEY);
-      if (storedLocation) {
-        setPharmacyLocation(JSON.parse(storedLocation));
-      } else {
-        // Default pharmacy location
-        setPharmacyLocation({
-          name: 'Maa Mangala Medical Store',
-          address: 'Maa Mangala Medical Store, In front of PMEC, Berhampur, Odisha, India'
-        });
-      }
-    } catch (error) {
-      console.error("Failed to load data from localStorage", error);
-    }
-  }, []);
 
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim() || !pharmacyLocation) return;
+    if (!searchQuery.trim()) return;
 
     setIsLoading(true);
     setHasSearched(true);
@@ -86,8 +66,9 @@ export default function PharmacyStockPage() {
         id: item.id,
         name: item.medicine_name,
         quantity: item.quantity,
-        price: item.price || 0,
         supplier: item.pharmacist_name || 'Unknown',
+        // Pass through address
+        raw_address: item.pharmacist_address || '',
         status: item.quantity > 10 ? 'In Stock' as const : item.quantity > 0 ? 'Low Stock' as const : 'Out of Stock' as const
       }));
 
@@ -105,19 +86,35 @@ export default function PharmacyStockPage() {
         'name'
       );
 
-      if (sortedMedicines.length > 0) {
-        const medicine = sortedMedicines[0];
+      // Iterate through matching medicines to build pharmacy results
+      sortedMedicines.forEach(medicine => {
         let stockStatus: PharmacyResult['stockStatus'] = 'not-available';
         if (medicine.status === 'In Stock') stockStatus = 'available';
         if (medicine.status === 'Low Stock') stockStatus = 'low';
 
+        // Parse address in "Name || Address" format
+        const rawAddress = medicine.raw_address || '';
+        const addressParts = rawAddress.split(' || ');
+
+        let pharmacyName = medicine.supplier;
+        let pharmacyAddress = rawAddress;
+
+        if (addressParts.length === 2) {
+          pharmacyName = addressParts[0];
+          pharmacyAddress = addressParts[1];
+        } else if (!rawAddress) {
+          // Fallback if no address found
+          pharmacyName = medicine.supplier;
+          pharmacyAddress = 'Location not available';
+        }
+
         results.push({
-          id: 'pharm-1',
-          name: pharmacyLocation.name,
-          address: pharmacyLocation.address,
+          id: `pharm-${medicine.id}`,
+          name: pharmacyName,
+          address: pharmacyAddress,
           stockStatus: stockStatus,
         });
-      }
+      });
 
       setSearchResults(results);
       setIsLoading(false);
@@ -174,11 +171,10 @@ export default function PharmacyStockPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-grow"
             />
-            <Button type="submit" disabled={isLoading || !pharmacyLocation}>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? tCommon('common.loading') : <><Search className="mr-2 h-4 w-4" /> {tCommon('common.search')}</>}
             </Button>
           </form>
-          {!pharmacyLocation?.address && <p className="mt-4 text-sm text-destructive">{t('noPharmacyData')}</p>}
         </CardContent>
       </Card>
 

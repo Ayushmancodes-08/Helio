@@ -15,7 +15,7 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
   const localVideoTrackRef = useRef<any>(null);
   const localAudioTrackRef = useRef<any>(null);
   const AgoraRTCRef = useRef<any>(null);
-  const subscriptionMapRef = useRef<Map<number, boolean>>(new Map());
+  const subscriptionMapRef = useRef<Map<string | number, Set<string>>>(new Map());
   const cleanupRef = useRef<boolean>(false);
 
   const [remoteUsers, setRemoteUsers] = useState<any[]>([]);
@@ -82,19 +82,29 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
 
         client.on('user-published', async (user: any, mediaType: string) => {
           console.log('📢 Remote user published:', user.uid, 'mediaType:', mediaType);
-          
-          // Prevent duplicate subscriptions
-          if (subscriptionMapRef.current.get(user.uid)) {
-            console.log('⏭️  Already subscribed to user:', user.uid);
+
+          // Initialize set for user if not exists
+          if (!subscriptionMapRef.current.has(user.uid)) {
+            subscriptionMapRef.current.set(user.uid, new Set());
+          }
+
+          // Prevent duplicate subscriptions for the specific media type
+          const userSubscriptions = subscriptionMapRef.current.get(user.uid);
+          if (userSubscriptions?.has(mediaType)) {
+            console.log('⏭️  Already subscribed to user:', user.uid, 'mediaType:', mediaType);
             return;
           }
 
           try {
             console.log('🔗 Subscribing to user:', user.uid, 'mediaType:', mediaType);
-            await client.subscribe(user, mediaType);
-            subscriptionMapRef.current.set(user.uid, true);
+            const type = mediaType as "audio" | "video";
+            await client.subscribe(user, type);
+
+            // Update subscription tracking
+            userSubscriptions?.add(mediaType);
+
             console.log('✓ Successfully subscribed to', mediaType, 'from user:', user.uid);
-            
+
             // Update remote users with the subscribed user
             setRemoteUsers((prev: any[]) => {
               const exists = prev.find((u: any) => u.uid === user.uid);
@@ -108,7 +118,11 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
             // Retry subscription after a delay
             setTimeout(() => {
               if (!initAborted && clientRef.current) {
-                client.subscribe(user, mediaType).catch((retryErr: any) => {
+                const type = mediaType as "audio" | "video";
+                client.subscribe(user, type).then(() => {
+                  const subs = subscriptionMapRef.current.get(user.uid);
+                  subs?.add(mediaType);
+                }).catch((retryErr: any) => {
                   console.error('❌ Retry subscribe failed:', retryErr.message);
                 });
               }
@@ -118,8 +132,12 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
 
         client.on('user-unpublished', (user: any, mediaType: string) => {
           console.log('📴 Remote user unpublished:', user.uid, 'mediaType:', mediaType);
-          if (mediaType === 'video') {
-            subscriptionMapRef.current.delete(user.uid);
+          const userSubscriptions = subscriptionMapRef.current.get(user.uid);
+          if (userSubscriptions) {
+            userSubscriptions.delete(mediaType);
+            if (userSubscriptions.size === 0) {
+              subscriptionMapRef.current.delete(user.uid);
+            }
           }
         });
 
@@ -152,11 +170,11 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
                 role: 'publisher',
               }),
             });
-            
+
             if (!response.ok) {
               throw new Error(`Token fetch failed with status ${response.status}`);
             }
-            
+
             const data = await response.json();
             tokenToUse = data.token;
             console.log('✓ Token fetched successfully');
@@ -181,13 +199,13 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
             console.log('✓ Successfully joined channel');
           } catch (joinErr: any) {
             console.error(`❌ Join attempt ${joinAttempts} failed:`, joinErr.message);
-            
+
             if (joinAttempts < maxJoinAttempts && !initAborted) {
               console.log(`⏳ Retrying join in 2 seconds...`);
               await new Promise(resolve => setTimeout(resolve, 2000));
               return attemptJoin();
             }
-            
+
             throw new Error(`Failed to join channel after ${maxJoinAttempts} attempts: ${joinErr.message}`);
           }
         };
@@ -232,7 +250,7 @@ export function useAgoraCall({ appId, channelName, token, uid, userName }: UseAg
                 stereo: false,
                 usedtx: true,
               },
-            },
+            } as any,
           });
           console.log('✓ Audio track created successfully');
         } catch (err: any) {

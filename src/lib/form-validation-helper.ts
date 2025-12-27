@@ -34,8 +34,8 @@ export function getFieldErrorMessage(
 
   const errorKey = errorTypeMap[error.type] || 'validation.pattern'
   const params = error.message ? {} : {
-    min: error.ref?.min,
-    max: error.ref?.max,
+    min: (error.ref as any)?.min,
+    max: (error.ref as any)?.max,
   }
 
   // If error has a custom message, use it directly

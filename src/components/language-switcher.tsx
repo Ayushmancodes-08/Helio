@@ -72,14 +72,14 @@ export function LanguageSwitcher({
 
   // Styles based on variant
   const buttonClasses = cn(
-    'inline-flex items-center justify-center gap-2 px-3 py-2 rounded-md font-medium transition-all duration-200',
+    'inline-flex items-center justify-center gap-2 px-3 rounded-md font-medium transition-all duration-200 border text-sm shadow-sm hover:shadow-md active:scale-95',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-    // Ensure minimum touch target size on mobile (44px)
-    'min-h-[44px]',
+    // Responsive sizing to match Button component
+    'h-9 sm:h-10',
     variant === 'homepage'
-      ? 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 focus-visible:ring-blue-500'
-      : 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-blue-500',
-    isOpen && 'bg-gray-100',
+      ? 'bg-background text-foreground border-input hover:bg-accent hover:text-accent-foreground'
+      : 'bg-muted text-muted-foreground hover:bg-muted/80',
+    isOpen && 'bg-accent text-accent-foreground',
     className
   )
 
