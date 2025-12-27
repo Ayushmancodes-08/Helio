@@ -45,6 +45,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Megaphone, FileSearch, Loader2, Trash2 } from 'lucide-react';
 import { useHealthAlerts } from '@/hooks/useHealthAlerts';
 import { useDistricts } from '@/hooks/useHealthData';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const alertSchema = z.object({
   title: z.string().min(1, 'Alert title is required.'),
@@ -58,6 +59,7 @@ type AlertFormValues = z.infer<typeof alertSchema>;
 export default function AlertsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Use Supabase for alerts and districts
   const { alerts, loading: alertsLoading, createAlert, deleteAlert } = useHealthAlerts();
@@ -219,9 +221,9 @@ export default function AlertsPage() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="Low">Low</SelectItem>
-                                <SelectItem value="Medium">Medium</SelectItem>
-                                <SelectItem value="High">High</SelectItem>
+                                <SelectItem value="Low">{t('common.low')}</SelectItem>
+                                <SelectItem value="Medium">{t('common.medium')}</SelectItem>
+                                <SelectItem value="High">{t('common.high')}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />

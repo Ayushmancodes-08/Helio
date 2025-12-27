@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useErrorTranslation } from '@/hooks/useErrorTranslation';
-import { ArrowRight, Mail, Lock } from 'lucide-react';
+import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Logo } from '@/components/icons';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -36,6 +36,7 @@ export function ProfessionalLoginContent() {
   const { getErrorMessage, getAuthErrorMessage } = useErrorTranslation();
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -177,14 +178,27 @@ export function ProfessionalLoginContent() {
                   <FormItem>
                     <FormLabel>{t('auth.password') || 'Password'}</FormLabel>
                     <FormControl>
-                      <div className="flex items-center gap-2">
+                      <div className="relative flex items-center gap-2">
                         <Lock className="h-5 w-5 text-muted-foreground" />
                         <Input
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
                           {...field}
                           disabled={isLoading}
+                          className="pr-10"
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-2 p-1 hover:bg-muted rounded"
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage />

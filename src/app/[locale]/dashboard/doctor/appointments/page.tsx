@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -41,6 +42,8 @@ import { useAppointments } from '@/hooks/useAppointments';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export default function DoctorAppointmentsPage() {
+  const params = useParams();
+  const locale = (params?.locale as string) || 'en-IN';
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isNotesDialogOpen, setIsNotesDialogOpen] = useState(false);
   const [currentAppointmentId, setCurrentAppointmentId] = useState<string>('');
@@ -161,17 +164,17 @@ export default function DoctorAppointmentsPage() {
                         </TableCell>
                         <TableCell>{formatAppointmentTime(consult)}</TableCell>
                         <TableCell>
-                          <Select 
-                            value={normalizeStatus(consult.status)} 
+                          <Select
+                            value={normalizeStatus(consult.status)}
                             onValueChange={(value: any) => handleStatusChange(consult.id, value)}
                           >
                             <SelectTrigger className="w-32">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Upcoming">{t('dashboard.doctor.upcomingConsultations')}</SelectItem>
-                              <SelectItem value="Completed">{t('common.done')}</SelectItem>
-                              <SelectItem value="Cancelled">{t('common.cancel')}</SelectItem>
+                              <SelectItem value="Upcoming">{t('common.upcoming')}</SelectItem>
+                              <SelectItem value="Completed">{t('common.completed')}</SelectItem>
+                              <SelectItem value="Cancelled">{t('common.cancelled')}</SelectItem>
                             </SelectContent>
                           </Select>
                         </TableCell>
@@ -179,7 +182,7 @@ export default function DoctorAppointmentsPage() {
                           <Button variant="ghost" size="sm" onClick={() => openNotesDialog(consult.id, consult.notes)}>
                             <FileText className="mr-2 h-4 w-4" /> {t('dashboard.doctor.notes')}
                           </Button>
-                          <Link href={`/dashboard/doctor/video-consultation?appointmentId=${consult.id}`} passHref>
+                          <Link href={`/${locale}/dashboard/doctor/video-consultation?appointmentId=${consult.id}`} passHref>
                             <Button variant="outline" size="sm" disabled={normalizeStatus(consult.status) !== 'Upcoming'}>
                               <Video className="mr-2 h-4 w-4" />
                               {t('dashboard.doctor.startCall')}
@@ -226,8 +229,8 @@ export default function DoctorAppointmentsPage() {
                         </TableCell>
                         <TableCell>{formatAppointmentTime(consult)}</TableCell>
                         <TableCell>
-                          <Select 
-                            value={normalizeStatus(consult.status)} 
+                          <Select
+                            value={normalizeStatus(consult.status)}
                             onValueChange={(value: any) => handleStatusChange(consult.id, value)}
                           >
                             <SelectTrigger className="w-32">
