@@ -10,6 +10,7 @@ export type HealthAlert = {
     priority: 'High' | 'Medium' | 'Low';
     status: 'Active' | 'Resolved';
     created_at: string;
+    district_id: string | null;
 };
 
 export function useHealthAlerts() {

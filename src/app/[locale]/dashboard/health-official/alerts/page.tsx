@@ -296,7 +296,7 @@ export default function AlertsPage() {
                         <Badge variant={getPriorityVariant(alert.priority)}>{alert.priority}</Badge>
                       </TableCell>
                       <TableCell className="hidden md:table-cell capitalize">
-                        All Regions
+                        {getDistrictName(alert.district_id)}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{format(new Date(alert.created_at), 'PPP')}</TableCell>
                       <TableCell>
