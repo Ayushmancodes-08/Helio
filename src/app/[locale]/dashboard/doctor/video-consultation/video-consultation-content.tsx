@@ -31,6 +31,14 @@ export function VideoConsultationContent() {
 
   const {
     error: callError,
+    remoteUserStates,
+    isMicOn,
+    isCameraOn,
+    toggleMic,
+    toggleCamera,
+    client,
+    localVideoTrack,
+    localAudioTrack,
     remoteUsers,
     leaveCall,
   } = useAgoraCall({
@@ -169,17 +177,17 @@ export function VideoConsultationContent() {
           </div>
         ) : (
           <VideoCallInterface
-            client={null}
-            localVideoTrack={null}
-            localAudioTrack={null}
+            client={client}
+            localVideoTrack={localVideoTrack}
+            localAudioTrack={localAudioTrack}
             remoteUsers={remoteUsers || []}
-            remoteUserStates={{}}
-            isMicOn={true}
-            isCameraOn={true}
+            remoteUserStates={remoteUserStates}
+            isMicOn={isMicOn}
+            isCameraOn={isCameraOn}
             patientName={appointment.patient_name}
             doctorName={"Dr. " + (profile?.full_name || "Doctor")}
-            onToggleMic={() => { }}
-            onToggleCamera={() => { }}
+            onToggleMic={toggleMic}
+            onToggleCamera={toggleCamera}
             onEndCall={handleEndCall}
             isLoading={isEndingCall}
             isDoctor={true}

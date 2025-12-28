@@ -15,6 +15,7 @@ export type Appointment = {
     consultation_fee?: number; // Fee for the consultation
     created_at?: Date;
     updated_at?: Date;
+    ended_at?: string;
     // Joined fields
     patient_name?: string;
     doctor_name?: string;
