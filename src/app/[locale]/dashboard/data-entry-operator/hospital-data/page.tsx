@@ -25,6 +25,7 @@ interface DiseaseEntry {
 export default function HospitalDataPage() {
   const { toast } = useToast();
   const [selectedHospitalId, setSelectedHospitalId] = useState<string>('');
+  const [selectedDistrictId, setSelectedDistrictId] = useState<string>('');
 
   // Bulk Entry State
   const [entries, setEntries] = useState<DiseaseEntry[]>([
@@ -33,9 +34,14 @@ export default function HospitalDataPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   // Hooks
-  const { hospitals, loading: hospitalsLoading } = useHospitals();
-  const { districts } = useDistricts();
+  const { hospitals, loading: hospitalsLoading } = useHospitals(selectedDistrictId); // Filter by district
+  const { districts, loading: districtsLoading } = useDistricts();
   const { addDiseaseReport, updateDiseaseReport, deleteDiseaseReport } = useHealthMetrics();
+
+  // Reset hospital when district changes
+  useEffect(() => {
+    setSelectedHospitalId('');
+  }, [selectedDistrictId]);
 
   // Fetch data when hospital changes
   useEffect(() => {
@@ -205,7 +211,7 @@ export default function HospitalDataPage() {
     }
   };
 
-  if (hospitalsLoading && hospitals.length === 0) {
+  if (hospitalsLoading && hospitals.length === 0 && !selectedDistrictId) {
     return <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
   }
 
@@ -224,17 +230,38 @@ export default function HospitalDataPage() {
           <CardTitle>Select Hospital</CardTitle>
           <CardDescription>Choose a hospital to view and manage its case data.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Select onValueChange={setSelectedHospitalId} value={selectedHospitalId}>
-            <SelectTrigger className="w-full max-w-md bg-muted/30">
-              <SelectValue placeholder="Select a hospital..." />
-            </SelectTrigger>
-            <SelectContent>
-              {hospitals.map(h => (
-                <SelectItem key={h.id} value={h.id}>{h.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">District</label>
+            <Select onValueChange={setSelectedDistrictId} value={selectedDistrictId}>
+              <SelectTrigger className="w-full max-w-md bg-muted/30">
+                <SelectValue placeholder="Select a district..." />
+              </SelectTrigger>
+              <SelectContent>
+                {districts.map(d => (
+                  <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Hospital</label>
+            <Select onValueChange={setSelectedHospitalId} value={selectedHospitalId} disabled={!selectedDistrictId}>
+              <SelectTrigger className="w-full max-w-md bg-muted/30">
+                <SelectValue placeholder={!selectedDistrictId ? "Select a district first" : "Select a hospital..."} />
+              </SelectTrigger>
+              <SelectContent>
+                {hospitals.length > 0 ? (
+                  hospitals.map(h => (
+                    <SelectItem key={h.id} value={h.id}>{h.name}</SelectItem>
+                  ))
+                ) : (
+                  <div className="p-2 text-sm text-muted-foreground text-center">No hospitals found</div>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 
