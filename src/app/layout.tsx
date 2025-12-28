@@ -6,7 +6,11 @@ export const metadata: Metadata = {
   title: 'Grameen Swasthya Setu',
   description: 'Bridging the Gap in Rural Healthcare',
   icons: {
-    icon: '/favicon.svg',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: '/icon.png',
   },
 };
 

@@ -91,6 +91,8 @@ const VideoCallRoom = ({
                     cameraOn={cameraOn}
                     micOn={micOn}
                     videoTrack={localCameraTrack}
+                    playAudio={false} // Local audio should be muted to prevent echo
+                    playVideo={cameraOn} // Explicitly control video playback
                     cover="https://www.agora.io/en/wp-content/uploads/2022/10/3d-spatial-audio-icon.svg"
                 >
                     <div className="absolute bottom-4 left-4 bg-black/50 px-2 py-1 rounded text-white text-sm">

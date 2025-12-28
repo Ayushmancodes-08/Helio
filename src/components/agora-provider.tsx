@@ -22,7 +22,7 @@ export const AgoraProvider = ({
     token
 }: AgoraProviderProps) => {
     const [client] = useState<IAgoraRTCClient>(() =>
-        AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })
+        AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' }) // 'rtc' mode is generally better for 1-on-1 calls
     );
 
     useEffect(() => {
