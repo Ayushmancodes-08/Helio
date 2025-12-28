@@ -64,6 +64,11 @@ const ageChartConfig = {
   "65+": { label: '65+', color: PIE_CHART_COLORS[3] },
 };
 
+const normalizeName = (name: string) => {
+  if (!name) return '';
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+};
+
 export default function HealthAnalyticsPage() {
   const [selectedRegion, setSelectedRegion] = useState('all');
   const [selectedHospital, setSelectedHospital] = useState('all');
@@ -120,7 +125,7 @@ export default function HealthAnalyticsPage() {
 
   // Derived State
   const availableDiseases = useMemo(() => {
-    const all = new Set(diseaseReports.map(r => r.disease_name));
+    const all = new Set(diseaseReports.map(r => normalizeName(r.disease_name)));
     return Array.from(all).filter(Boolean);
   }, [diseaseReports]);
 
@@ -183,7 +188,7 @@ export default function HealthAnalyticsPage() {
         const key = diseaseName.replace(/\s+/g, '-').toLowerCase();
         // Sum cases for this disease on this day
         const total = filteredReports
-          .filter(r => r.disease_name === diseaseName && r.report_date === dateStr)
+          .filter(r => normalizeName(r.disease_name) === diseaseName && r.report_date === dateStr)
           .reduce((sum, r) => sum + (r.case_count || 0), 0);
 
         dailyData[key] = total;
