@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format, parseISO } from 'date-fns';
@@ -41,7 +41,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, FileSearch, Loader2 } from 'lucide-react';
+import { PlusCircle, FileSearch, Loader2, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -55,11 +55,15 @@ import { useAppointments } from '@/hooks/useAppointments';
 import { usePrescriptions } from '@/hooks/usePrescriptions';
 import { useLanguage } from '@/hooks/useLanguage';
 
-const prescriptionSchema = z.object({
-  patientId: z.string().min(1, 'Please select a patient.'),
+const medicineSchema = z.object({
   medication: z.string().min(1, 'Medication name is required.'),
   dosage: z.string().min(1, 'Dosage is required.'),
   instructions: z.string().min(1, 'Instructions are required.'),
+});
+
+const prescriptionSchema = z.object({
+  patientId: z.string().min(1, 'Please select a patient.'),
+  medicines: z.array(medicineSchema).min(1, 'At least one medicine is required.'),
 });
 
 type PrescriptionFormValues = z.infer<typeof prescriptionSchema>;
@@ -101,10 +105,13 @@ export default function PrescriptionsPage() {
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
       patientId: '',
-      medication: '',
-      dosage: '',
-      instructions: '',
+      medicines: [{ medication: '', dosage: '', instructions: '' }],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'medicines',
   });
 
   const onSubmit = async (data: PrescriptionFormValues) => {
@@ -118,21 +125,28 @@ export default function PrescriptionsPage() {
     }
 
     try {
+      // Combine all medicines into a single prescription
+      const medicinesData = JSON.stringify(data.medicines);
+
       const result = await createPrescription({
         doctor_id: profile.id,
         patient_id: data.patientId,
-        medication: data.medication,
-        dosage: data.dosage,
-        instructions: data.instructions,
-        // Remove unused/mismatched fields
+        medication: medicinesData, // Store as JSON string
+        dosage: `${data.medicines.length} medicine(s)`, // Summary info
+        instructions: 'See prescription details for individual medicine instructions',
+        status: 'Issued',
+        appointment_id: null,
       });
 
       if (result) {
         toast({
           title: 'Prescription Created',
-          description: `A new prescription has been issued successfully.`,
+          description: `Successfully issued prescription with ${data.medicines.length} medicine(s).`,
         });
-        form.reset();
+        form.reset({
+          patientId: '',
+          medicines: [{ medication: '', dosage: '', instructions: '' }],
+        });
       } else {
         toast({
           variant: 'destructive',
@@ -201,79 +215,109 @@ export default function PrescriptionsPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="patientId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('common.patient')}</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('common.select')} />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {myPatients.length > 0 ? (
-                            myPatients.map((patient) => (
-                              <SelectItem key={patient.id} value={patient.id}>
-                                {patient.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <div className="p-2 text-sm text-muted-foreground">
-                              {t('common.noPatients')}
-                            </div>
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="medication"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('doctor.medicationName')}</FormLabel>
+              {/* Patient Selection */}
+              <FormField
+                control={form.control}
+                name="patientId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('common.patient')}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <Input placeholder={t('doctor.medicationNamePlaceholder')} {...field} />
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('common.select')} />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dosage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('doctor.dosage')}</FormLabel>
-                      <FormControl>
-                        <Input placeholder={t('doctor.dosagePlaceholder')} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="instructions"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('doctor.instructions')}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t('doctor.instructionsPlaceholder')}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      <SelectContent>
+                        {myPatients.length > 0 ? (
+                          myPatients.map((patient) => (
+                            <SelectItem key={patient.id} value={patient.id}>
+                              {patient.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <div className="p-2 text-sm text-muted-foreground">
+                            {t('common.noPatients')}
+                          </div>
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Medicine Rows */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">Medicines</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ medication: '', dosage: '', instructions: '' })}
+                  >
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Medicine
+                  </Button>
+                </div>
+
+                {fields.map((field, index) => (
+                  <div key={field.id} className="relative p-4 border rounded-lg bg-muted/30">
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <FormField
+                        control={form.control}
+                        name={`medicines.${index}.medication`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Medicine Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g., Paracetamol" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`medicines.${index}.dosage`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Dosage</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g., 500mg" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`medicines.${index}.instructions`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Instructions</FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g., Twice daily" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:text-destructive"
+                        onClick={() => remove(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
               <Button type="submit" disabled={prescriptionsLoading}>
                 {prescriptionsLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -1,25 +1,28 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from './useAuth';
+import { usePathname } from 'next/navigation';
+
 
 export type Prescription = {
     id: string;
-    appointment_id?: string;
+    appointment_id: string;
     patient_id: string;
     doctor_id: string;
     medication: string;
     dosage: string;
-    instructions?: string;
+    instructions: string;
+    status: string;
     issued_date: Date;
     created_at?: Date;
     updated_at?: Date;
-    // Joined fields
     patient_name?: string;
     doctor_name?: string;
 };
 
 export function usePrescriptions() {
     const { profile } = useAuth();
+    const pathname = usePathname();
     const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -28,6 +31,7 @@ export function usePrescriptions() {
 
     // Fetch prescriptions based on user role
     const fetchPrescriptions = async () => {
+        if (pathname?.includes('/dashboard/patient')) return;
         if (!profile) return;
 
         setLoading(true);

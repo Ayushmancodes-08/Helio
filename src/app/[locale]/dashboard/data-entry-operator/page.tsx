@@ -24,10 +24,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useHealthMetrics } from '@/hooks/useHealthMetrics';
 
 
+import { useDataEntryDashboard } from '@/hooks/useDataEntryOperatorDashboard';
+
+
 export default function DataEntryOperatorDashboardPage() {
   const { t, locale } = useLanguage();
-  const { profile } = useAuth();
-  const { metrics, loading: metricsLoading } = useHealthMetrics();
+  const { profile, metrics, loading: dashboardLoading } = useDataEntryDashboard();
 
   const totalPopulation = metrics.reduce((sum, r) => sum + (r.population || 0), 0);
   const totalDistricts = metrics.length;
@@ -40,7 +42,7 @@ export default function DataEntryOperatorDashboardPage() {
     return { text: t('dataEntryOperator.stable'), variant: 'secondary' as const };
   };
 
-  if (metricsLoading) {
+  if (dashboardLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -142,7 +144,7 @@ export default function DataEntryOperatorDashboardPage() {
                 return (
                   <TableRow key={res.district_name}>
                     <TableCell className="font-medium">{res.district_name}</TableCell>
-                    <TableCell>{res.population > 0 ? res.population.toLocaleString() : <span className="text-muted-foreground">{t('dataEntryOperator.noData')}</span>}</TableCell>
+                    <TableCell>{(res.population || 0) > 0 ? (res.population || 0).toLocaleString() : <span className="text-muted-foreground">{t('dataEntryOperator.noData')}</span>}</TableCell>
                     <TableCell>{res.total_beds > 0 ? `${res.occupied_beds}/${res.total_beds}` : <span className="text-muted-foreground">{t('dataEntryOperator.noData')}</span>}</TableCell>
                     <TableCell>
                       <Badge variant={status.variant}>{status.text}</Badge>

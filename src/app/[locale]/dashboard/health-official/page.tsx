@@ -36,6 +36,8 @@ import { useHealthMetrics } from '@/hooks/useHealthMetrics';
 import { useHealthAlerts } from '@/hooks/useHealthAlerts';
 import { useLanguage } from '@/hooks/useLanguage';
 
+import { useHealthOfficialDashboard } from '@/hooks/useHealthOfficialDashboard';
+
 const chartConfig = {
   cases: {
     label: 'Cases',
@@ -45,9 +47,7 @@ const chartConfig = {
 
 export default function HealthOfficialDashboardPage() {
   const { t, formatNumber, formatCurrency } = useLanguage();
-  const { profile } = useAuth();
-  const { metrics, diseaseReports, loading: metricsLoading } = useHealthMetrics();
-  const { alerts, loading: alertsLoading } = useHealthAlerts();
+  const { profile, metrics, diseaseReports, alerts, loading: dashboardLoading } = useHealthOfficialDashboard();
 
   const formattedDiseaseData = metrics.map(region => {
     // Sum cases for this region from diseaseReports
@@ -75,7 +75,7 @@ export default function HealthOfficialDashboardPage() {
   const totalPopulation = metrics.reduce((sum, r) => sum + (r.population || 0), 0);
   const hospitalsAtCapacity = metrics.filter(r => r.total_beds > 0 && (r.occupied_beds / r.total_beds) >= 0.95).length;
 
-  if (metricsLoading || alertsLoading) {
+  if (dashboardLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

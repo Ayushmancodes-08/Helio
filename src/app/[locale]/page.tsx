@@ -145,7 +145,7 @@ export default function LandingPage() {
 
       <footer className="py-4 sm:py-6 border-t bg-background">
         <div className="container mx-auto px-3 sm:px-4 text-center text-muted-foreground text-xs sm:text-sm">
-          {t('footer.copyright', { year: new Date().getFullYear() })}
+          {t('footer.copyright', { year: new Date().getFullYear().toString() })}
         </div>
       </footer>
     </div>

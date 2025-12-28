@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from './useAuth';
+import { usePathname } from 'next/navigation';
+
 
 export type LabReport = {
     id: string;
     patient_id: string;
-    doctor_id?: string;
+    doctor_id: string;
     report_name: string;
     file_name: string;
-    file_url?: string;
+    file_url: string;
     status: 'Pending' | 'Available';
     report_date: Date;
     created_at?: Date;
     updated_at?: Date;
-    // Joined fields
     patient_name?: string;
     doctor_name?: string;
 };
 
 export function useLabReports() {
     const { profile } = useAuth();
+    const pathname = usePathname();
     const [labReports, setLabReports] = useState<LabReport[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -28,6 +30,7 @@ export function useLabReports() {
 
     // Fetch lab reports based on user role
     const fetchLabReports = async () => {
+        if (pathname?.includes('/dashboard/patient')) return;
         if (!profile) return;
 
         setLoading(true);

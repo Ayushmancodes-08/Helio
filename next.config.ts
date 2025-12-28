@@ -1,4 +1,4 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/config/i18n-request.ts');
@@ -13,7 +13,6 @@ const nextConfig: NextConfig = {
   },
   staticPageGenerationTimeout: 120,
   experimental: {
-    isrMemoryCacheSize: 0,
   },
   images: {
     remotePatterns: [

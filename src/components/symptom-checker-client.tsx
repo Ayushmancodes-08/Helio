@@ -49,12 +49,24 @@ const indianLanguages = [
     { value: 'pa', label: 'Punjabi (ਪੰਜਾਬੀ)' },
 ];
 
+const greetings: Record<string, string> = {
+    'en': "Hello! I'm your AI Health Assistant. What is your primary symptom today?",
+    'hi': "नमस्ते! मैं आपका एआई स्वास्थ्य सहायक हूँ। आज आपका मुख्य लक्षण क्या है?",
+    'bn': "হ্যালো! আমি আপনার AI স্বাস্থ্য সহায়ক। আজ আপনার প্রধান লক্ষণ কী?",
+    'te': "హలో! నేను మీ AI ఆరోగ్య సహాయకుడిని. నేడు మీ ప్రధాన లక్షణం ఏమిటి?",
+    'mr': "नमस्कार! मी तुमचा AI आरोग्य सहाय्यक आहे. आज तुमचे प्राथमिक लक्षण काय आहे?",
+    'ta': "வணக்கம்! நான் உங்கள் AI சுகாதார உதவியாளர். இன்று உங்கள் முதன்மை அறிகுறி என்ன?",
+    'gu': "નમસ્તે! હું તમારો AI આરોગ્ય સહાયક છું. આજે તમારું મુખ્ય લક્ષણ શું છે?",
+    'kn': "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ AI ಆರೋಗ್ಯ ಸಹಾಯಕ. ಇಂದು ನಿಮ್ಮ ಪ್ರಾಥಮಿಕ ಲಕ್ಷಣ ಏನು?",
+    'ml': "ഹലോ! ഞാൻ നിങ്ങളുടെ AI ആരോഗ്യ സഹായകനാണ്. ഇന്ന് നിങ്ങളുടെ പ്രാഥമിക ലക്ഷണം എന്താണ്?",
+    'pa': "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ AI ਸਿਹਤ ਸਹਾਇਕ ਹਾਂ। ਅੱਜ ਤੁਹਾਡਾ ਮੁੱਖ ਲੱਛਣ ਕੀ ਹੈ?",
+};
+
 export function SymptomCheckerClient() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: 'assistant',
-            content:
-                "Hello! I'm your AI Health Assistant. What is your primary symptom today?",
+            content: greetings['en'], // Default to English
         },
     ]);
     const [input, setInput] = useState('');
@@ -85,6 +97,7 @@ export function SymptomCheckerClient() {
         startTransition(async () => {
             try {
                 const conversationHistory = [...messages, userMessage]
+                    .slice(-10) // Only keep last 10 messages to reduce payload size
                     .map((m) => `${m.role}: ${m.content}`)
                     .join('\n');
 
@@ -108,15 +121,28 @@ export function SymptomCheckerClient() {
                     aiResponse += `\n\n**Advice:** ${result.urgencyAdvice}`;
                 }
 
-                const { audioDataUri } = await textToSpeech({ text: aiResponse });
-
+                // Show text response immediately
                 const assistantMessage: Message = {
                     role: 'assistant',
                     content: aiResponse,
                     options: result.options,
-                    audioDataUri,
                 };
                 setMessages((prev) => [...prev, assistantMessage]);
+
+                // Generate TTS asynchronously in the background (non-blocking)
+                textToSpeech({ text: aiResponse })
+                    .then(({ audioDataUri }) => {
+                        // Update the message with audio once ready
+                        setMessages((prev) =>
+                            prev.map((msg, idx) =>
+                                idx === prev.length - 1 ? { ...msg, audioDataUri } : msg
+                            )
+                        );
+                    })
+                    .catch((err) => {
+                        console.error('TTS generation failed:', err);
+                        // Silent fail - text is already shown
+                    });
 
             } catch (error) {
                 console.error(error);
@@ -144,8 +170,7 @@ export function SymptomCheckerClient() {
         setMessages([
             {
                 role: 'assistant',
-                content:
-                    "Hello! I'm your AI Health Assistant. What is your primary symptom today?",
+                content: greetings[value] || greetings['en'], // Fallback to English if language not found
             },
         ]);
     };

@@ -54,30 +54,19 @@ const getInitialLocation = () => {
   }
 };
 
+import { usePharmacistDashboard } from '@/hooks/usePharmacistDashboard';
+
 export default function PharmacistDashboardPage() {
   const { t, locale } = useLanguage();
   const { toast } = useToast();
-  const { profile } = useAuth();
-  const { inventory } = useInventory(); // Real DB stats
+
+  // Use aggregated hook
+  const { profile, stats, loading: dashboardLoading } = usePharmacistDashboard();
 
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationSchema),
     defaultValues: getInitialLocation(),
   });
-
-  const stats = useMemo(() => {
-    let inStock = 0;
-    let lowStock = 0;
-    let outOfStock = 0;
-
-    inventory.forEach(item => {
-      if (item.quantity <= 0) outOfStock++;
-      else if (item.quantity < 50) lowStock++;
-      else inStock++;
-    });
-
-    return { inStock, lowStock, outOfStock };
-  }, [inventory]);
 
   // Supabase client
   const supabase = createClient();

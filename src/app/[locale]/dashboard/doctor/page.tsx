@@ -49,10 +49,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { format, isToday } from 'date-fns';
-import { useAuth } from '@/hooks/useAuth';
-import { useAppointments } from '@/hooks/useAppointments';
 import { useLanguage } from '@/hooks/useLanguage';
-import { createClient } from '@/lib/supabase/client';
+import { useDoctorDashboard } from '@/hooks/useDoctorDashboard';
 
 export type AgeGroupData = {
   age: string;
@@ -65,19 +63,23 @@ export default function DoctorDashboardPage() {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editingTaskText, setEditingTaskText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [demographicsData, setDemographicsData] = useState<AgeGroupData[]>([
+
+  const router = useRouter();
+
+  // Use the new aggregator hook
+  const { data: dashboardData, loading: dashboardLoading, error } = useDoctorDashboard();
+  const { t, locale } = useLanguage();
+
+  // Extract data from the aggregated response
+  const profile = dashboardData?.profile;
+  const appointments = dashboardData?.appointments || [];
+  const demographicsData = dashboardData?.demographics || [
     { age: '0-18', patients: 0 },
     { age: '19-30', patients: 0 },
     { age: '31-45', patients: 0 },
     { age: '46-60', patients: 0 },
     { age: '60+', patients: 0 },
-  ]);
-  const router = useRouter();
-
-  const { profile, loading: authLoading } = useAuth();
-  const { appointments, loading: appointmentsLoading } = useAppointments();
-  const { t, locale } = useLanguage();
-  const supabase = createClient();
+  ];
 
   // Load tasks from localStorage (keep this for simple todos)
   useEffect(() => {
@@ -106,58 +108,8 @@ export default function DoctorDashboardPage() {
     }
   }, [tasks, profile]);
 
-  // Fetch patient demographics based on doctor's appointments
-  useEffect(() => {
-    const fetchPatientDemographics = async () => {
-      if (!appointments.length) return;
+  // NOTE: Patient demographics calculation and Appointments fetching are now handled server-side!
 
-      // Get unique patient IDs from appointments
-      const patientIds = [...new Set(appointments.map(a => a.patient_id))];
-
-      if (patientIds.length === 0) return;
-
-      // Fetch patient profiles with age
-      const { data: patients, error } = await supabase
-        .from('profiles')
-        .select('id, age')
-        .in('id', patientIds);
-
-      if (error) {
-        console.error('Error fetching patient demographics:', error);
-        return;
-      }
-
-      // Calculate age distribution
-      const ageGroups = {
-        '0-18': 0,
-        '19-30': 0,
-        '31-45': 0,
-        '46-60': 0,
-        '60+': 0,
-      };
-
-      patients?.forEach(patient => {
-        const age = patient.age;
-        if (age !== null && age !== undefined) {
-          if (age <= 18) ageGroups['0-18']++;
-          else if (age <= 30) ageGroups['19-30']++;
-          else if (age <= 45) ageGroups['31-45']++;
-          else if (age <= 60) ageGroups['46-60']++;
-          else ageGroups['60+']++;
-        }
-      });
-
-      setDemographicsData([
-        { age: '0-18', patients: ageGroups['0-18'] },
-        { age: '19-30', patients: ageGroups['19-30'] },
-        { age: '31-45', patients: ageGroups['31-45'] },
-        { age: '46-60', patients: ageGroups['46-60'] },
-        { age: '60+', patients: ageGroups['60+'] },
-      ]);
-    };
-
-    fetchPatientDemographics();
-  }, [appointments, supabase]);
 
   const todaysAppointments = useMemo(() => {
     return appointments.filter(
@@ -222,7 +174,7 @@ export default function DoctorDashboardPage() {
     }
   };
 
-  if (authLoading || appointmentsLoading) {
+  if (dashboardLoading) {
     return (
       <div className="flex items-center justify-center h-96">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

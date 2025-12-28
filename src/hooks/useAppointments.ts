@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from './useAuth';
+import { usePathname } from 'next/navigation';
+
 
 export type Appointment = {
     id: string;
@@ -12,17 +14,17 @@ export type Appointment = {
     status: 'Upcoming' | 'Completed' | 'Cancelled';
     notes?: string;
     channel_name?: string;
-    consultation_fee?: number; // Fee for the consultation
+    consultation_fee?: number;
     created_at?: Date;
     updated_at?: Date;
     ended_at?: string;
-    // Joined fields
     patient_name?: string;
     doctor_name?: string;
 };
 
 export function useAppointments() {
     const { profile } = useAuth();
+    const pathname = usePathname();
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -31,12 +33,19 @@ export function useAppointments() {
 
     // Fetch appointments based on user role
     const fetchAppointments = async () => {
+        // Skip fetch on main dashboard to prevent duplicate calls (handled by RPC)
+        if (pathname?.includes('/dashboard/patient')) {
+            console.log('Skipping appointments fetch on dashboard home');
+            return;
+        }
+
         if (!profile) {
             console.log('No profile available, skipping fetch');
             return;
         }
 
         console.log('Fetching appointments for profile:', profile.id, 'role:', profile.role);
+        console.trace('Who is calling fetchAppointments?'); // Debug trace
         setLoading(true);
         setError(null);
 

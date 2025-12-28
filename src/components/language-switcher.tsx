@@ -68,7 +68,7 @@ export function LanguageSwitcher({
     setTimeout(() => announcement.remove(), 1000)
   }
 
-  const currentLanguage = languageMetadata[locale]
+  const currentLanguage = languageMetadata[locale] || languageMetadata['en-IN'];
 
   // Styles based on variant
   const buttonClasses = cn(

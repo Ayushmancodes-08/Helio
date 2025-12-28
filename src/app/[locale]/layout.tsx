@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { locales } from '@/config/i18n';
 import { ThemeProvider } from "@/components/theme-provider"
+import { AuthProvider } from "@/components/providers/AuthProvider";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -25,7 +26,9 @@ export default async function LocaleLayout({
         enableSystem={false}
         disableTransitionOnChange
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </ThemeProvider>
     </NextIntlClientProvider>
   );

@@ -35,20 +35,28 @@ import { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useAppointments } from '@/hooks/useAppointments';
-import { usePrescriptions } from '@/hooks/usePrescriptions';
-import { useLabReports } from '@/hooks/useLabReports';
+import { usePatientDashboard } from '@/hooks/usePatientDashboard';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getSuccessMessageTranslation, getErrorMessageTranslation } from '@/lib/notification-translations';
 import { ChatbotFloatingButton } from '@/components/ChatbotFloatingButton';
 
 export default function PatientDashboardPage() {
   const { profile, loading: authLoading } = useAuth();
-  const { appointments, cancelAppointment, loading: appointmentsLoading } = useAppointments();
-  const { prescriptions, loading: prescriptionsLoading } = usePrescriptions();
-  const { labReports, loading: reportsLoading } = useLabReports();
+  const {
+    appointments,
+    prescriptions,
+    labReports,
+    loading: dashboardLoading,
+    cancelAppointment
+  } = usePatientDashboard();
+
   const { toast } = useToast();
   const { t, formatDate, locale } = useLanguage();
+
+  // Map loading states for backward compatibility if needed, or just use one
+  const appointmentsLoading = dashboardLoading;
+  const prescriptionsLoading = dashboardLoading;
+  const reportsLoading = dashboardLoading;
 
   const [canJoin, setCanJoin] = useState(false);
   const [countdown, setCountdown] = useState('');
