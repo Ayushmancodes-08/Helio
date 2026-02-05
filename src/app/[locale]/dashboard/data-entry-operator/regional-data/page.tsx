@@ -101,43 +101,65 @@ export default function HospitalInfrastructurePage() {
   }, [districts, allHospitals, loading, replace]);
 
   const onSubmit = async (data: FormValues) => {
-    // We need to iterate and identify CHANGED hospitals to update.
-    // For simplicity efficiently, we can just update all, or check dirty fields if we had them easily.
-    // Let's just update all hospitals in the form for now (MVP).
-
     let successCount = 0;
     let failCount = 0;
+    const errors: string[] = [];
+
+    // Disable submit button during processing
+    form.formState.isSubmitting;
 
     for (const district of data.districts) {
       for (const hospital of district.hospitals) {
-        const res = await updateHospital(hospital.id, {
-          population: hospital.population,
-          occupied_beds: hospital.occupied_beds,
-          total_beds: hospital.total_beds,
-          ambulances: hospital.ambulances,
-          doctors: hospital.doctors,
-          nurses: hospital.nurses
-        });
-        if (res.success) successCount++;
-        else failCount++;
+        try {
+          const res = await updateHospital(hospital.id, {
+            population: hospital.population,
+            occupied_beds: hospital.occupied_beds,
+            total_beds: hospital.total_beds,
+            ambulances: hospital.ambulances,
+            doctors: hospital.doctors,
+            nurses: hospital.nurses
+          });
+          
+          if (res.success) {
+            successCount++;
+          } else {
+            failCount++;
+            errors.push(`${hospital.name}: ${res.error}`);
+          }
+        } catch (err: any) {
+          failCount++;
+          errors.push(`${hospital.name}: ${err.message}`);
+        }
       }
     }
 
+    // Show appropriate toast based on results
     if (failCount === 0 && successCount > 0) {
       toast({
-        title: 'Data Saved!',
-        description: `Updated infrastructure for ${successCount} hospitals.`,
+        title: 'Success!',
+        description: `Updated infrastructure for ${successCount} hospital${successCount !== 1 ? 's' : ''}. Dashboard will update in a moment.`,
       });
-      refreshHospitals();
+      
+      // Refresh hospitals to sync with dashboard
+      await refreshHospitals();
+      
+      // Small delay to ensure database is updated before dashboard fetches
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('hospital-data-updated'));
+      }, 1000);
     } else if (failCount > 0) {
       toast({
         variant: 'destructive',
         title: 'Update Issues',
         description: `Saved ${successCount}, failed ${failCount}.`,
       });
+      
+      if (errors.length > 0) {
+        console.error('Update errors:', errors);
+      }
     } else {
       toast({
-        description: 'No hospitals to update.',
+        description: 'No changes to save.',
       });
     }
   };

@@ -4,7 +4,6 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/config/i18n-request.ts');
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -13,6 +12,7 @@ const nextConfig: NextConfig = {
   },
   staticPageGenerationTimeout: 120,
   experimental: {
+    optimizePackageImports: ['@radix-ui/react-*', 'lucide-react'],
   },
   images: {
     remotePatterns: [
@@ -35,6 +35,10 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  onDemandEntries: {
+    maxInactiveAge: 60 * 1000,
+    pagesBufferLength: 5,
   },
 };
 

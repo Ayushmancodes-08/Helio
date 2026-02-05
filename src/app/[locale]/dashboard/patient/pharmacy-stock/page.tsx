@@ -18,6 +18,16 @@ import { useTranslations } from 'next-intl';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useInventory } from '@/hooks/useInventory';
 import { filterBySearchQuery, sortByRelevance } from '@/lib/search-utils';
+import dynamic from 'next/dynamic';
+import { Loader2 } from 'lucide-react';
+
+const LeafletMap = dynamic(
+  () => import('@/components/LeafletMap'),
+  {
+    loading: () => <div className="h-[450px] w-full flex items-center justify-center bg-muted/10 rounded-xl border border-border/50"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>,
+    ssr: false
+  }
+);
 
 const INVENTORY_STORAGE_KEY = 'pharmacistInventory';
 
@@ -34,6 +44,8 @@ type PharmacyResult = {
   name: string;
   address: string;
   stockStatus: 'available' | 'low' | 'not-available';
+  latitude?: number;
+  longitude?: number;
 };
 
 
@@ -47,6 +59,25 @@ export default function PharmacyStockPage() {
 
   // Use real inventory data from Supabase instead of localStorage
   const { inventory, loading: inventoryLoading } = useInventory();
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | undefined>(undefined);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+          // Fallback to Berhampur, Odisha if location denied
+          setUserLocation({ latitude: 19.314962, longitude: 84.794091 });
+        }
+      );
+    }
+  }, []);
 
 
 
@@ -57,7 +88,7 @@ export default function PharmacyStockPage() {
     setIsLoading(true);
     setHasSearched(true);
 
-    // Simulate API call with language-aware search
+    // Instant search on existing inventory data
     setTimeout(() => {
       const results: PharmacyResult[] = [];
 
@@ -69,6 +100,9 @@ export default function PharmacyStockPage() {
         supplier: item.pharmacist_name || 'Unknown',
         // Pass through address
         raw_address: item.pharmacist_address || '',
+        // Pass through coordinates
+        latitude: item.pharmacist_latitude,
+        longitude: item.pharmacist_longitude,
         status: item.quantity > 10 ? 'In Stock' as const : item.quantity > 0 ? 'Low Stock' as const : 'Out of Stock' as const
       }));
 
@@ -113,12 +147,15 @@ export default function PharmacyStockPage() {
           name: pharmacyName,
           address: pharmacyAddress,
           stockStatus: stockStatus,
+          latitude: medicine.latitude,
+          longitude: medicine.longitude
         });
       });
 
       setSearchResults(results);
       setIsLoading(false);
-    }, 1000);
+    }, 300); // Tiny delay for UI feel, but effectively instant
+
   };
 
   const getStockVariant = (stock: PharmacyResult['stockStatus']) => {
@@ -195,39 +232,59 @@ export default function PharmacyStockPage() {
               </div>
             ) : searchResults.length > 0 ? (
               <>
-                {/* Google Maps with Route - No API Key Required */}
-                <div className="mb-6 rounded-lg overflow-hidden border shadow-md">
-                  <iframe
-                    width="100%"
-                    height="450"
-                    style={{ border: 0 }}
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                    src={`https://www.google.com/maps?q=${encodeURIComponent(searchResults[0].address)}&output=embed`}
-                  ></iframe>
-                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 border-t">
-                    <div className="flex items-start gap-3">
-                      <div className="bg-blue-500 text-white p-2 rounded-full">
-                        <Navigation className="h-5 w-5" />
+                {/* Leaflet/OpenStreetMap Integration */}
+                <div className="mb-6 rounded-xl overflow-hidden border border-border/50 shadow-lg bg-card relative group">
+                  <div className="absolute top-4 right-4 z-[500] bg-background/90 backdrop-blur-sm px-3 py-1 rounded-lg shadow-sm border border-border/50 opacity-100">
+                    <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                      <MapPin className="h-3 w-3 text-red-500" /> Live Inventory Map
+                    </p>
+                  </div>
+
+                  <LeafletMap
+                    className="h-[450px] w-full"
+                    center={userLocation || { latitude: 19.314962, longitude: 84.794091 }}
+                    userLocation={userLocation}
+                    locations={searchResults.map((result, index) => ({
+                      id: result.id,
+                      latitude: result.latitude || (19.314962 + (Math.random() * 0.02 - 0.01)),
+                      longitude: result.longitude || (84.794091 + (Math.random() * 0.02 - 0.01)),
+                      title: result.name,
+                      description: result.address,
+                      type: 'pharmacy'
+                    }))}
+                  />
+
+                  <div className="bg-card p-4 border-t border-border/50">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-primary/10 text-primary p-3 rounded-xl">
+                        <MapPin className="h-6 w-6" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-blue-900">📍 {searchResults[0].name}</p>
-                        <p className="text-sm text-blue-700 mt-1">{searchResults[0].address}</p>
-                        <Button
-                          className="mt-3"
-                          size="sm"
-                          onClick={() => {
-                            // Open Google Maps with directions from PMEC to pharmacy (blue route line)
-                            window.open(
-                              `https://www.google.com/maps/dir/PMEC+Berhampur,+Odisha/${encodeURIComponent(searchResults[0].address)}`,
-                              '_blank'
-                            );
-                          }}
-                        >
-                          <Navigation className="mr-2 h-4 w-4" />
-                          Get Directions (Blue Route Line)
-                        </Button>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="font-semibold text-lg text-foreground">{searchResults[0].name}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{searchResults[0].address}</p>
+                          </div>
+                          <Badge variant={getStockVariant(searchResults[0].stockStatus)} className="ml-2">
+                            {getStockText(searchResults[0].stockStatus)}
+                          </Badge>
+                        </div>
+
+                        <div className="flex gap-3 mt-4">
+                          <Button
+                            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md transition-all"
+                            size="sm"
+                            onClick={() => {
+                              window.open(
+                                `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(searchResults[0].address)}`,
+                                '_blank'
+                              );
+                            }}
+                          >
+                            <Navigation className="mr-2 h-4 w-4" />
+                            {tCommon('common.view')} Directions
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>

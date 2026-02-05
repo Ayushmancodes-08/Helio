@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Save, Plus, Trash2, Loader2, Hospital, Calendar } from 'lucide-react';
+import { Save, Plus, Trash2, Loader2, Hospital, Calendar, CheckCircle2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { useHospitals, useDistricts } from '@/hooks/useHealthData';
@@ -195,7 +195,7 @@ export default function HospitalDataPage() {
     setIsSaving(false);
 
     if (errorCount === 0) {
-      toast({ title: 'Success', description: `Successfully saved ${successCount} entries.` });
+      toast({ title: 'Success', description: `Successfully saved ${successCount} entries to the database.` });
       // Add a new fresh line for continuous entry
       updatedEntries.push({
         id: Math.random().toString(36).substr(2, 9),
@@ -206,7 +206,7 @@ export default function HospitalDataPage() {
       });
       setEntries(updatedEntries);
     } else {
-      toast({ variant: 'destructive', title: 'Partial Success', description: `Saved ${successCount} entries, but failed to save ${errorCount}.` });
+      toast({ variant: 'destructive', title: 'Partial Success', description: `Saved ${successCount} entries to DB, but failed to save ${errorCount}.` });
       setEntries(updatedEntries); // Update at least the successful ones
     }
   };
@@ -272,7 +272,12 @@ export default function HospitalDataPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-xl">{selectedHospital.name}</CardTitle>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    {selectedHospital.name}
+                    <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200">
+                      ● Online Mode
+                    </span>
+                  </CardTitle>
                   <div className="text-sm text-muted-foreground mt-1">
                     Daily case entries for <span className="font-medium text-foreground">{districts.find(d => d.id === selectedHospital.district_id)?.name}</span> district.
                   </div>
@@ -328,7 +333,9 @@ export default function HospitalDataPage() {
                     </div>
                     <div className="col-span-1 md:col-span-1 flex justify-end md:justify-center items-center gap-2">
                       {entry.isSaved && (
-                        <span className="text-[10px] font-bold text-green-600 px-1.5 py-0.5 bg-green-100 rounded-full">Saved</span>
+                        <span className="text-[10px] font-bold text-green-600 px-1.5 py-0.5 bg-green-100 rounded-full flex items-center gap-1">
+                          Synced <CheckCircle2 className="h-3 w-3" />
+                        </span>
                       )}
                       <Button
                         variant="ghost"
@@ -364,9 +371,9 @@ export default function HospitalDataPage() {
               className="shadow-xl"
             >
               {isSaving ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving Changes...</>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving to DB...</>
               ) : (
-                <><Save className="mr-2 h-4 w-4" /> Save All Changes</>
+                <><Save className="mr-2 h-4 w-4" /> Save to Database</>
               )}
             </Button>
           </div>

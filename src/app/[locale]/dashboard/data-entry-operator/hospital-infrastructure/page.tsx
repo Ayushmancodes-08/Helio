@@ -151,16 +151,22 @@ export default function HospitalInfrastructurePage() {
     };
 
     const handleSaveAll = async () => {
-        if (!hasChanges) return;
+        if (!hasChanges) {
+            toast({
+                description: 'No changes to save.',
+            });
+            return;
+        }
 
         setIsSaving(true);
         let errorCount = 0;
         let successCount = 0;
+        const errors: string[] = [];
 
         // Identify changed hospitals
         const changedHospitals = localHospitals.filter(localH => {
             const original = hospitals.find(h => h.id === localH.id);
-            if (!original) return true; // New hospital (shouldn't happen here usually)
+            if (!original) return true;
             return JSON.stringify({
                 population: localH.population,
                 total_beds: localH.total_beds,
@@ -178,9 +184,13 @@ export default function HospitalInfrastructurePage() {
             });
         });
 
+        console.log('[Hospital Infrastructure] Changed hospitals:', changedHospitals.length);
+
         if (changedHospitals.length === 0) {
             setIsSaving(false);
-            setHasChanges(false);
+            toast({
+                description: 'No changes detected.',
+            });
             return;
         }
 
@@ -194,25 +204,47 @@ export default function HospitalInfrastructurePage() {
                 doctors: h.doctors,
                 nurses: h.nurses,
             }).then(res => {
-                if (res.success) successCount++;
-                else errorCount++;
+                if (res.success) {
+                    successCount++;
+                    console.log(`[Hospital Infrastructure] Updated ${h.name} successfully`);
+                } else {
+                    errorCount++;
+                    errors.push(`${h.name}: ${res.error}`);
+                    console.error(`[Hospital Infrastructure] Failed to update ${h.name}:`, res.error);
+                }
                 return res;
+            }).catch(err => {
+                errorCount++;
+                errors.push(`${h.name}: ${err.message}`);
+                console.error(`[Hospital Infrastructure] Error updating ${h.name}:`, err);
             })
         );
 
         await Promise.all(promises);
 
         setIsSaving(false);
-        if (errorCount === 0) {
-            toast({ title: t('common.success'), description: t('dataEntryOperator.updateInfrastructureSuccess', { name: `${successCount} hospitals` }) });
+
+        if (errorCount === 0 && successCount > 0) {
+            toast({
+                title: 'Success!',
+                description: `Updated ${successCount} hospital${successCount !== 1 ? 's' : ''}. Dashboard will update in a moment.`,
+            });
             setHasChanges(false);
-            // Re-sync happens automatically via hook usually, but let's trust useHospitals to update
-        } else {
+            
+            // Dispatch event to trigger dashboard refresh
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('hospital-data-updated'));
+                console.log('[Hospital Infrastructure] Dispatched hospital-data-updated event');
+            }, 1000);
+        } else if (errorCount > 0) {
             toast({
                 variant: 'destructive',
-                title: 'Partial Update',
-                description: `Updated ${successCount} hospitals, but failed to update ${errorCount}.`
+                title: 'Update Issues',
+                description: `Updated ${successCount}, failed ${errorCount}.`,
             });
+            if (errors.length > 0) {
+                console.error('[Hospital Infrastructure] Errors:', errors);
+            }
         }
     };
 

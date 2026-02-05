@@ -32,7 +32,17 @@ import { createClient } from '@/lib/supabase/client';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getSuccessMessageTranslation, getErrorMessageTranslation } from '@/lib/notification-translations';
 
-const PHARMACY_LOCATION_KEY = 'pharmacistLocation';
+import { MapPin } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { Loader2 } from 'lucide-react';
+
+const LeafletMap = dynamic(
+  () => import('@/components/LeafletMap'),
+  {
+    loading: () => <div className="h-[300px] w-full flex items-center justify-center bg-muted/10 rounded-xl border border-border/50"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>,
+    ssr: false
+  }
+);
 
 const locationSchema = z.object({
   name: z.string().min(1, 'Pharmacy name is required.'),
@@ -41,18 +51,8 @@ const locationSchema = z.object({
 
 type LocationFormValues = z.infer<typeof locationSchema>;
 
-const getInitialLocation = () => {
-  if (typeof window === 'undefined') {
-    return { name: '', address: '' };
-  }
-  try {
-    const storedLocation = localStorage.getItem(PHARMACY_LOCATION_KEY);
-    return storedLocation ? JSON.parse(storedLocation) : { name: '', address: '' };
-  } catch (error) {
-    console.error("Failed to parse location from localStorage", error);
-    return { name: '', address: '' };
-  }
-};
+// Initial location is empty, will be filled by profile
+const getInitialLocation = () => ({ name: '', address: '' });
 
 import { usePharmacistDashboard } from '@/hooks/usePharmacistDashboard';
 
@@ -62,11 +62,14 @@ export default function PharmacistDashboardPage() {
 
   // Use aggregated hook
   const { profile, stats, loading: dashboardLoading } = usePharmacistDashboard();
+  const { t: tCommon } = useLanguage();
 
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationSchema),
     defaultValues: getInitialLocation(),
   });
+
+  const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   // Supabase client
   const supabase = createClient();
@@ -80,9 +83,15 @@ export default function PharmacistDashboardPage() {
       // Let's store "Pharmacy Name: Address" in the address field to keep it simple but persistent.
       const combinedAddress = `${data.name} || ${data.address}`;
 
+      const updateData: any = { address: combinedAddress };
+      if (selectedLocation) {
+        updateData.latitude = selectedLocation.lat;
+        updateData.longitude = selectedLocation.lng;
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .update({ address: combinedAddress })
+        .update(updateData)
         .eq('id', profile.id);
 
       if (error) throw error;
@@ -91,8 +100,7 @@ export default function PharmacistDashboardPage() {
         title: getSuccessMessageTranslation('profileUpdated', t),
       });
 
-      // Also update localStorage for fallback/offline if needed, or remove it.
-      // localStorage.setItem(PHARMACY_LOCATION_KEY, JSON.stringify(data));
+      // Location now fully handled by Supabase profile
     } catch (error) {
       console.error("Failed to save location", error);
       toast({
@@ -113,7 +121,19 @@ export default function PharmacistDashboardPage() {
         form.setValue('address', profile.address);
       }
     }
+
+    // Load persisted coordinates if they exist
+    if ((profile as any).latitude && (profile as any).longitude) {
+      setSelectedLocation({
+        lat: (profile as any).latitude,
+        lng: (profile as any).longitude
+      });
+    }
   }, [profile, form]);
+
+  if (dashboardLoading) {
+    return <div className="p-8 flex justify-center"><p>{tCommon('common.loading')}</p></div>;
+  }
 
 
   return (
@@ -192,6 +212,33 @@ export default function PharmacistDashboardPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* Location Picker Map */}
+                <div className="space-y-2">
+                  <FormLabel>Pin Exact Location</FormLabel>
+                  <p className="text-xs text-muted-foreground">Click on the map to set your pharmacy's exact location.</p>
+                  <div className="h-[300px] w-full rounded-lg overflow-hidden border">
+                    <LeafletMap
+                      className="h-full w-full"
+                      center={selectedLocation ? { latitude: selectedLocation.lat, longitude: selectedLocation.lng } : { latitude: 19.314962, longitude: 84.794091 }}
+                      locations={selectedLocation ? [{
+                        id: 'selected',
+                        latitude: selectedLocation.lat,
+                        longitude: selectedLocation.lng,
+                        title: 'Selected Location',
+                        type: 'pharmacy'
+                      }] : []}
+                      onLocationSelect={(lat, lng) => setSelectedLocation({ lat, lng })}
+                      interactive={true}
+                    />
+                  </div>
+                  {selectedLocation && (
+                    <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                      <MapPin className="h-3 w-3" /> Location set: {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
+                    </p>
+                  )}
+                </div>
+
               </CardContent>
               <CardFooter className="mt-auto">
                 <Button type="submit" className="w-full">
